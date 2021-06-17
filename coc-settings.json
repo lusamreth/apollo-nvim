@@ -1,0 +1,13 @@
+
+{
+    "rust-analyzer.diagnostics.enableExperimental":true,
+    "rust-analyzer.files.watcher":"server",
+    "rust-analyzer.diagnostics.enable": false,
+    "rust-analyzer.checkOnSave.enable": false,
+    "rust-analyzer.inlayHints.refreshOnInsertMode": true,
+    "rust-analyzer.server.path": "$HOME/.cargo/bin/rust-analyzer",
+    "rust-analyzer.server.extraEnv": {
+        "RA_PROFILE": "handle_completion>16"
+    }
+}
+
