@@ -164,6 +164,7 @@ function FileType()
 end
 
 function Create_augroup(autocmds, name)
+    print("bruh augroup")
     local cmd = vim.cmd
     cmd('augroup ' .. name)
     cmd('autocmd!')

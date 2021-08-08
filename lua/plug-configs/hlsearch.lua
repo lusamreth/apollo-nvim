@@ -25,13 +25,9 @@ end
 CallerF = Gbinder.bind(goforward)
 CallerB = Gbinder.bind(gobackward)
 
-Nnoremap("m","lua CallerF()",{
-    silent = true
-})
+Nnoremap("m","lua CallerF()")
 
-Nnoremap("n","lua CallerB()",{ 
-    silent = true
-})
+Nnoremap("n","lua CallerB()")
 
 Nnoremap("* *","lua require('hlslens').start()",{silent = true})
 Nnoremap("# #","lua require('hlslens').start()",{silent = true})

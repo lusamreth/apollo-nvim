@@ -3,7 +3,7 @@ local available_opt = {
 	"bo", -- buffer options
 	"wo", -- window options
 	"g"  , -- global options
-    "auto" -- you don't know the scope 
+	"auto" -- you don't know the scope 
 }
 
 local opts_info = vim.api.nvim_get_all_options_info()

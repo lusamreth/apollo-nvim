@@ -1,3 +1,5 @@
+-- todo make custom binder with whichkey plugin
+print("import whichkey")
 require("which-key").setup {
     plugins = {
         marks = true, -- shows a list of your marks on ' and `
@@ -10,8 +12,8 @@ require("which-key").setup {
             text_objects = true, -- help for text objects triggered after entering an operator
             windows = true, -- default bindings on <c-w>
             nav = true, -- misc bindings to work with windows
-            z = true, -- bindings for folds, spelling and others prefixed with z
-            g = true -- bindings for prefixed with g
+            z = false , -- bindings for folds, spelling and others prefixed with z
+            g = false -- bindings for prefixed with g
         }
     },
     icons = {
@@ -31,7 +33,7 @@ require("which-key").setup {
         spacing = 3 -- spacing between columns
     },
     hidden = {"<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ "}, -- hide mapping boilerplate
-    show_help = true -- show help message on the command line when the popup is visible
+    show_help = false -- show help message on the command line when the popup is visible
 }
 
 local opts = {
@@ -45,28 +47,45 @@ local opts = {
 
 ---- Set leader
 vim.api.nvim_set_keymap('n', '<Space>', '<NOP>', {noremap = true, silent = true})
----- no hl
---vim.api.nvim_set_keymap('n', '<Leader>h', ':set hlsearch!<CR>', {noremap = true, silent = true})
----- explorer
---vim.api.nvim_set_keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', {noremap = true, silent = true})
----- telescope
---vim.api.nvim_set_keymap('n', '<Leader>f', ':Telescope find_files<CR>', {noremap = true, silent = true})
----- dashboard
---vim.api.nvim_set_keymap('n', '<Leader>;', ':Dashboard<CR>', {noremap = true, silent = true})
----- Comments
---vim.api.nvim_set_keymap("n", "<leader>/", ":CommentToggle<CR>", {noremap = true, silent = true})
---vim.api.nvim_set_keymap("v", "<leader>/", ":CommentToggle<CR>", {noremap = true, silent = true})
----- close buffer
---vim.api.nvim_set_keymap("n", "<leader>c", ":BufferClose<CR>", {noremap = true, silent = true})
-
 -- TODO create entire treesitter section
+
+local opts = {
+    mode = "n", -- NORMAL mode
+    prefix = "<leader>",
+    buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
+    silent = true, -- use `silent` when creating keymaps
+    noremap = true, -- use `noremap` when creating keymaps
+    nowait = false -- use `nowait` when creating keymaps
+}
 
 local mappings = {
     ["/"] = "Comment",
     ["c"] = "Close Buffer",
     ["e"] = "Explorer",
-    ["f"] = "Find File",
     ["h"] = "No Highlight",
+    s = {
+        name = "+Search",
+        b = {"<cmd>Telescope git_branches<cr>", "Checkout branch"},
+        c = {"<cmd>Telescope colorscheme<cr>", "Colorscheme"},
+        d = {"<cmd>Telescope lsp_document_diagnostics<cr>", "Document Diagnostics"},
+        D = {"<cmd>Telescope lsp_workspace_diagnostics<cr>", "Workspace Diagnostics"},
+        f = {"<cmd>Telescope find_files<cr>", "Find File"},
+        m = {"<cmd>Telescope marks<cr>", "Marks"},
+        M = {"<cmd>Telescope man_pages<cr>", "Man Pages"},
+        r = {"<cmd>Telescope oldfiles<cr>", "Open Recent File"},
+        R = {"<cmd>Telescope registers<cr>", "Registers"},
+        t = {"<cmd>Telescope live_grep<cr>", "Text"}
+    },
+
+    d = {
+        name = "+Diagnostics",
+        t = {"<cmd>TroubleToggle<cr>", "trouble"},
+        w = {"<cmd>TroubleToggle lsp_workspace_diagnostics<cr>", "workspace"},
+        d = {"<cmd>TroubleToggle lsp_document_diagnostics<cr>", "document"},
+        q = {"<cmd>TroubleToggle quickfix<cr>", "quickfix"},
+        l = {"<cmd>TroubleToggle loclist<cr>", "loclist"},
+        r = {"<cmd>TroubleToggle lsp_references<cr>", "references"},
+    },
     S = {name = "+Session", s = {"<cmd>SessionSave<cr>", "Save Session"}, l = {"<cmd>SessionLoad<cr>", "Load Session"}}
 }
 

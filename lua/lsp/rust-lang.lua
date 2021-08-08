@@ -7,15 +7,15 @@ require("utility.render")
 --reconfigure the rustc in fish conf and remap its path
 --/bedrock/strata/arch/usr/bin/rustc
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-capabilities.textDocument.completion.completionItem.resolveSupport = {
-  properties = {
-    'documentation',
-    'detail',
-    'additionalTextEdits',
-  }
-}
+--local capabilities = vim.lsp.protocol.make_client_capabilities()
+--capabilities.textDocument.completion.completionItem.snippetSupport = true
+--capabilities.textDocument.completion.completionItem.resolveSupport = {
+--  properties = {
+--    'documentation',
+--    'detail',
+--    'additionalTextEdits',
+--  }
+--}
 
 local nvim_lsp = require('lspconfig')
 --[[
@@ -61,32 +61,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     update_in_insert = false,
 })
 --{{{{{{}}}}}}
-vim.cmd("set completeopt=menuone,noinsert,noselect")
-
---print("settingup")
---local dg = vim.lsp.diagnostic.get(1,1)   
---local co = vim.lsp.diagnostic.get_count(1, [[Error]])
---print("co",co)
---vim.lsp.diagnostic.set_signs(dg, 1, 1, nil, {
---    priority = 100,
---    serverity = [[Error]]
---})
- --Avoid showing extra messages when using completion
-vim.cmd("set shortmess+=c")
-
---Commands :
-    --RustSetInlayHints
-    --RustDisableInlayHints
-    --RustToggleInlayHints
-    --RustRunnables
-    --RustExpandMacro
-    --RustOpenCargo 
-    --RustParentModule
-    --RustJoinLines
-    --RustHoverActions
-    --RustMoveItemDown
-    --RustMoveItemUp
--- Leader configuration for rusttools is <Space-r>
+--vim.cmd("set completeopt=menuone,noinsert,noselect")
 
 local opts = {
     tools = {
@@ -127,11 +102,6 @@ function ToggleInlay()
         print("inlay OFF!")
     end
 end
-local default = "<Space>r"
-local file_type = vim.api.nvim_get_option("filetype")
-local boundfunc = function(func)
-    func()
-end
 
 function Rust_util_binder(rust_leader)
     local opt = {noremap=true,silent=true}
@@ -162,7 +132,7 @@ function Rust_util_binder(rust_leader)
         --        RustMoveIthmUp : move item at the cursor downward\
         --    "
 
-        local help_cmd = 
+        local help_cmd =
         {
             inlay_hints_dec,
             "Commands :",
@@ -184,13 +154,9 @@ function Rust_util_binder(rust_leader)
 
     vim.api.nvim_set_keymap("n",rust_leader.."h","<cmd>lua Print_RustTool_help()<CR>",opt)
     vim.api.nvim_set_keymap("n","<C-a>","<cmd>lua require'rust-tools.hover_actions'.hover_actions()<CR>",opt)
-    
 end
 
 Rust_util_binder("<Space>r")
 --Toggle_win({"hello boi"})
---vim.api.nvim_exec('autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *\
---    lua require"lsp_extensions".inlay_hints{ prefix = "", highlight = "Comment", \
---    enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }')
 
 --if init lspinstall first we cannot use custom rust-analyzer

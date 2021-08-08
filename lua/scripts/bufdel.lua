@@ -11,7 +11,6 @@
 
 -- Options
 local opts = {next = 'cycle'}  -- how to retrieve the next buffer
-
 -- Switch to buffer 'buf' on each window from list 'windows'
 local function switch_buffer(windows, buf)
   local cur_win = vim.fn.winnr()

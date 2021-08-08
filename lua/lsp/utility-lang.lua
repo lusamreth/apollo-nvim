@@ -6,7 +6,7 @@
 -- lua lsp !!
 local sumneko_root_path = DATA_PATH .. "/lspinstall/lua"
 local sumneko_binary = sumneko_root_path .. "/sumneko-lua-language-server"
-
+local util = require("lspconfig").utils
 -- copied from nvcode project
 require'lspconfig'.lua.setup {
     cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"},
@@ -42,6 +42,7 @@ require'lspconfig'.lua.setup {
 require"lspconfig".efm.setup {
     init_options = {documentFormatting = true},
     filetypes = {"lua"},
+    on_attach = require'lsp'.on_common_attach(),
     settings = {
         --rootMarkers = {".git/"},
         languages = {
@@ -55,12 +56,28 @@ require"lspconfig".efm.setup {
     }
 }
 
-require"lspconfig".bash.setup {
+require'lspconfig'.bash.setup {
+    filetypes = { "sh", "zsh" },
+    cmd = {DATA_PATH .. "/lspinstall/bash/node_modules/.bin/bash-language-server", "start"},
+    on_attach = require'lsp'.on_common_attach(false),
+}
 
+require'lspconfig'.python.setup {
+    filetypes = {"python"} ,
+    cmd = { "pyright-langserver", "--stdio" },
+    on_attach = require'lsp'.on_common_attach(false),
+      python = {
+            analysis = {
+              autoSearchPaths = true,
+              diagnosticMode = "workspace",
+              useLibraryCodeForTypes = true
+            }
+          }
 }
 
 --vim.cmd("BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 100)")
 vim.api.nvim_set_keymap("n","zf","<cmd>lua vim.lsp.buf.formatting_sync(nil, 100)<CR>",{noremap = true})
 require'lspconfig'.vim.setup = {
+    filetypes = {"vim"},
     on_attach = require'lsp'.on_common_attach()
 }

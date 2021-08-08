@@ -62,7 +62,7 @@ Plug 'akinsho/nvim-bufferline.lua'
 Plug 'svermeulen/vimpeccable'
 "Plug 'glepnir/zephyr-nvim'
 "Automatically install dependencies !
-Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
+"Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
 Plug 'sainnhe/gruvbox-material'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-lua/popup.nvim'

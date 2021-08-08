@@ -1,14 +1,14 @@
-local g = vim.g
+local opt = vim
+local g = opt.g
 
 local hiTreeFolder = function(treetype,col)
     local hi = string.format("hi NvimTreeFolder%s guifg = %s<CR>",treetype,col)
-    vim.cmd("hi NvimTreeFolderIcon guifg = #51afef")
-    vim.cmd(hi)
+    opt.cmd("hi NvimTreeFolderIcon guifg = #51afef")
+    opt.cmd(hi)
 end
 
 
-
-vim.o.termguicolors = true
+opt.o.termguicolors = true
 g.nvim_tree_quit_on_open = 1
 g.nvim_tree_side = "left"
 g.nvim_tree_width = 25
@@ -51,9 +51,8 @@ g.nvim_tree_icons = {
 local get_lua_cb = function(cb_name)
     return require("nvim-tree.config").nvim_tree_callback(cb_name)
 end
-
-vim.g.nvim_tree_quit_on_open = 1
-vim.g.nvim_tree_tab_open = 1
+opt.g.nvim_tree_quit_on_open = 1
+opt.g.nvim_tree_tab_open = 1
 
 local firstrun = 0
 local hlconfig = function()
@@ -67,11 +66,10 @@ local hlconfig = function()
 end
 -- Mappings for nvimtree
 function CustomTreeToggle()
-    vim.cmd("NvimTreeToggle")
+    opt.cmd("NvimTreeToggle")
     hlconfig()    
 end
-
-vim.api.nvim_set_keymap(
+opt.api.nvim_set_keymap(
     "n",
     "<C-n>",
     --":NvimTreeToggle<CR>",

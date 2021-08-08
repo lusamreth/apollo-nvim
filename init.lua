@@ -36,11 +36,12 @@ vim.cmd('source $HOME/.config/nvim/plugins.vim')
 --vim.cmd('source $HOME/.config/nvim/plug-config/nerdtree.vim')
 --vim.cmd('source $HOME/.config/nvim/settings/keybinds.vim')
 --vim.cmd('source $HOME/.config/nvim/settings/general.vim')
-vim.cmd('source $HOME/.config/nvim/settings/themes.vim')
-vim.cmd('source $HOME/.config/nvim/plug-config/doc_writing.vim')
-vim.cmd('source $HOME/.config/nvim/plug-config/terminals.vim')
-vim.cmd('source $HOME/.config/nvim/plug-config/languages.vim')
-vim.cmd('source $HOME/.config/nvim/scripts/index.vim')
+--vim.cmd('source $HOME/.config/nvim/settings/themes.vim')
+--vim.cmd('source $HOME/.config/nvim/plug-config/doc_writing.vim')
+--vim.cmd('source $HOME/.config/nvim/plug-config/terminals.vim')
+--vim.cmd('source $HOME/.config/nvim/plug-config/languages.vim')
+--vim.cmd('source $HOME/.config/nvim/scripts/index.vim')
+
 
 vim.g.python3_host_prog = '$HOME/python3.10.0a7/bin/python3.10'
 vim.g.python_host_prog = '/usr/bin/python2'
@@ -113,15 +114,15 @@ vim.api.nvim_set_keymap("n","<M-r>","<cmd>lua Reload()<CR>",{noremap = true,sile
 --require("nv-tree")
 require("lsp.utility-lang")
 require("plug-configs.hlsearch")
---require("scripts.debug")
+----require("scripts.debug")
 require("plug-configs.layout")
 require("lsp.nv-formatter")
 require("plug-configs.nv-whichkey")
 require("plug-configs.nv-term")
-require("settings")
-require("keybinding")
---require("nv-tree")
 vim.cmd("luafile ~/.config/nvim/lua/nv-tree.lua")
+require("nv-settings")
+require("keybinding")
+----require("nv-tree")
 
 require('nvim_comment').setup(
 {
@@ -137,6 +138,7 @@ require('nvim_comment').setup(
   operator_mapping = "gc"
 })
 require("utility.test")
+vim.cmd("syntax on")
 function TestTb()
     Describe("tableclonetest",function()
         local arr = {1,2,3,5,6,7}
@@ -151,4 +153,5 @@ function TestTb()
         AssertEquals(res,table_merge(arr1,arr2))
     end)
 end
+
 

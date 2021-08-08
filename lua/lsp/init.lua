@@ -130,7 +130,7 @@ end
 local lsp_config = {}
 -- t:table -> { client,bufnr,conf }
 WorkingId = 0
-local function attch_builder(t)
+local function attach_builder(t)
     local conf = t.config
     -- attachment 
 
@@ -144,7 +144,7 @@ local function attch_builder(t)
     if t.snippet == true
         then snippet_support()
     end
-    local d_sign = t.diagnostic_signs 
+    local d_sign = t.diagnostic_signs
     -- the args is necessary 
     local on_attach = function(client,bufnr)
         -- important func!
@@ -158,7 +158,7 @@ local function attch_builder(t)
                        -- If you want to hook lspsaga or other signature handler, pls set to false
           doc_lines = 0, -- only show one line of comment set to 0 if you do not want API comments be shown
           hint_enable = true, -- virtual hint enable
-          hint_prefix = "󰿉 ",  -- Panda for parameter
+          hint_prefix = "󰿉 ",
           hint_scheme = "String",
           use_lspsaga = false,  -- set to true if you want to use lspsaga popup
           handler_opts = {
@@ -169,22 +169,22 @@ local function attch_builder(t)
         -- show function signature when typing
         require("lsp_signature").on_attach(sig_cfg)
         local diag = vim.lsp.diagnostic.get("%",client.id)
-        for i,x in pairs(diag) do 
-            print(i,x)
-        end
-
+        print("making trouble")
         MakeTrouble("<Space>")
 
-        vim.lsp.diagnostic.set_signs(diag,"%",client.id,nil,{
-            priority = 100,
-            serverity = [[Error]]
-        })
+        --vim.lsp.diagnostic.set_signs(diag,"%",client.id,nil,{
+        --    priority = 100,
+        --    serverity = [[Error]]
+        --})
     end
     return on_attach
 end
 
-local function on_common_attach()
-
+local function on_common_attach(verb)
+    if verb then
+        print("debugging on!")
+        print(debug.getinfo(1))
+    end
     -- disable coc avoid conflicting with lsp
     local v_t = {
         config = {
@@ -194,11 +194,11 @@ local function on_common_attach()
         },
         snippet = true
     }
-    return attch_builder(v_t) -- <-- func!
+    return attach_builder(v_t) -- <-- func!
 end
 
 local lsp_module = {}
-lsp_module.build_attacher = attch_builder
+lsp_module.build_attacher = attach_builder
 lsp_module.on_common_attach = on_common_attach
 
 -- custom installer script
@@ -206,12 +206,12 @@ lsp_module.on_common_attach = on_common_attach
 --local function init_lspinstall()
 --    require'lspinstall'.setup{}
 --    -- this function available after calling
-   function PRINTLSP()
-       local servers = require'lspinstall'.installed_servers()
-       for _, server in pairs(servers) do
-           print(server)
-       end
+function PRINTLSP()
+   local servers = require'lspinstall'.installed_servers()
+   for _, server in pairs(servers) do
+       print(server)
    end
+end
 --end
 --lsp_module.init_lspinstall = init_lspinstall
 
