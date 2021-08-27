@@ -25,23 +25,22 @@ Nnoremap("P", '"+p')
 Nnoremap(leader .. "h", "split")
 Nnoremap(leader .. "v", "vsplit")
 
-Nnoremap('<M-Up>', ':resize -2')
-Nnoremap('<M-Down>', ':resize +2')
-Nnoremap('<M-Left>', ':vertical resize -2')
-Nnoremap('<M-Right>', ':vertical resize +2')
+Nnoremap("<M-Up>", ":resize -2")
+Nnoremap("<M-Down>", ":resize +2")
+Nnoremap("<M-Left>", ":vertical resize -2")
+Nnoremap("<M-Right>", ":vertical resize +2")
 
 Nnoremap("<C-S-q>", ":wqa!")
 
 local win_navs = {
-    {"<C-h>", "<C-w>h"},
-    {"<C-j>", "<C-w>j"},
-    {"<C-k>", "<C-w>k"},
-    {"<C-l>", "<C-w>l"}
+	{ "<C-h>", "<C-w>h" },
+	{ "<C-j>", "<C-w>j" },
+	{ "<C-k>", "<C-w>k" },
+	{ "<C-l>", "<C-w>l" },
 }
 
 for _, win_nav in pairs(win_navs) do
-    local key,action = win_nav[1],win_nav[2]
-    Nmap(key,action,{binder = true})
-    Tnoremap(key,action,{binder = true})
+	local key, action = win_nav[1], win_nav[2]
+	Nmap(key, action, { binder = true })
+	Tnoremap(key, action, { binder = true })
 end
-

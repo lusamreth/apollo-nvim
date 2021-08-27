@@ -2,26 +2,25 @@ local custom_cfg_table = {}
 local conf = {}
 do
     custom_cfg_table = {
-        _index = function(t,k)
+        _index = function(t, k)
             if conf[k] == nil then
-                    error("The configuration is not avialable!")
-                    error("Please recheck your options!")
+                error("The configuration is not avialable!")
+                error("Please recheck your options!")
                 return
-                else
-                    return conf[k]
+            else
+                return conf[k]
             end
         end
     }
 end
 
-config = setmetatable({},custom_cfg_table)
+config = setmetatable({}, custom_cfg_table)
 
-function append_local_config(name,cfg)
-    _G.config[name] = setmetatable(cfg,custom_cfg_table)
+function append_local_config(name, cfg)
+    _G.config[name] = setmetatable(cfg, custom_cfg_table)
 end
 
 function delete_local_config()
-
 end
 
 function buildErrorHandler()
@@ -31,14 +30,12 @@ function buildErrorHandler()
     else
         return buffer_error
     end
-
 end
 
-function bufferError(msg,lvl,verb)
-    
+function bufferError(msg, lvl, verb)
 end
 
-function AssertEquals(e1, e2,v)
+function AssertEquals(e1, e2, v)
     if type(e1) ~= type(e2) then
         error("Two incompatible type, cannot compare!")
         return
@@ -46,22 +43,21 @@ function AssertEquals(e1, e2,v)
 
     if v == true then
     else
-        local s = function(d,va)
-            string.format("value of %s: %s",d,va) 
+        local s = function(d, va)
+            string.format("value of %s: %s", d, va)
         end
 
-        s("lhs",e1)
-        s("lhs",e1)
+        s("lhs", e1)
+        s("lhs", e1)
     end
 
     if e1 ~= e2 then
-        error("Two variable is not equal!",2)
+        error("Two variable is not equal!", 2)
         error("Assertion Failed!", 2)
     else
         print("Assertion pass!")
     end
 end
-
 
 function TraceCaller()
     print(debug.traceback())
@@ -72,10 +68,9 @@ function TraceCaller()
     print("Caller that cur func is nested in : ", calling_func.name)
 end
 
-
 local TestUtil = {}
 local Test_subject = {}
--- [[ 
+-- [[
 -- semantic
 -- describe("modname",
 --  function() <-- definition,
@@ -91,7 +86,7 @@ function Describe(modname, definition, desc)
     called_time = called_time + 1
     local indx = #Test_subject + 1
     local d
-    if config.trace == true then 
+    if config.trace == true then
         TraceCaller()
     end
     if desc == nil then
@@ -108,9 +103,9 @@ function Describe(modname, definition, desc)
 end
 
 function Runtest()
-    local START,END
-    for key,obj in pairs(Test_subject) do
-        print("Running test "..key)
+    local START, END
+    for key, obj in pairs(Test_subject) do
+        print("Running test " .. key)
         START = os.clock()
         obj["sub"]()
         END = os.clock()
@@ -123,9 +118,9 @@ function Runtest()
 end
 
 function listtest()
-   for key,obj in pairs(Test_subject) do 
-       print(string.format("%s.%s",key,obj["name"]))
-   end
+    for key, obj in pairs(Test_subject) do
+        print(string.format("%s.%s", key, obj["name"]))
+    end
 end
 
 function print_table()
@@ -136,7 +131,9 @@ function print_table()
         return side .. str .. side
     end
 
-    local print_dash = function(str, len) print(add_dash(str, len)) end
+    local print_dash = function(str, len)
+        print(add_dash(str, len))
+    end
 
     -- traverse through object prop
     for i = 1, #Test_subject do
@@ -152,9 +149,11 @@ function print_table()
                 local e = get_ele(fields[i])
                 local new_line = "\n"
                 local line = content .. e .. new_line
-                if #line > longest_len then longest_len = #line end
+                if #line > longest_len then
+                    longest_len = #line
+                end
                 content = line
-                -- content 
+                -- content
                 -- print()
             end
         end
@@ -173,12 +172,10 @@ function print_table()
     end
 end
 
-function test (desc, testLogic) 
-    
+function test(desc, testLogic)
 end
 
 function timeout()
-
 end
 
 -- Test module options :
@@ -188,4 +185,3 @@ end
 -- runall : bool
 
 return TestUtil
-

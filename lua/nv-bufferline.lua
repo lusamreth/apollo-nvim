@@ -1,70 +1,70 @@
-local comment_fg = '#008080'
-local normal_fg = '#fff'
-local string_fg = '#111'
+local comment_fg = "#008080"
+local normal_fg = "#fff"
+local string_fg = "#111"
 -- colors for active , inactive uffer tabs
-require "bufferline".setup {
-    options = {
-        buffer_close_icon = "",
-        modified_icon = "●",
-        close_icon = "",
-        left_trunc_marker = "",
-        right_trunc_marker = "",
-        max_name_length = 14,
-        max_prefix_length = 13,
-        tab_size = 18,
-        enforce_regular_tabs = true,
-        show_buffer_close_icons = true,
-        always_show_bufferline = true,
-        separator_style = "thin",
-        diagnostics_indicator = function(count, level, diagnostics_dict)
-          return "("..count..")"
-    end
-    },
-    -- highlights = {
-    --     background = {
-    --         guifg = comment_fg,
-    --         guibg = "#1e222a"
-    --     },
-    --     fill = {
-    --         guifg = comment_fg,
-    --         guibg = "#1e222a"
-    --         --guibg = "#fff"
-    --     },
-    --     buffer_selected = {
-    --         guifg = "#ffffff",
-    --         guibg = "#ec5f67",
-    --         gui = "bold"
-    --     },
-    --     buffer_visible = {
-    --         guifg = "#ffffff",
-    --         guibg = "#1e222a"
-    --     },
-    --     separator_visible = {
-    --         guifg = "#1e222a",
-    --         guibg = "#1e222a"
-    --     },
-    --     separator_selected = {
-    --         guifg = "#1e222a",
-    --         guibg = "#1e222a"
-    --     },
-    --     separator = {
-    --         guifg = "#1e222a",
-    --         guibg = "#1e222a"
-    --     },
-    --     indicator_selected = {
-    --         guifg = "#1e222a",
-    --         guibg = "#1e222a"
-    --     },
-    --     modified_selected = {
-    --         guifg = string_fg,
-    --         guibg = "#ec5f67"
-    --     }
-    -- },
-    
-    diagnostics = "nvim_lsp"
-}
+require("bufferline").setup({
+	options = {
+		buffer_close_icon = "",
+		modified_icon = "●",
+		close_icon = "",
+		left_trunc_marker = "",
+		right_trunc_marker = "",
+		max_name_length = 14,
+		max_prefix_length = 13,
+		tab_size = 18,
+		enforce_regular_tabs = true,
+		show_buffer_close_icons = true,
+		always_show_bufferline = true,
+		separator_style = "thin",
+		diagnostics_indicator = function(count, level, diagnostics_dict)
+			return "(" .. count .. ")"
+		end,
+	},
+	-- highlights = {
+	--     background = {
+	--         guifg = comment_fg,
+	--         guibg = "#1e222a"
+	--     },
+	--     fill = {
+	--         guifg = comment_fg,
+	--         guibg = "#1e222a"
+	--         --guibg = "#fff"
+	--     },
+	--     buffer_selected = {
+	--         guifg = "#ffffff",
+	--         guibg = "#ec5f67",
+	--         gui = "bold"
+	--     },
+	--     buffer_visible = {
+	--         guifg = "#ffffff",
+	--         guibg = "#1e222a"
+	--     },
+	--     separator_visible = {
+	--         guifg = "#1e222a",
+	--         guibg = "#1e222a"
+	--     },
+	--     separator_selected = {
+	--         guifg = "#1e222a",
+	--         guibg = "#1e222a"
+	--     },
+	--     separator = {
+	--         guifg = "#1e222a",
+	--         guibg = "#1e222a"
+	--     },
+	--     indicator_selected = {
+	--         guifg = "#1e222a",
+	--         guibg = "#1e222a"
+	--     },
+	--     modified_selected = {
+	--         guifg = string_fg,
+	--         guibg = "#ec5f67"
+	--     }
+	-- },
 
-local opt = {silent = true}
+	diagnostics = "nvim_lsp",
+})
+
+local opt = { silent = true }
 
 --reset leader key
 vim.g.mapleader = " "
