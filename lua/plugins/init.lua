@@ -11,10 +11,11 @@
 local packages = {
     "wbthomason/packer.nvim",
     "neovim/nvim-lspconfig",
-    {"glepnir/galaxyline.nvim", {branch = "main"}},
+    --{"glepnir/galaxyline.nvim", {branch = "main"}},
     {
         "nvim-treesitter/nvim-treesitter",
-        branch = "0.5-compat"
+        branch = "0.5-compat",
+        disable = true
     },
     "elzr/vim-json",
     "tjdevries/nlua.nvim",
@@ -34,7 +35,7 @@ local packages = {
     "folke/which-key.nvim",
     "terrortylor/nvim-comment",
     "ray-x/lsp_signature.nvim",
-    "glepnir/dashboard-nvim",
+    -- "glepnir/dashboard-nvim",
     "windwp/nvim-ts-autotag",
     "akinsho/nvim-toggleterm.lua",
     "folke/trouble.nvim",
@@ -61,12 +62,23 @@ local packages = {
     "kosayoda/nvim-lightbulb",
     "simrat39/rust-tools.nvim",
     "mhartington/formatter.nvim",
-    "andweeb/presence.nvim"
+    "andweeb/presence.nvim",
+    "ahmedkhalf/project.nvim",
+    "hoob3rt/lualine.nvim",
+    "lewis6991/gitsigns.nvim",
+    "famiu/feline.nvim"
+    -- "windwp/windline.nvim"
 }
 
 local f = require("plugins.loader")
 local loader = f:init_loader()
 loader:load_packages(packages)
 
+local function autocompile()
+    print("Recompile packages!")
+    vim.cmd([[autocmd BufWritePost plugins.lua source <afile> | PackerCompile]])
+end
+
+autocompile()
 print("this loader", loader)
 print("size" .. #packages)

@@ -71,7 +71,7 @@ function loader:load_packages(packages)
         error("Please initialize the loader instance before proceed!", 1)
         return
     end
-
+    self.packer.reset()
     self.packer.startup(
         function(use)
             load(use, false)

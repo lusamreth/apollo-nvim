@@ -14,10 +14,10 @@ do
     }
 end
 
-config = setmetatable({}, custom_cfg_table)
+local config = setmetatable({}, custom_cfg_table)
 
 function append_local_config(name, cfg)
-    _G.config[name] = setmetatable(cfg, custom_cfg_table)
+    config[name] = setmetatable(cfg, custom_cfg_table)
 end
 
 function delete_local_config()
