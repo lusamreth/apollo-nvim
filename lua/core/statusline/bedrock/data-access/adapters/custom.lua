@@ -11,6 +11,7 @@ local Mode = {}
 local root_map = {
     Normal = {
         ["n"] = "NORMAL",
+        -- ["n"] = "速い",
         ["niI"] = "NORMAL",
         ["niR"] = "NORMAL",
         ["niV"] = "NORMAL",
@@ -68,9 +69,6 @@ end
 
 local function request_mode(m)
     for group, e in pairs(root_map) do
-        -- if e[m] ~= nil then
-        --     return group
-        -- end
         for _, inner in pairs(e) do
             if m == inner then
                 return group

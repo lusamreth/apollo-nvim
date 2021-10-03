@@ -5,7 +5,8 @@ local function split_by_chunk(text, chunkSize)
     end
     return s
 end
-function show_line_diagnostics()
+
+local function show_line_diagnostics()
     -- TODO: replace all this with vim.diagnostic.show_position_diagnostics()
     local diagnostics = vim.lsp.diagnostic.get_line_diagnostics()
     local severity_highlight = {

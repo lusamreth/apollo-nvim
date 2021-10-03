@@ -15,7 +15,12 @@ function I.initstash()
 end
 
 StatusLine = {}
-function StatusLine:init(pres, pos)
+-- kind mean active or inactive, or shortlist_bar
+function StatusLine:init(pres, pos, o)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
     StatlusLineTree = {}
     -- now accept left right array
     for _, p in pairs(pos) do
@@ -33,7 +38,7 @@ function StatusLine:init(pres, pos)
 end
 
 function StatusLine:endhook(f)
-    self.endhook = f
+    self.endhook = f or nil
     return self
 end
 
@@ -44,7 +49,9 @@ function StatusLine:run()
             view(comp)
         end
     end
-    self.endhook()
+    if self.endhook then
+        self.endhook()
+    end
 end
 
 I.StatusLine = StatusLine

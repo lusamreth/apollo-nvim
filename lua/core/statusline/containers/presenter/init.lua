@@ -29,4 +29,3 @@ Impl.make_view_binder = function(pos)
 end
 
 return {PresenterPort, Impl}
--- return bind_to_view

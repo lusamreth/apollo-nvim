@@ -6,7 +6,7 @@ local function nerror(msg, level)
     error(msg, level)
 end
 
-SCRIPT_ROOT = HOMEROOT .. "/nvim-proto-2/lua/core/inspectors/"
+SCRIPT_ROOT = HOMEROOT .. "/nvim-proto-2/lua/system/inspectors/"
 local t, e = loadfile(SCRIPT_ROOT .. "type_checker.lua")()
 local check_type = t.check_type
 local parse_type = t.parse_type

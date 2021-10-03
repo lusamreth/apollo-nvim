@@ -1,4 +1,4 @@
-local cols1 = {
+local gruvbox = {
     orange = "#d65d0e",
     white = "#ffffff",
     cyan = "#008080",
@@ -9,13 +9,14 @@ local cols1 = {
     dark_yellow = "#b57614",
     green = "#98971a",
     light_purple = "#8f3f71",
-    lightgold = "#ebdbb2"
+    light_gold = "#ebdbb2",
+    gold = "#FFD700"
 }
 
-cols1["foreground"] = cols1["black"]
-cols1["background"] = cols1["lightgold"]
+gruvbox["foreground"] = gruvbox["black"]
+gruvbox["background"] = gruvbox["light_gold"]
 
-local cols2 = {
+local random = {
     bg = "#202328",
     fg = "#bbc2cf",
     yellow = "#ECBE7B",
@@ -29,4 +30,10 @@ local cols2 = {
     red = "#ec5f67"
 }
 
-return cols1
+random["foreground"] = random["black"]
+random["background"] = random["blue"]
+
+M.random = random
+M.gruvbox = gruvbox
+
+return M

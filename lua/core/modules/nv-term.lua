@@ -1,5 +1,6 @@
+DIR = "horizontal"
 local already_open = 0
-local panel_color = {"#3c3836", "#fbf1c7"}
+local panel_color = {"#4c3836", "#fbf1c7"}
 local function term_highlighting()
     vim.cmd(string.format("highlight DarkenedPanel guibg=%s guifg=%s", panel_color[1], panel_color[2]))
     vim.cmd("highlight DarkenedStatusline gui=NONE guibg=" .. panel_color[1])
@@ -18,20 +19,20 @@ require("toggleterm").setup(
             if term.direction == "horizontal" then
                 return 12
             elseif term.direction == "vertical" then
-                return vim.o.columns * 0.4
+                return vim.o.columns * 0.38
             end
         end,
         open_mapping = [[<c-\>]],
         hide_numbers = true, -- hide the number column in toggleterm buffers
-        shade_filetypes = {},
+        shade_filetypes = {"none", "fzf"},
         shade_terminals = true,
         shading_factor = "<number>", -- the degree by which to darken to terminal colour, default: 1 for dark backgrounds, 3 for light
         start_in_insert = true,
-        persist_size = true,
+        persist_size = false, -- keep size persistent even window change size
         --direction = 'vertical' | 'horizontal' | 'window' | 'float',
         close_on_exit = true, -- close the terminal window when the process exits
-        --direction = 'vertical',
-        direction = "horizontal",
+        -- direction = "vertical",
+        direction = DIR,
         shell = vim.o.shell, -- change the default shell
         -- This field is only relevant if direction is set to 'float'
         float_opts = {
@@ -72,15 +73,15 @@ function buildShTerm()
         {
             cmd = command,
             --cmd = "ls",
-            direction = "horizontal",
+            direction = DIR,
             dir = current_dir,
             hidden = false,
             on_open = function(term)
                 vim.cmd("startinsert!")
                 vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
             end,
-            on_close = function(term)
-                vim.cmd("Closing terminal")
+            on_close = function(_)
+                vim.cmd("echo Closing terminal")
             end
         }
     )
@@ -97,7 +98,21 @@ function SHCHECK()
 end
 
 require("utility")
-Nnoremap("<C-l>", "lua SHCHECK()", {silent = false})
+if FileType() == "sh" then
+    Nnoremap("<C-o>", "lua SHCHECK()", {silent = false})
+end
+
+function _G.set_terminal_keymaps()
+    local opts = {noremap = true}
+    vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
+    vim.api.nvim_buf_set_keymap(0, "t", "jk", [[<C-\><C-n>]], opts)
+    vim.api.nvim_buf_set_keymap(0, "t", "<C-h>", [[<C-\><C-n><C-W>h]], opts)
+    vim.api.nvim_buf_set_keymap(0, "t", "<C-j>", [[<C-\><C-n><C-W>j]], opts)
+    vim.api.nvim_buf_set_keymap(0, "t", "<C-k>", [[<C-\><C-n><C-W>k]], opts)
+    vim.api.nvim_buf_set_keymap(0, "t", "<C-l>", [[<C-\><C-n><C-W>l]], opts)
+end
+
+vim.cmd("autocmd! TermOpen term://* lua set_terminal_keymaps()")
 
 -- local save_hook = {
 -- 	{ "BufEnter,BufRead", "*sh*", "lua print('init bash savehook')" },

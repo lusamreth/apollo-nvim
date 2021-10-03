@@ -47,6 +47,11 @@ function Tnoremap(key, action, config)
     return BuildNore("x", key, action, config)
 end
 
+function Vnoremap(key, action, config)
+    return BuildNore("v", key, action, config)
+end
+
+-- normal
 function Nmap(key, action, config)
     return map("n", key, action, config)
 end
@@ -59,11 +64,11 @@ function Xmap(key, action, config)
     return map("x", key, action, config)
 end
 
-function Xmap(key, action, config)
+function Vmap(key, action, config)
     return map("v", key, action, config)
 end
 
--- allow lua to call local function
+-- allow lua to directly call local function
 Gbinder = {}
 Gbinder.bind = function(func)
     local caller = function()

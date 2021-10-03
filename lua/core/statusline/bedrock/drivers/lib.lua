@@ -91,17 +91,6 @@ H.uniq.get_id = function(a)
     return u:get_id(a)
 end
 
-local function get_key_set(tab)
-    local keyset = {}
-    local n = 0
-
-    for k, _ in pairs(tab) do
-        n = n + 1
-        keyset[n] = k
-    end
-    return keyset
-end
-
 H.uniq.get_key = function(tab)
     -- assert(tab)
     -- print("nex", next(tab), tab, #pt)
@@ -110,4 +99,12 @@ H.uniq.get_key = function(tab)
     -- return get_key_set(tab)[1]
 end
 
+H.uniq.get_key_set = function(tab)
+    local keyset = {}
+
+    for n, k in pairs(tab) do
+        keyset[n] = H.uniq.get_key(k)
+    end
+    return keyset
+end
 return H

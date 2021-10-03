@@ -21,8 +21,37 @@ vim.g.symbols_outline = {
 vim.g.indent_blankline_enabled = true
 vim.g.indentLine_fileTypeExclude = {"dashboard"}
 
+-- http://lua-users.org/wiki/FileInputOutput
+
+-- see if the file exists
+function file_exists(file)
+    local f = io.open(file, "rb")
+    if f then
+        f:close()
+    end
+    return f ~= nil
+end
+
+-- get all lines from a file, returns an empty
+-- list/table if the file does not exist
+function lines_from(file)
+    if not file_exists(file) then
+        return {}
+    end
+    lines = {}
+    for line in io.lines(file) do
+        lines[#lines + 1] = line
+    end
+    return lines
+end
+
+-- tests the functions above
+local file = "/home/lusamreth/diablo-head.txt"
+local lines = lines_from(file)
+
 require("utility.var")
-vim.g.dashboard_custom_header = CHADDOOM
+--vim.g.dashboard_custom_header = lines
+vim.g.dashboard_custom_header = PUFFYBOI
 
 vim.g.dashboard_custom_section = {
     a = {description = {"  Find File          "}, command = "Telescope find_files"},

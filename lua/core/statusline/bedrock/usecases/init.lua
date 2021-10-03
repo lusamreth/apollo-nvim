@@ -52,7 +52,7 @@ USECASE.renderer = function(A)
             make_text = {cols},
             build_make_corner = common,
             make_component_linker = {renderer},
-            make_pill_shape = {renderer}
+            make_pill_shape = common
         }
     )
 

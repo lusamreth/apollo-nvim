@@ -4,16 +4,10 @@ _G.STATUSLINE_ROOT = "/home/lusamreth/nvim-proto-2/lua/core/statusline/"
 _G.BEDROCK_ROOT = STATUSLINE_ROOT .. "bedrock/"
 _IMPORT.root = STATUSLINE_ROOT
 
-_G.make_import = function(root)
-    return function(mod)
-        return import(mod, root)
-    end
-end
-
 _G.import = function(mod, root)
     -- print("importing", mod)
     root = root or _IMPORT.root
-    local succ, res = pcall(split, mod, ".")
+    local succ, res = pcall(Splitstr, mod, ".")
     if succ == true then
         local full = ""
         -- print(#res, res[1], res[2])
@@ -33,4 +27,6 @@ _G.import = function(mod, root)
     return f()
 end
 
-local app = import("containers.init")
+-- if use the _G.import it will freeze !
+-- _G.import = make_import(STATUSLINE_ROOT)
+import("containers.init")

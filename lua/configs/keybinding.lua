@@ -12,8 +12,9 @@ Nnoremap(leader .. "h", 'lua require("telescope.builtin").help_tags()')
 Nnoremap("<C-q>", "qall!")
 Nnoremap(leader .. "l", "nohl")
 
-vim.cmd("xnoremap K :move '<-2<CR>gv-gv")
-vim.cmd("xnoremap J :move '>+1<CR>gv-gv")
+-- vim.cmd("xnoremap K :move '<-2<CR>gv-gv")
+-- vim.cmd("xnoremap J :move '>+1<CR>gv-gv")
+
 vim.cmd("tnoremap <Esc> <C-\\><C-n>")
 
 Nnoremap("<Up>", "<Nop>")
@@ -30,10 +31,13 @@ Nnoremap("<M-Up>", ":resize -2")
 Nnoremap("<M-Down>", ":resize +2")
 Nnoremap("<M-Left>", ":vertical resize -2")
 Nnoremap("<M-Right>", ":vertical resize +2")
-Nnoremap("<M-q>", "lua require('core.scripts.bufdel').delete_buffer('%')<CR>")
+Nnoremap("<M-q>", "lua import('system.scripts.bufdel').delete_buffer('%')<CR>")
 
+Nnoremap("a", ":CodeActionMenu")
 Nnoremap("<C-S-q>", ":wqa!")
--- Nnoremap("tk", ":Telescope projects")
+
+Xnoremap("J", "lua import('system.scripts.move').MoveBlock(1)")
+Xnoremap("K", "lua import('system.scripts.move').MoveBlock(-1)")
 vim.api.nvim_set_keymap("n", "gk", "<cmd>Telescope projects<cr>", {})
 local win_navs = {
     {"<C-h>", "<C-w>h"},

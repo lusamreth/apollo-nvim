@@ -1,20 +1,22 @@
+Comp = {}
 local uc = import("usecases.init", BEDROCK_ROOT)
 local h = import("containers.helper")
 local InContainer, stamp, InBedrock = h.InContainer, h.stamp, h.InBedrock
 
-local rc = InContainer("rc")
+local rc = import("rc")
 local colorscheme = rc.colorscheme
 
 local ui_lib = InContainer("ui.feline")
 local make_linker_binder = InContainer("components.factory.link-highlight")
 
 local init = InContainer("components.initialization")
-local modehl = InContainer("components.modehl")
+local modehl = InContainer("components.modehl").config(colorscheme, rc["mode"])
 local a = InContainer("components.filesizehl").init(colorscheme, ui_lib)
 
 local empty_size_config = a.filesizehl
 
 local render_driver = InBedrock("drivers.renderer")
+local bd_helper = InBedrock("drivers.lib")
 local repo = InBedrock("data-access.init")
 
 local rend =
@@ -25,66 +27,94 @@ local rend =
     }
 )
 
-local ctl = InContainer("presenter.init")
-
-local presenter = ctl[2]
-
 local bgstash = init.initstash()
 
--- local dynhl = ui_lib.capabilities["DynHL"]:init()
-local empty_file = empty_size_config(bgstash.init("filesize_bg"))
+-- basic cache
+Cache = {}
+local function lookup(key, func, data)
+    if Cache[key] == nil then
+        Cache[key] = {
+            data = nil,
+            computed = nil,
+            already_computed = {}
+        }
+    end
+    local tar = Cache[key]
+    if tar["data"] ~= data then
+        local inner_cache = tar.already_computed[data]
+        tar["data"] = data
 
-presenter.UILib = ui_lib
-MData = nil
+        -- signifcantly reduce function call ~
+        if inner_cache ~= nil then
+            tar["computed"] = func(data)
+        else
+            tar["computed"] = func(data)
+            tar.already_computed[data] = tar["computed"]
+        end
+
+    -- for debug
+    end
+    return tar["computed"]
+end
+
+local gl_emptyfile = function(fn)
+    return #fn == 5
+end
+
+local empty_file = empty_size_config(bgstash.init("filesize_bg"))
+local interceptors = {
+    filesize = function(data)
+        lookup("filesize", empty_file.get, data)
+        local res = string.format("%s%s", data, " ")
+        return res
+    end,
+    vcs = function(branch)
+        if branch == "" then
+            return string.format("NoRepo %s", "")
+        else
+            return string.format("%s %s", "", branch)
+        end
+    end,
+    filename = function(fn)
+        if gl_emptyfile(fn) then
+            return " "
+        end
+        return AllTrim(fn) .. " "
+    end,
+    page_position = function(data)
+        local icon = ""
+        local t = AllTrim(data)
+        if t == "Top" then
+            icon = ""
+        elseif t == "Bot" then
+            icon = ""
+        end
+        local unit = "%%"
+        return string.format(" %s%s %s", unit, data, icon)
+    end,
+    line_position = function(data)
+        return string.format(" %s%s", "線 ", AllTrim(data))
+    end,
+    vimode = function(data)
+        local icon = lookup("icon_mode", modehl.getmodeicon, data)
+        return string.format(" %s %s ", icon, data)
+    end
+}
+
+-- local dynhl = ui_lib.capabilities["DynHL"]:init()
 local ui =
     uc.provider(
     {
         colorscheme = colorscheme,
         repository = repo,
-        -- Important : formatter could be use if the data-access does not rely on
+        -- Important : formatter could be used if the data-access does not rely on
         -- any ui providers
-        formatters = {
-            filesize = function(data)
-                empty_file.get(data)
-                local res = string.format("%s%s", data, " ")
-                return res
-            end,
-            vcs = function(branch)
-                if branch == "" then
-                    return string.format("NoRepo %s", "")
-                else
-                    return string.format("%s %s", "", branch)
-                end
-            end,
-            filename = function(fn)
-                if #fn == 2 then
-                    return "Empty file"
-                end
-                return fn
-            end,
-            page_position = function(data)
-                local unit = "%%"
-                return string.format("%s%s %s", unit, data, " ")
-            end,
-            line_position = function(data)
-                return string.format("%s %s", "", data)
-            end,
-            vimode = function(data)
-                if data ~= MData then
-                    MData = data
-                end
-                return string.format("%s %s", "m: ", data)
-            end
-        }
+        -- those functions will be called frequently so be cautious
+        formatters = interceptors
     }
 )
 
-local gls = init.StatusLine:init(presenter, {"left", "right", "mid"})
--- left_view : lv
--- right_view : rv
--- mid_view : mv
-
-local git =
+Vcs =
     ui.vcs_icon(
     {
         fg = "white",
@@ -92,7 +122,7 @@ local git =
     }
 )
 
-local filename =
+Filename =
     ui.filename(
     {
         fg = "white",
@@ -100,15 +130,15 @@ local filename =
     }
 )
 
-local line =
+LinePos =
     ui.line_position(
     {
         fg = "white",
-        bg = "green"
+        bg = "nord"
     }
 )
 
-local page_pos =
+PagePos =
     ui.page_position(
     {
         fg = "white",
@@ -116,7 +146,7 @@ local page_pos =
     }
 )
 
-local filesize =
+Filesize =
     ui.filesize(
     {
         fg = "white",
@@ -126,40 +156,37 @@ local filesize =
 
 -- OS WITH HOLO EFFECT
 local ani = InContainer("components.factory.animations").init(ui_lib, colorscheme)
+
 local holo = {
-    fg = ani.holo_fade("fg"),
-    bg = ani.holo_fade("bg")
+    fgl = ani.holo_fade("fg", "black"),
+    bg = ani.holo_fade("bg", "gold"),
+    fgr = ani.holo_fade("fg", "green")
 }
 
-local unix = rend.pill_shape(rend.text(" " .. rc.os, {fg = "black", bg = "white"}), "ROUND", {"black"})
+function Holo_fade(comp, bindfn)
+    bindfn(comp, holo["bg"])
+    return comp
+end
 
-local function l(c, bindfn)
+-- pill shape with holo effects
+function HoloPillshape(c, bindfn)
     local ip = c[LINKED] or c
     for i, comp in pairs(ip) do
+        local hlk = {"fgl", "bg", "fgl"}
         local cp = stamp(comp)
         if c[LINKED] == nil then
             cp = comp
         end
         -- core got bg highlighting
-        if i == 2 then
-            bindfn(cp, holo["bg"])
-        else
-            bindfn(cp, holo["fg"])
-        end
+        bindfn(cp, holo[hlk[i]])
     end
+    return c
 end
 
-l(unix, ui_lib.bind)
---ui_lib.bind(unix, hlrange)
--- change highlighting and icon
--- dyn_component()
-local mode =
-    ui.vimode_indicator(
-    {
-        fg = "white",
-        bg = "red"
-    }
-)
+-- pill shape render will depend on the name of component
+OsText = function()
+    return rend.text(" " .. rc.os, {fg = "black", bg = "white"})
+end
 
 local function link_fn(comp, dir, colorbg)
     _ = nil
@@ -168,59 +195,95 @@ local function link_fn(comp, dir, colorbg)
         return {bg = colorscheme["black"]}
     end
 
-    local x = rend.bullet_shape(comp, dir, "ROUND", colorbg)
+    local x = rend.bullet_shape(comp, dir, "FLAME", colorbg)
 
     return x
 end
 
---- bind
-local diags = ui.diagnostic("black", rc.diagnostic)
+OsPillShape = rend.pill_shape(OsText(), "FLAME", {"green"})
+BsdText = rend.text("BSD    ", {bg = "red", fg = "gold"})
+MonsterText = rend.text("    Neovim", {bg = "nord", fg = "white"})
+OsLink = rend.component_linker({OsText(), BsdText}, 1, "right", link_fn)
 
--- l(diags, ui_lib.bind)
+function Pad(num)
+    return rend.padding(num, "black")
+end
 
--- COMPONENTS LOCATION GOES HERE!
--- pls fix mirroring issue !
--- fixed : by moving left_link code to the bottom and right_link to top
+BSDSymbol = rend.pill_shape(MonsterText, "FLAME", {"black"})
 
--- local pls = rend.pill_shape(mode, "ROUND", {n["light_purple"], n["background"]})
-
--- -- fixed this please
-
--- ## RIGHTLINK CONFIGURATION !!!
-local right_link = rend.component_linker({mode, page_pos, line}, 1, "left", link_fn)
-
-local linkerbind = make_linker_binder(2, ui_lib.bind)
-
-bgstash.setbg("modehl_bg", colorscheme["light_purple"])
-linkerbind(right_link, 4, modehl.config(ui_lib, colorscheme, bgstash.init("modehl_bg")))
-
-gls.right({unpack(right_link)})
--- ## RIGHTLINK END
-
--- ## LEFTLINK CONFIGURATION !!!
--- IMPORTANT ! : must put right_link first to avoid bug
-local left_link = rend.component_linker({filename, filesize, git}, 1, "right", link_fn)
-
-gls.left({unpack(left_link)})
-gls.left(unix)
-gls.left(
+Mode =
+    ui.vimode_indicator(
     {
-        rend.text(
-            " ",
-            {
-                bg = "black",
-                fg = "white"
-            }
-        )
+        fg = "white",
+        bg = "red"
     }
 )
 
-gls.left(diags)
+-- COMPONENTS LOCATION GOES HERE!
+-- mirroring issue fixed!
+-- fixed : by moving left_link code to the bottom and right_link to top
 
-Reverse(left_link)
-bgstash.setbg("filesize_bg", "black")
-linkerbind(left_link, 3, empty_file.config, "left")
-Reverse(left_link)
+-- allow mode to change color
+RL = {Mode, PagePos, LinePos}
+LL = {Filename, Vcs, Filesize}
 
--- ## LEFTLINK END
-gls:endhook(ui_lib.init):run()
+-- components that are linked
+function MakeCommonRL(ub)
+    local linkbinder = make_linker_binder(2, ub.bind)
+    CommonRightLink = rend.component_linker(RL, 1, "left", link_fn)
+    bgstash.setbg("modehl_bg", colorscheme["light_purple"])
+
+    return linkbinder(CommonRightLink, 4, modehl.dynhl(ub, bgstash.init("modehl_bg")), "right")
+end
+
+function MakeCommonLL(ub)
+    local linkbinder = make_linker_binder(2, ub.bind)
+
+    CommonLeftLink = rend.component_linker(LL, 1, "right", link_fn)
+
+    bgstash.setbg("filesize_bg", "darkblue")
+    linkbinder(CommonLeftLink, 3, empty_file.config, "left")
+    return CommonLeftLink
+end
+
+-- this function will modfied diag, last left and right element
+-- left and right must the be the last component
+local function set_statusline_bg(left, right, bg)
+    local p = {left, right}
+    local mut = bd_helper.uniq.get_key_set(p)
+    for i, name in pairs(mut) do
+        p[i][name]["highlight"]["bg"] = bg
+    end
+end
+
+local kep = {
+    k1 = {
+        highlight = {
+            bg = "red",
+            fg = "green"
+        }
+    }
+}
+local kep2 = {
+    k2 = {
+        providers = "brbb",
+        highlight = {
+            bg = "red",
+            fg = "green"
+        }
+    }
+}
+
+set_statusline_bg(kep, kep2, "blue")
+assert(kep["k1"]["highlight"]["bg"] == "blue")
+assert(kep2["k2"]["highlight"]["bg"] == "blue")
+
+Diagnostics = ui.diagnostic("black", rc.diagnostic)
+SpacingText =
+    rend.text(
+    " ",
+    {
+        bg = "black",
+        fg = "white"
+    }
+)

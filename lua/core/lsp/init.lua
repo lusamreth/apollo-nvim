@@ -198,18 +198,17 @@ local show_func_sig = function()
     }
     require("lsp_signature").on_attach(sig_cfg)
 end
-
+lspImport("diag-border")
 local function mount_tools()
-    local tprefix = "tools."
     local modules = {
-        "autocomplete",
+        "nv-cmp",
         "nv-lightbulb",
         "nv-trouble",
         "nv-formatter"
     }
 
     for _, mod in pairs(modules) do
-        lspImport(tprefix .. mod)
+        access_module(mod)
     end
 
     -- show function signature when typing
@@ -246,6 +245,7 @@ local function attach_builder(t)
 end
 
 local function on_common_attach(verb)
+    verb = true
     if verb then
         print("debugging on!")
         print(debug.getinfo(1))

@@ -14,10 +14,10 @@ local packages = {
     --{"glepnir/galaxyline.nvim", {branch = "main"}},
     {
         "nvim-treesitter/nvim-treesitter",
-        branch = "0.5-compat",
-        disable = true
+        branch = "0.5-compat"
     },
     "elzr/vim-json",
+    "lewis6991/impatient.nvim",
     "tjdevries/nlua.nvim",
     --Icons
     "kyazdani42/nvim-web-devicons",
@@ -35,7 +35,7 @@ local packages = {
     "folke/which-key.nvim",
     "terrortylor/nvim-comment",
     "ray-x/lsp_signature.nvim",
-    -- "glepnir/dashboard-nvim",
+    "glepnir/dashboard-nvim",
     "windwp/nvim-ts-autotag",
     "akinsho/nvim-toggleterm.lua",
     "folke/trouble.nvim",
@@ -45,7 +45,14 @@ local packages = {
     "nvim-telescope/telescope.nvim",
     "nvim-lua/popup.nvim",
     "nvim-lua/plenary.nvim",
-    "mhinz/vim-crates",
+    {
+        "Saecki/crates.nvim",
+        event = {"BufRead Cargo.toml"},
+        requires = {{"nvim-lua/plenary.nvim"}},
+        config = function()
+            require("crates").setup()
+        end
+    },
     -- buffer manager plugin
     "akinsho/nvim-bufferline.lua",
     {
@@ -66,7 +73,10 @@ local packages = {
     "ahmedkhalf/project.nvim",
     "hoob3rt/lualine.nvim",
     "lewis6991/gitsigns.nvim",
-    "famiu/feline.nvim"
+    "famiu/feline.nvim",
+    "nvim-telescope/telescope-frecency.nvim",
+    "tami5/sqlite.lua",
+    "weilbith/nvim-code-action-menu"
     -- "windwp/windline.nvim"
 }
 

@@ -1,5 +1,8 @@
-local present, cmp = pcall(require, "cmp")
+-- config doc height and width
+DOC_HEIGHT = 40
+DOC_WIDTH = DOC_HEIGHT * 2
 
+local present, cmp = pcall(require, "cmp")
 if not present then
     return
 end
@@ -7,10 +10,35 @@ end
 vim.opt.completeopt = "menuone,noselect"
 
 local luasnip = require "luasnip"
-luasnip.loaders.from_vscode.lazy_load()
-
 local types = require("cmp.types")
-local lspkind = require("lspkind")
+
+local util_types = require("luasnip.util.types")
+vim.api.nvim_command("hi LuasnipChoiceNodePassive cterm=italic")
+require("luasnip.loaders.from_vscode").lazy_load()
+
+luasnip.config.setup(
+    {
+        ext_opts = {
+            [util_types.insertNode] = {
+                passive = {
+                    hl_group = "GruvboxRed"
+                }
+            },
+            [util_types.choiceNode] = {
+                active = {
+                    virt_text = {{"choiceNode", "GruvboxOrange"}}
+                }
+            },
+            [util_types.textNode] = {
+                snippet_passive = {
+                    hl_group = "GruvboxGreen"
+                }
+            }
+        },
+        ext_base_prio = 200,
+        ext_prio_increase = 3
+    }
+)
 
 local check_back_space = function()
     local col = vim.fn.col(".") - 1
@@ -51,46 +79,36 @@ local keymap = {
     ["<C-f>"] = cmp.mapping.scroll_docs(4),
     ["<C-Space>"] = cmp.mapping.complete(),
     ["<Tab>"] = super_tab,
-    -- ["<Tab>"] = function(fallback)
-    --     if vim.fn.pumvisible() == 1 then
-    --         vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-n>", true, true, true), "n")
-    --     elseif require("luasnip").expand_or_jumpable() then
-    --         vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-expand-or-jump", true, true, true), "")
-    --     else
-    --         fallback()
-    --     end
-    -- end,
     ["<S-Tab>"] = reverse_tab
 }
 
--- setting up lspkind
-require("lspkind").init(
-    {
-        with_text = true
-    }
-)
-
 local symbols_map = {
-    Text = "",
-    Method = "ƒ",
-    Function = "",
+    Text = " ",
+    Method = "",
+    Function = "",
+    -- Constructor = "",
     Constructor = "",
-    Variable = "",
-    Class = "",
-    Interface = "ﰮ",
-    Module = "",
-    Property = "",
-    Unit = "",
+    Field = "ﴲ ",
+    Variable = "",
+    Class = "ﴯ",
+    Interface = "",
+    Module = " ",
+    Property = "",
+    Unit = "塞",
     Value = "",
-    Enum = "了",
-    Keyword = "",
-    Snippet = "﬌",
-    Color = "",
-    File = "",
-    Folder = "",
+    Enum = "",
+    Keyword = "",
+    Snippet = "  ",
+    Color = "",
+    File = "",
+    Reference = "",
+    Folder = "",
     EnumMember = "",
-    Constant = "",
-    Struct = ""
+    Constant = "ﲀ",
+    Struct = "ﳤ",
+    Event = "",
+    Operator = "",
+    TypeParameter = " "
 }
 
 for kind, symbol in pairs(symbols_map) do
@@ -107,21 +125,18 @@ extend_symbol(symbols_map)
 
 local format = {
     format = function(entry, vim_item)
-        print("FORMATTING")
-        vim_item.kind = lspkind.presets.default[vim_item.kind]
-
+        vim_item.kind = string.format("%s %s", symbols_map[vim_item.kind], vim_item.kind)
         vim_item.menu =
             ({
             nvim_lsp = "[LSP]",
             nvim_lua = "[Lua]",
-            buffer = "[BUF]"
+            buffer = "[BUF]",
+            luasnip = "[SNIP]"
         })[entry.source.name]
+
         return vim_item
     end
 }
-
-DOC_HEIGHT = 40
-DOC_WIDTH = DOC_HEIGHT * 2
 
 cmp.setup(
     {

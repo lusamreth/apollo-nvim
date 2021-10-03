@@ -1,5 +1,5 @@
 TERMINAL = vim.fn.expand("$TERMINAL")
-local opt = require("core.scripts.meta-data")
+local opt = require("system.scripts.meta-data")
 --print("bdd",opt.bruh)
 -- for god sake for why meta-acessory not working
 -- Need to manually build custom one! Well that's suck!
@@ -84,7 +84,7 @@ local function abbrv(list)
 end
 
 abbrv(Abbvr_list)
-local util = require("utility")
+local util = import("/utility.init", LUAROOT)
 
 Defaulti3paths = {
     "~/.config/i3/config",
@@ -108,7 +108,7 @@ local ConfGroup = {
     {"BufEnter,BufNewFile", "*.yml", "setlocal ts=2 sts=2 sw=2 expandtab"}
 }
 
-local i3detect = util.table_merge(0, ConfGroup, makei3au(Defaulti3paths))
+local i3detect = Utils.table_merge(0, ConfGroup, makei3au(Defaulti3paths))
 -- test pass!
 -- test:local bb = util.table_merge(0,{"ok","bonm"},{"duh","bana"},{"hd"},{{"h","s"},{"vvvl","ddd",{"sus"}}})
 Create_augroup(i3detect, "Confdetection")

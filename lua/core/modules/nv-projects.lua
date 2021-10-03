@@ -37,5 +37,6 @@ local pj_cfg = {
 }
 
 local project = require "project_nvim"
-project.setup(pj_cfg)
-require("telescope").load_extension("projects")
+-- please adjust this settings
+-- project.setup(pj_cfg)
+-- require("telescope").load_extension("projects")

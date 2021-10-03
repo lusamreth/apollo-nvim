@@ -7,7 +7,7 @@ function firstToUpper(str)
     return (str:gsub("^%l", string.upper))
 end
 
-function split(str, delim)
+function Splitstr(str, delim)
     local target = string.byte(delim)
     local i = 0
     local delim_local = {}
@@ -19,7 +19,6 @@ function split(str, delim)
         end
     end
     local prev = 1
-    -- for x,val in pairs(delim_local) do
     for u = 0, #delim_local do
         local val = delim_local[u]
         delim_local[u] = string.sub(str, prev, val - 1)
@@ -38,7 +37,7 @@ function Min(a)
     return vim.fn.min(a)
 end
 
-find_max = function(nums)
+FindMax = function(nums)
     local max = 0
     for _, num in pairs(nums) do
         if max < num then
@@ -71,25 +70,10 @@ function print_r(arr, indentLevel)
     return str
 end
 
-utils = {}
+Utils = {}
 
 -- galaxyline module!
-utils.galaxyline = {}
 -- take a string form : "sign:color"
-local function make_stat_conf(dict)
-    local key = {"error", "warn", "hint", "info"}
-    local t = {}
-    -- O(n^2) :(
-    --
-    for x, val in pairs(dict) do
-        local splt = split(val, ":")
-        print_r(splt)
-        t[key[x]] = {sign = splt[0], color = splt[1]}
-    end
-    return t
-end
-
--- [[
 -- semantic : {
 --   config[name="error?"] = {
 --      sign = "",
@@ -283,5 +267,6 @@ function Reverse(t)
 end
 
 -- utils.galaxyline.default_diagnostic = default
-utils.table_merge = table_merge
-return utils
+Utils.table_merge = table_merge
+
+return Utils

@@ -18,8 +18,19 @@ CORNER = {
         left = ""
     },
     ARROW = {
-        right = "",
-        left = ""
+        right = "",
+        left = ""
+    },
+    FLAME = {
+        right = " ",
+        left = " "
+        -- left = ""
+        -- left = ""
+        -- left = ""
+    },
+    TRIG = {
+        right = "",
+        left = ""
     },
     -- HEXARROW = {
     --     right = "",

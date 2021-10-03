@@ -87,24 +87,27 @@ local function check_default_provider(provider)
     end
 end
 
--- 1 : left, 2 : mid , 3 : right
-FEL.draw = function(section, pos)
-    local fpos
+-- kind mean active or inactive bar
+function FEL.build_drawer(kind)
+    -- 1 : left, 2 : mid , 3 : right
+    FEL.draw = function(section, pos)
+        local fpos
 
-    fpos = pos
-    if type(pos) == "string" then
-        fpos = translate(pos)
-    end
+        fpos = pos
+        if type(pos) == "string" then
+            fpos = translate(pos)
+        end
 
-    local i = 1
-    local function set(s)
-        -- update the position
-        table.insert(feline_components["active"][fpos], s)
-        --feline_components["active"][fpos][i] = s
-    end
-    for _, inner in pairs(section) do
-        set(inner)
-        i = i + 1
+        local i = 1
+        local function set(s)
+            -- update the position
+            table.insert(feline_components[kind][fpos], s)
+            --feline_components["active"][fpos][i] = s
+        end
+        for _, inner in pairs(section) do
+            set(inner)
+            i = i + 1
+        end
     end
 end
 

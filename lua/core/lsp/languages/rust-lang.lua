@@ -19,6 +19,7 @@ local nvim_lsp = require("lspconfig")
 local root_pattern = require("lspconfig").util.root_pattern
 local ra_path = LSP_REPO .. "/rust/"
 
+local lsp = access_core("lsp.init")
 -- local capabilities = vim.lsp.protocol.make_client_capabilities()
 -- capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 -- Enable rust_analyzer
@@ -28,7 +29,7 @@ nvim_lsp.rust.setup(
         -- capabilities = capabilities,
         filetypes = {"rust"},
         root_dir = root_pattern("Cargo.toml", "rust-project.json"),
-        on_attach = require("lsp").on_common_attach(),
+        on_attach = lsp.on_common_attach(),
         settings = {
             ["rust-analyzer"] = {
                 ["checkOnSave.enable"] = false

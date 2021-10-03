@@ -65,8 +65,10 @@ RENDER_USECASE.make_padding = function(render, colorscheme)
         SCHEMA.check_color(col, SCHEMA.make_colorscheme(colorscheme))
         local p = render.create_padding(spaces)
         local pid = RENDER_USECASE.uniq.get_id("padding")
-        -- local p = "  "
-        return nest(pid, SCHEMA.make_component(p, col))
+        if not SCHEMA.is_hex(col) then
+            col = colorscheme[col]
+        end
+        return nest(pid, SCHEMA.make_component(p, {bg = col}))
     end
 end
 
@@ -163,8 +165,8 @@ local function unest_iter(nested_comps)
 end
 
 RENDER_USECASE.make_component_linker = function(render)
-    local linked = {}
     return function(comps, spacing, dir, link_fn)
+        local linked = {}
         -- must respect spec of linker
         link_fn = link_fn_interface.build({link_fn = link_fn}).link_fn
         local s = spacing or 2
@@ -215,7 +217,7 @@ RENDER_USECASE.make_component_linker = function(render)
     end
 end
 
-RENDER_USECASE.make_pill_shape = function(render)
+RENDER_USECASE.make_pill_shape = function(render, colorscheme)
     local corn_id = function()
         return RENDER_USECASE.uniq.get_id("pill_shape_corner")
     end
@@ -230,6 +232,9 @@ RENDER_USECASE.make_pill_shape = function(render)
         local corn_hls = {}
 
         for i, cbg in pairs(corner_bg) do
+            if not SCHEMA.is_hex(cbg) then
+                cbg = colorscheme[cbg]
+            end
             local corn_hl = {}
             corn_hl["foreground"] = comp_hl.background
             corn_hl["background"] = cbg

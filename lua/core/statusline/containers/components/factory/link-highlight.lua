@@ -35,6 +35,15 @@ local function make_c_link_binder(each_len, bindfn)
     -- array represent a range of comps
     return function(linked, pos, config, dir)
         dir = dir or "right"
+        -- algorithm only work with right dir
+        -- need to reverse
+        local function rev()
+            if dir == "left" then
+                Reverse(linked)
+            end
+        end
+
+        rev()
         local pad = config["padding"]
         local main = config["main"]
         local preserver = config["preserve"] or false
@@ -68,6 +77,9 @@ local function make_c_link_binder(each_len, bindfn)
                 bindfn(rl, main)
             end
         end
+        rev()
+        -- turn back to normal
+        return linked
     end
 end
 
