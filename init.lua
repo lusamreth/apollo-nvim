@@ -35,12 +35,11 @@ _G.LUAROOT = HOMEROOT .. "/nvim-proto-2/lua"
 _G.import = function(mod, root, use_require)
     -- use_require = true
     if use_require then
-        local s = Splitstr(root, "/")
-        print("+===>", s[1], s[#s - 1])
         return require(mod)
     end
     -- print("importing", mod)
     root = root or LUAROOT .. "/"
+    -- bug cannot use vim.split
     local succ, res = pcall(Splitstr, mod, ".")
 
     if succ == true then
@@ -84,8 +83,19 @@ end
 function _G.access_system(mod)
     return import("system." .. mod)
 end
-
 require "nvim-treesitter.configs".setup {
+    highlight = {
+        enable = true,
+        custom_captures = {
+            -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
+            ["foo.bar"] = "Identifier"
+        },
+        -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+        -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+        -- Using this option may slow down your editor, and you may see some duplicate highlights.
+        -- Instead of true it can also be a list of languages
+        additional_vim_regex_highlighting = false
+    },
     query_linter = {
         enable = true,
         use_virtual_text = true,
@@ -93,7 +103,10 @@ require "nvim-treesitter.configs".setup {
     },
     rainbow = {
         enable = true,
-        extended_mode = true -- Highlight also non-parentheses delimiters, boolean or table: lang -> boolean
+        extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+        max_file_lines = nil -- Do not enable for files with more than n lines, int
+        -- colors = {}, -- table of hex strings
+        -- termcolors = {} -- table of colour name strings
     }
 }
 
@@ -111,7 +124,6 @@ function Reload()
     print("Reloaded!")
     vim.cmd("source %")
 end
-
 vim.api.nvim_set_keymap("n", "<M-r>", "<cmd>lua Reload()<CR>", {noremap = true, silent = true})
 
 -- start importing modules(plugin configs)
@@ -151,5 +163,8 @@ require("nvim_comment").setup(
         operator_mapping = "gc"
     }
 )
+
+function p()
+end
 require("nvim-web-devicons").setup()
 vim.cmd("syntax on")

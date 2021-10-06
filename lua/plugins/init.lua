@@ -29,6 +29,7 @@ local packages = {
     "hrsh7th/nvim-compe",
     "norcalli/nvim-colorizer.lua",
     "onsails/lspkind-nvim",
+    "lusamreth/gl-providers.nvim",
     -- search dependency
     "kevinhwang91/nvim-hlslens",
     "simrat39/symbols-outline.nvim",
@@ -41,7 +42,10 @@ local packages = {
     "folke/trouble.nvim",
     "cohama/lexima.vim",
     "p00f/nvim-ts-rainbow",
-    "kabouzeid/nvim-lspinstall",
+    {
+        "kabouzeid/nvim-lspinstall",
+        disable = false
+    },
     "nvim-telescope/telescope.nvim",
     "nvim-lua/popup.nvim",
     "nvim-lua/plenary.nvim",
@@ -51,8 +55,11 @@ local packages = {
         requires = {{"nvim-lua/plenary.nvim"}},
         config = function()
             require("crates").setup()
+            print("setting up crates")
+            require("cmp").setup.buffer {sources = {{name = "crates"}}}
         end
     },
+    "williamboman/nvim-lsp-installer",
     -- buffer manager plugin
     "akinsho/nvim-bufferline.lua",
     {
@@ -76,7 +83,8 @@ local packages = {
     "famiu/feline.nvim",
     "nvim-telescope/telescope-frecency.nvim",
     "tami5/sqlite.lua",
-    "weilbith/nvim-code-action-menu"
+    "weilbith/nvim-code-action-menu",
+    "folke/lsp-colors.nvim"
     -- "windwp/windline.nvim"
 }
 

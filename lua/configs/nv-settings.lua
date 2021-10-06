@@ -142,4 +142,4 @@ vim.cmd("set noswapfile")
 -- set augroup configuration
 
 vim.cmd("colorscheme gruvbox-material")
-vim.cmd("set background=light") --or light if you want light mode
+vim.cmd("set background=dark") --or light if you want light mode

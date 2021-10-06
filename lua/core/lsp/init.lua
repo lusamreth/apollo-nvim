@@ -142,7 +142,7 @@ local doc_capabilities = {
     publishDiagnostics = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics,
         {
-            virtual_text = false,
+            virtual_text = true,
             underline = true,
             signs = true,
             update_in_insert = false
@@ -193,13 +193,22 @@ local show_func_sig = function()
         use_lspsaga = false, -- set to true if you want to use lspsaga popup
         handler_opts = {
             border = "single" -- double, single, shadow, none
-        }
-        --decorator = {"`", "`"}  -- or decorator = {"***", "***"}  decorator = {"**", "**"} see markdown help
+        },
+        decorator = {"`", "`"} -- or decorator = {"***", "***"}  decorator = {"**", "**"} see markdown help
     }
     require("lsp_signature").on_attach(sig_cfg)
 end
+
 lspImport("diag-border")
 local function mount_tools()
+    require("lsp-colors").setup(
+        {
+            Error = "#db4b4b",
+            Warning = "#e0af68",
+            Information = "#0db9d7",
+            Hint = "#10B981"
+        }
+    )
     local modules = {
         "nv-cmp",
         "nv-lightbulb",

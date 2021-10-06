@@ -244,7 +244,7 @@ local tree_config = {
     }
 }
 
-import("utility.keybinds")
+import("utility.binding")
 local function process_nv_tree(cfg)
     local treecfg = {}
     local tree_k = function(m)

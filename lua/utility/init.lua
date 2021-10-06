@@ -7,6 +7,28 @@ function firstToUpper(str)
     return (str:gsub("^%l", string.upper))
 end
 
+function IsUpperCase(ch)
+    local charcode = string.byte(ch)
+    return charcode >= 65 and charcode <= 90
+end
+-- return table
+function UpperCasePos(s, iterstop)
+    local u, count = 1, 1
+    local res = {}
+    for c in s:gmatch "." do
+        if IsUpperCase(c) then
+            res[count] = u
+            count = count + 1
+            if iterstop == u then
+                return res
+            end
+        end
+        u = u + 1
+    end
+
+    return res
+end
+
 function Splitstr(str, delim)
     local target = string.byte(delim)
     local i = 0
@@ -266,6 +288,9 @@ function Reverse(t)
     return t
 end
 
+Create_command = function(name, func)
+    vim.cmd("command! -nargs=* " .. name .. " lua " .. func)
+end
 -- utils.galaxyline.default_diagnostic = default
 Utils.table_merge = table_merge
 

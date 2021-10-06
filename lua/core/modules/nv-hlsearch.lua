@@ -1,7 +1,7 @@
-require("utility.keybinds")
+require("utility.binding")
 -- args :-n = go forward the highlight letter
 --       -N = go backward the highlight letter
-function toggle_search(mode)
+local function toggle_search(mode)
     local hls = require("hlslens")
     local command = string.format("execute('normal! ' . v:count1 . '%s')", mode)
     vim.cmd(command)

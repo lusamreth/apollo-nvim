@@ -1,4 +1,4 @@
-require("utility.keybinds")
+require("utility.binding")
 
 Imap("<C-@>", "<C-Space>")
 Nmap("<C-s>", ":w")
@@ -33,7 +33,7 @@ Nnoremap("<M-Left>", ":vertical resize -2")
 Nnoremap("<M-Right>", ":vertical resize +2")
 Nnoremap("<M-q>", "lua import('system.scripts.bufdel').delete_buffer('%')<CR>")
 
-Nnoremap("a", ":CodeActionMenu")
+Nnoremap("<C-space>", ":CodeActionMenu")
 Nnoremap("<C-S-q>", ":wqa!")
 
 Xnoremap("J", "lua import('system.scripts.move').MoveBlock(1)")
