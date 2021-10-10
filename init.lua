@@ -23,7 +23,7 @@
 require("impatient")
 require("plugins")
 
-vim.g.python3_host_prog = "usr/bin/python3.9"
+vim.g.python3_host_prog = "/usr/bin/python3.9"
 vim.g.python_host_prog = "/usr/bin/python2.7"
 
 -- this custom loader must be loaded first before the system
@@ -134,10 +134,10 @@ access_module("nv-whichkey")
 access_module("nv-term")
 access_module("nv-bufferline")
 access_module("nv-tree")
-
-require("rust-tools").setup({})
+-- does_not_require lsp to be mounted
+access_module("nv-formatter")
+-- access_module("nv-coq3p")
 access_core("lsp.init")
-
 require("configs.nv-settings")
 require("configs.keybinding")
 
@@ -164,7 +164,6 @@ require("nvim_comment").setup(
     }
 )
 
-function p()
-end
 require("nvim-web-devicons").setup()
 vim.cmd("syntax on")
+-- vim.fn.Constructor

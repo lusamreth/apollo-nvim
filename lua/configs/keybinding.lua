@@ -35,10 +35,10 @@ Nnoremap("<M-q>", "lua import('system.scripts.bufdel').delete_buffer('%')<CR>")
 
 Nnoremap("<C-space>", ":CodeActionMenu")
 Nnoremap("<C-S-q>", ":wqa!")
-
 Xnoremap("J", "lua import('system.scripts.move').MoveBlock(1)")
 Xnoremap("K", "lua import('system.scripts.move').MoveBlock(-1)")
 vim.api.nvim_set_keymap("n", "gk", "<cmd>Telescope projects<cr>", {})
+
 local win_navs = {
     {"<C-h>", "<C-w>h"},
     {"<C-j>", "<C-w>j"},

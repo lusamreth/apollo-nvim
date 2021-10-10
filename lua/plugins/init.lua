@@ -64,7 +64,7 @@ local packages = {
     "akinsho/nvim-bufferline.lua",
     {
         "lukas-reineke/indent-blankline.nvim",
-        {branch = "master"}
+        {branch = "main"}
     },
     "vuki656/package-info.nvim",
     "hrsh7th/nvim-cmp",
@@ -84,7 +84,23 @@ local packages = {
     "nvim-telescope/telescope-frecency.nvim",
     "tami5/sqlite.lua",
     "weilbith/nvim-code-action-menu",
-    "folke/lsp-colors.nvim"
+    "folke/lsp-colors.nvim",
+    "Pocco81/Catppuccino.nvim"
+
+    -- coq not so accurate and lack of keybinding
+    -- {
+    --     "ms-jpq/coq_nvim",
+    --     {branch = "coq"}
+    -- },
+    -- {
+    --     "ms-jpq/coq.artifacts",
+    --     {branch = "artifacts"}
+    -- },
+    -- {
+    --     "ms-jpq/coq.thirdparty",
+    --     {branch = "3p"}
+    -- }
+    -- "ms-jpq/lua-async-await"
     -- "windwp/windline.nvim"
 }
 
@@ -98,5 +114,4 @@ local function autocompile()
 end
 
 autocompile()
-print("this loader", loader)
-print("size" .. #packages)
+print("Total packages" .. #packages)

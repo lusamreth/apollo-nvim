@@ -293,5 +293,4 @@ Create_command = function(name, func)
 end
 -- utils.galaxyline.default_diagnostic = default
 Utils.table_merge = table_merge
-
 return Utils

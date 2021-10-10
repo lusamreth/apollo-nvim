@@ -113,7 +113,10 @@ local comment_fg = "#ffffff"
 require("bufferline").setup(
     {
         options = {
-            buffer_close_icon = "",
+            -- need to put this at top
+            diagnostics = "nvim_lsp",
+            buffer_close_icon = "",
+            offset = bufferline_offsets,
             modified_icon = "●",
             close_icon = "",
             left_trunc_marker = "",
@@ -126,26 +129,31 @@ require("bufferline").setup(
             show_buffer_close_icons = true,
             always_show_bufferline = true,
             separator_style = "thin",
-            custom_filter = function(buf_number)
-                local present_type, type =
-                    pcall(
-                    function()
-                        return vim.api.nvim_buf_get_var(buf_number, "term_type")
-                    end
-                )
+            --             custom_filter = function(buf_number)
+            --                 local present_type, type =
+            --                     pcall(
+            --                     function()
+            --                         return vim.api.nvim_buf_get_var(buf_number, "term_type")
+            --                     end
+            --                 )
 
-                if vim.bo[buf_number].filetype ~= "dashboard" then
-                    return true
-                end
+            --                 if vim.bo[buf_number].filetype ~= "dashboard" then
+            --                     return true
+            --                 end
 
-                if present_type and type == "vert" or type == "hori" then
-                    return false
-                else
-                    return true
+            --                 if present_type and type == "vert" or type == "hori" then
+            --                     return false
+            --                 else
+            --                     return true
+            --                 end
+            --             end,
+            diagnostics_indicator = function(_, _, diagnostics_dict)
+                local s = " "
+                for e, n in pairs(diagnostics_dict) do
+                    local sym = e == "error" and " " or (e == "warning" and " " or "")
+                    s = s .. sym .. n
                 end
-            end,
-            diagnostics_indicator = function(count, level, diagnostics_dict)
-                return "(" .. count .. ")"
+                return s
             end
         },
         custom_areas = {
@@ -185,14 +193,11 @@ require("bufferline").setup(
                 end
                 return result
             end
-        },
-        offset = bufferline_offsets,
-        diagnostics = "nvim_lsp"
+        }
     }
 )
 
 local opt = {silent = true}
-
 --reset leader key
 vim.g.mapleader = " "
 --command that adds new buffer and moves to it

@@ -6,11 +6,13 @@ local sumneko_root_path = LSP_REPO .. "lua"
 local sumneko_binary = sumneko_root_path .. "/sumneko-lua-language-server"
 
 local lsp = access_core("lsp.init")
+local lspconfig = require("lspconfig")
+
 --local util = require("lspconfig").utils
 -- copied from nvcode project
-require("lspconfig").lua.setup(
+lspconfig.lua.setup(
     {
-        cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"},
+        -- cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"},
         on_attach = lsp.on_common_attach(),
         settings = {
             Lua = {

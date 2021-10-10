@@ -1,4 +1,5 @@
 -- config doc height and width
+print("CMP IMPORTED")
 DOC_HEIGHT = 40
 DOC_WIDTH = DOC_HEIGHT * 2
 
@@ -50,8 +51,8 @@ local t = function(str)
 end
 
 local function super_tab(fallback)
-    if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(t("<C-n>"), "n")
+    if cmp.visible() then
+        cmp.select_next_item()
     elseif luasnip.expand_or_jumpable() then
         vim.fn.feedkeys(t("<Plug>luasnip-expand-or-jump"), "")
     elseif check_back_space() then
@@ -62,30 +63,30 @@ local function super_tab(fallback)
 end
 
 local function reverse_tab(fallback)
-    if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(t("<C-p>"), "n")
+    if cmp.visible() then
+        cmp.select_prev_item()
     elseif require("luasnip").jumpable(-1) then
         vim.fn.feedkeys(t("<Plug>luasnip-jump-prev"), "")
     else
         fallback()
     end
 end
+
 local keymap = {
+    ["<Tab>"] = super_tab,
+    ["<S-Tab>"] = reverse_tab,
     ["<CR>"] = cmp.mapping.confirm {
         behavior = cmp.ConfirmBehavior.Replace,
         select = true
     },
     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
     ["<C-f>"] = cmp.mapping.scroll_docs(4),
-    ["<C-Space>"] = cmp.mapping.complete(),
-    ["<Tab>"] = super_tab,
-    ["<S-Tab>"] = reverse_tab
+    ["<C-Space>"] = cmp.mapping.complete()
 }
-
 local symbols_map = {
     Text = " ",
     Method = "",
-    Function = "",
+    Function = "λ",
     -- Constructor = "",
     Constructor = "",
     Field = "ﴲ ",
@@ -93,9 +94,9 @@ local symbols_map = {
     Class = "ﴯ",
     Interface = "",
     Module = " ",
-    Property = "",
+    Property = "﴾",
     Unit = "塞",
-    Value = "",
+    Value = "ﲹ",
     Enum = "",
     Keyword = "",
     Snippet = "  ",
@@ -107,7 +108,7 @@ local symbols_map = {
     Constant = "ﲀ",
     Struct = "ﳤ",
     Event = "",
-    Operator = "",
+    Operator = "",
     TypeParameter = " "
 }
 
@@ -149,10 +150,19 @@ cmp.setup(
         confirmation = {
             default_behavior = types.cmp.ConfirmBehavior.Insert
         },
-        preselect = cmp.PreselectMode.None,
-        -- preselect = types.cmp.PreselectMode.Item,
+        -- preselect = cmp.PreselectMode.None,
+        preselect = types.cmp.PreselectMode.Item,
         documentation = {
-            border = {"|", "-", "|", "+", "~", "", "", " "},
+            border = {
+                BORDERTOPLEFT,
+                BORDERHORIZONTAL,
+                BORDERTOPRIGHT,
+                BORDERVERTICAL,
+                BORDERBOTRIGHT,
+                BORDERHORIZONTAL,
+                BORDERBOTLEFT,
+                BORDERVERTICAL
+            },
             winhighlight = "NormalFloat:CmpDocumentation,FloatBorder:CmpDocumentationBorder",
             maxwidth = math.floor((DOC_HEIGHT * 8) * (vim.o.columns / (DOC_HEIGHT * 2 * 16 / 9))),
             maxheight = math.floor(DOC_HEIGHT * (DOC_HEIGHT / vim.o.lines))

@@ -68,6 +68,10 @@ function Vmap(key, action, config)
     return map("v", key, action, config)
 end
 
+Create_command = function(name, func)
+    vim.cmd("command! -nargs=* " .. name .. " lua " .. func)
+end
+
 function Command_to_func_name(commands, config)
     local res = {}
     config = config or {}

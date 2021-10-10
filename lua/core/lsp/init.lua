@@ -33,8 +33,7 @@ local function diagnostic_definition(signs)
 end
 
 -- force native omnifunc to use lsp.omnifunc
-vim.api.nvim_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
-
+-- vim.api.nvim_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 -- Mappings.
 local opts = {noremap = true, silent = true}
 
@@ -63,8 +62,7 @@ local function build_mapper(leaders)
             vim.api.nvim_buf_set_option(bufnr, ...)
         end
 
-        buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
-
+        -- buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
         -- g prefixes
         buf_set_keymap("n", l1 .. "D", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts)
         buf_set_keymap("n", l1 .. "d", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
@@ -212,8 +210,7 @@ local function mount_tools()
     local modules = {
         "nv-cmp",
         "nv-lightbulb",
-        "nv-trouble",
-        "nv-formatter"
+        "nv-trouble"
     }
 
     for _, mod in pairs(modules) do
@@ -254,7 +251,6 @@ local function attach_builder(t)
 end
 
 local function on_common_attach(verb)
-    verb = true
     if verb then
         print("debugging on!")
         print(debug.getinfo(1))

@@ -27,8 +27,9 @@ opt.o.timeoutlen = 0 -- By default timeoutlen is 1000 ms
 opt.o.clipboard = "unnamedplus" -- Copy paste between vim and everything else
 opt.o.smartcase = true
 --opt.o.guifont = "JetBrainsMono\\ Nerd\\ Font\\ Mono:h18"
-opt.o.guifont = "FiraCode Retina Nerd Font Complete Mono"
---opt.o.guifont = "Hack\\ Nerd\\ Font\\ Mono"
+-- opt.o.guifont = "FiraCode Retina Nerd Font Complete Mono"
+--opt.o.guifont = "JetBrainsMono Nerd Font"
+opt.o.guifont = "Hack Nerd Font Mono"
 --vim.o.guifont = "SauceCodePro Nerd Font:h17"
 --vim.o.guifont = "FiraCode Nerd Font:h17"
 --vim.o.guifont = "JetBrains\\ Mono\\ Regular\\ Nerd\\ Font\\ Complete"
@@ -40,6 +41,8 @@ opt.wo.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shif
 opt.g.nvim_tree_disable_netrw = true
 opt.bo.smartindent = true -- Makes indenting smart
 
+-- opt.g.neovide_cursor_antialiasing = true
+-- opt.g.neovide_transparency = 1
 Abbvr_list = {
     "W!   ",
     "Q!   ",
@@ -84,7 +87,7 @@ local function abbrv(list)
 end
 
 abbrv(Abbvr_list)
-local util = import("/utility.init", LUAROOT)
+import("/utility.init", LUAROOT)
 
 Defaulti3paths = {
     "~/.config/i3/config",
@@ -105,8 +108,15 @@ local ConfGroup = {
     {"BufEnter,BufNewFile", "*.json", "setf json"},
     {"BufEnter,BufNewFile", "*.py", "lua Pep8Spec()"},
     {"BufEnter,BufNewFile", "*.yml", "setf yaml"},
-    {"BufEnter,BufNewFile", "*.yml", "setlocal ts=2 sts=2 sw=2 expandtab"}
+    {"BufEnter,BufNewFile", "*.yml", "setlocal ts=2 sts=2 sw=2 expandtab"},
+    {
+        "BufEnter,BufNewFile",
+        "*.xml",
+        'com! FormatXML :%!python3 -c "import xml.dom.minidom, sys; print(xml.dom.minidom.parse(sys.stdin).toprettyxml())"'
+    }
 }
+
+-- au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
 
 local i3detect = Utils.table_merge(0, ConfGroup, makei3au(Defaulti3paths))
 -- test pass!
@@ -118,7 +128,7 @@ Create_augroup(i3detect, "Confdetection")
 --PmenuSel – selected item
 --PmenuSbar – scrollbar
 --PmenuThumb – thumb of the scrollbar
---
+
 vim.cmd("highlight Pmenu guibg=black guifg=white ctermbg=black ctermfg=white")
 vim.cmd("highlight PmenuSel guibg=green guifg=white ctermbg=green ctermfg=white")
 
@@ -141,5 +151,68 @@ vim.cmd("set expandtab") -- Converts tabs to spaces
 vim.cmd("set noswapfile")
 -- set augroup configuration
 
-vim.cmd("colorscheme gruvbox-material")
-vim.cmd("set background=dark") --or light if you want light mode
+-- vim.cmd("colorscheme gruvbox-material")
+-- vim.cmd("set background=dark") --or light if you want light mode
+
+local catppuccino = require("catppuccino")
+
+-- configure it
+catppuccino.setup(
+    {
+        colorscheme = "neon_latte",
+        -- colorscheme = "dark_catppuccino",
+        transparency = false,
+        term_colors = false,
+        styles = {
+            comments = "italic",
+            functions = "italic",
+            keywords = "italic",
+            strings = "NONE",
+            variables = "NONE"
+        },
+        integrations = {
+            treesitter = true,
+            native_lsp = {
+                enabled = true,
+                virtual_text = {
+                    errors = "italic",
+                    hints = "italic",
+                    warnings = "italic",
+                    information = "italic"
+                },
+                underlines = {
+                    errors = "underline",
+                    hints = "underline",
+                    warnings = "underline",
+                    information = "underline"
+                }
+            },
+            lsp_trouble = true,
+            lsp_saga = false,
+            gitgutter = false,
+            gitsigns = false,
+            telescope = false,
+            nvimtree = {
+                enabled = true,
+                show_root = true
+            },
+            which_key = true,
+            indent_blankline = {
+                enabled = true,
+                colored_indent_levels = true
+            },
+            dashboard = true,
+            neogit = false,
+            vim_sneak = false,
+            fern = false,
+            barbar = false,
+            bufferline = true,
+            markdown = false,
+            lightspeed = false,
+            ts_rainbow = false,
+            hop = false
+        }
+    }
+)
+
+vim.cmd("colorscheme catppuccino")
