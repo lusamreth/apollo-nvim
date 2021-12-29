@@ -145,7 +145,6 @@ vim.cmd("luafile " .. HOMEROOT .. "/nvim-proto-2/lua/core/lsp/languages/utility-
 vim.cmd("luafile " .. HOMEROOT .. "/nvim-proto-2/lua/core/lsp/languages/rust-lang.lua")
 access_system("inspectors.table")
 access_system("inspectors.interface-builder")
-
 -- statusline mutate the original import
 vim.cmd("luafile ~/nvim-proto-2/lua/core/statusline/init.lua")
 reset_import()

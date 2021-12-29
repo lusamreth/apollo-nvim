@@ -1,4 +1,4 @@
-local colorscheme = import("colorscheme")
+local colorscheme = require("core.colorscheme")
 local dset = function(s, c)
     assert(s ~= nil, "sign must not be empty")
     return {

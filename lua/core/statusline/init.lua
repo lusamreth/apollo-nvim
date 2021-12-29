@@ -27,6 +27,6 @@ _G.import = function(mod, root)
     return f()
 end
 
+Oimport = _G.import
 -- if use the _G.import it will freeze !
--- _G.import = make_import(STATUSLINE_ROOT)
 import("containers.init")

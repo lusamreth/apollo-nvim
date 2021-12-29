@@ -1,5 +1,5 @@
-local bedrock_prefix = "/bedrock/strata/arch"
-require("utility.panel")
+-- local _bedrock_prefix = "/bedrock/strata/arch"
+local ui = access_system("ui.init")
 --root_dir = root_pattern("Cargo.toml", "rust-project.json"),
 --cmd = { "strat -u void ~/.cargo/bin/rust-analyzer" },
 --todo : fix on attach func
@@ -35,36 +35,35 @@ if ok then
     end
 end
 
-local function goto_definition(split_cmd)
-    local util = vim.lsp.util
-    local log = require("vim.lsp.log")
-    local api = vim.api
-    local handler = function(_, method, result)
-        if result == nil or vim.tbl_isempty(result) then
-            local _ = log.info() and log.info(method, "No location found")
-            return nil
-        end
-        if split_cmd then
-            vim.cmd(split_cmd)
-        end
+-- local function goto_definition(split_cmd)
+--     local util = vim.lsp.util
+--     local log = require("vim.lsp.log")
+--     local api = vim.api
+--     local handler = function(_, method, result)
+--         if result == nil or vim.tbl_isempty(result) then
+--             local _ = log.info() and log.info(method, "No location found")
+--             return nil
+--         end
+--         if split_cmd then
+--             vim.cmd(split_cmd)
+--         end
 
-        if vim.tbl_islist(result) then
-            util.jump_to_location(result[1])
-            if #result > 1 then
-                util.set_qflist(util.locations_to_items(result))
-                api.nvim_command("copen")
-                api.nvim_command("wincmd p")
-            end
-        else
-            util.jump_to_location(result)
-        end
-    end
-    return handler
-end
-vim.lsp.handlers["textDocument/definition"] = goto_definition("split")
+--         if vim.tbl_islist(result) then
+--             util.jump_to_location(result[1])
+--             if #result > 1 then
+--                 util.set_qflist(util.locations_to_items(result))
+--                 api.nvim_command("copen")
+--                 api.nvim_command("wincmd p")
+--             end
+--         else
+--             util.jump_to_location(result)
+--         end
+--     end
+--     return handler
+-- end
+-- vim.lsp.handlers["textDocument/definition"] = goto_definition("split")
 
 -- todo reconfig language server
-local lsp_installer = require("nvim-lsp-installer")
 
 nvim_lsp.rust.setup(
     {
@@ -185,6 +184,44 @@ local function create_rust_tool_cmd(cmds, option)
         Create_command(cmds[i], func)
     end
 end
+
+local inlay_hints_dec = "InlayHints : is for showing type in virtual_text!"
+RustHints = {
+    inlay_hints_dec,
+    "Commands :",
+    "    RustSetInlayHints : Set InlayHints option!",
+    "    RustDisableInlayHints : Disable InlayHints options",
+    "    RustToggleInlayHints : Enable InlayHints options",
+    "    RustRunnables : Good for testing! See all runnable option.",
+    "    RustExpandMacro : Expanding macros!",
+    "    RustOpenCargo : Goto The cargo.toml file in project",
+    "    RustParentModule : Goto the parent module of that modules",
+    "    RustJoinLines : Join the indented or entered lines",
+    "    RustHoverActions : Code actions",
+    "    RustMoveItemDown : move item at the cursor upward",
+    "    RustMoveItemUp : move item at the cursor downward"
+}
+
+function Create_Utils_Hints(bindkey)
+    Help = nil
+
+    local testlines = ui.text(RustHints).border("orange").build()
+
+    Help =
+        ui.win.CreatePopup(
+        testlines,
+        {
+            enter = false,
+            position = {
+                col = "50%",
+                row = "10"
+            }
+        }
+    )
+
+    Nnoremap(bindkey, "lua Help.toggle()")
+end
+
 -- keybind with context of rust lsp
 -- use leader "r"
 function Rust_util_binder(rust_leader)
@@ -211,7 +248,7 @@ function Rust_util_binder(rust_leader)
             {"r", "RustRunnables"},
             {"p", "RustParentModule"},
             {"a", "RustHoverActions"},
-            {"h", "RustHoverRange"},
+            -- {"h", "RustHoverRange"},
             {"l", "RustJoinLines"}
         },
         special = {
@@ -225,49 +262,10 @@ function Rust_util_binder(rust_leader)
     }
 
     Create_command_key_pair(key_command_pair, create_rust_tool_cmd, rust_leader)
-
-    function Print_RustTool_help()
-        local inlay_hints_dec = "InlayHints : is for showing type in virtual_text!"
-        --local help_cmd =
-        --    "\
-        --    Commands :\
-        --        RustSetInlayHints : Set InlayHints option!\
-        --        RustDisableInlayHints : Disable InlayHints options\
-        --        RustToggleInlayHints : Enable InlayHints options\
-        --        RustRunnables : Good for testing! See all runnable option.\
-        --        RustExpandMacro : Expanding macros!\
-        --        RustOpenCargo : Goto The cargo.toml file in project\
-        --        RustParentModule : Goto the parent module of that modules\
-        --        RustJoinLines : Join the indented or entered lines\
-        --        RustHoverActions : Code actions\
-        --        RustMoveItemDown : move item at the cursor upward\
-        --        RustMoveIthmUp : move item at the cursor downward\
-        --    "
-
-        local help_cmd = {
-            inlay_hints_dec,
-            "Commands :",
-            "    RustSetInlayHints : Set InlayHints option!",
-            "    RustDisableInlayHints : Disable InlayHints options",
-            "    RustToggleInlayHints : Enable InlayHints options",
-            "    RustRunnables : Good for testing! See all runnable option.",
-            "    RustExpandMacro : Expanding macros!",
-            "    RustOpenCargo : Goto The cargo.toml file in project",
-            "    RustParentModule : Goto the parent module of that modules",
-            "    RustJoinLines : Join the indented or entered lines",
-            "    RustHoverActions : Code actions",
-            "    RustMoveItemDown : move item at the cursor upward",
-            "    RustMoveItemUp : move item at the cursor downward"
-        }
-        Toggle_win(help_cmd)
-        --vim.api.nvim_set_keymap("n","zo","<cmd>lua Toggle_win{Text}<CR>",{noremap = true})
-    end
-
-    Nnoremap(rust_leader .. "h", "<cmd>lua Print_RustTool_help()<CR>")
+    Create_Utils_Hints(rust_leader .. "h")
 end
 
 Rust_util_binder("<Space>r")
---Toggle_win({"hello boi"})
 
 --if init lspinstall first we cannot use custom rust-analyzer
 

@@ -98,9 +98,6 @@ function SHCHECK()
 end
 
 require("utility")
-if Splitstr(FileType(), ".")[1] == "sh" then
-    Nnoremap("<space>ch", "lua SHCHECK()", {silent = false})
-end
 
 -- local save_hook = {
 -- 	{ "BufEnter,BufRead", "*sh*", "lua print('init bash savehook')" },

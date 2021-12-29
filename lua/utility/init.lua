@@ -6,10 +6,20 @@ end
 function firstToUpper(str)
     return (str:gsub("^%l", string.upper))
 end
-
 function IsUpperCase(ch)
     local charcode = string.byte(ch)
     return charcode >= 65 and charcode <= 90
+end
+
+function Sum(numarr)
+    local z = 0
+    vim.tbl_map(
+        function(pad)
+            z = z + pad
+        end,
+        numarr
+    )
+    return z
 end
 -- return table
 function UpperCasePos(s, iterstop)
@@ -30,6 +40,10 @@ function UpperCasePos(s, iterstop)
 end
 
 function Splitstr(str, delim)
+    if str == nil or #str == 0 then
+        return {}
+    end
+
     local target = string.byte(delim)
     local i = 0
     local delim_local = {}
@@ -40,6 +54,7 @@ function Splitstr(str, delim)
             i = i + 1
         end
     end
+
     local prev = 1
     for u = 0, #delim_local do
         local val = delim_local[u]
@@ -115,66 +130,6 @@ local diag_col = {
     white = "#fff"
 }
 
--- local diagnostic = require("galaxyline.provider_diagnostic")
--- local bg = "#282a36"
--- local function make_diagnostic_stat(pos, config, start_idx)
---     local i = 1
---     if start_idx ~= nil then
---         local i = start_idx
---     end
-
---     for key, val in pairs(config) do
---         local name = "Diagnostic" .. firstToUpper(key)
---         require("galaxyline").section[pos][i] = {
---             [name] = {
---                 -- provider=name,
---                 provider = function()
---                     local p = diagnostic["get_diagnostic_" .. key]()
---                     if p == nil then
---                         return p
---                     end
---                     p = string.format("%s [%s] ", AllTrim(val.sign), AllTrim(p))
---                     return p
---                 end,
---                 -- icon = val.sign,
---                 highlight = {val.color, diag_col.white}
---             }
---         }
---         i = i + 1
---     end
--- end
-
--- local function default()
---     local defaultcfg =
---         make_stat_conf(
---         {
---             " :" .. diag_col.red,
---             " :" .. diag_col.yellow,
---             " :" .. diag_col.redwine,
---             " :" .. diag_col.teal
---         }
---     )
---     make_diagnostic_stat("mid", defaultcfg, 10)
--- end
--- fix this shit
--- require("lspconfig").efm.setup(
---     {
---         init_options = {documentFormatting = true},
---         filetypes = {"lua"},
---         settings = {
---             -- rootMarkers = {".git/"},
---             languages = {
---                 lua = {
---                     {
---                         formatCommand = "lua-format -i --no-keep-simple-function-one-line --no-break-after-operator --column-limit=150 --break-after-table-lb",
---                         formatStdin = true
---                     }
---                 }
---             }
---         }
---     }
--- )
-
 function FileType()
     return vim.fn.expand("%e")
 end
@@ -221,6 +176,7 @@ local function table_clone(t)
     return table_clone_internal(t)
 end
 
+-- only work with array
 local function table_merge(level, ...)
     local tables_to_merge = {...}
     assert(#tables_to_merge > 1, "There should be at least two tables to merge them")
@@ -251,14 +207,14 @@ local function table_merge(level, ...)
                 local function kchain(arg)
                     assert(type(arg) == "table", "Require table!")
                     for _, element in pairs(arg) do
-                        local i = index()
+                        local c = index()
                         --debuging
                         --print("e",element,i+count,i)
                         if type(element) == "table" and level ~= count then
                             kchain(element)
                             count = count + 1
                         else
-                            result[i] = element
+                            result[c] = element
                         end
                     end
                 end
@@ -286,6 +242,27 @@ function Reverse(t)
         n = n - 1
     end
     return t
+end
+
+local charset = {}
+do -- [0-9a-zA-Z]
+    for c = 48, 57 do
+        table.insert(charset, string.char(c))
+    end
+    for c = 65, 90 do
+        table.insert(charset, string.char(c))
+    end
+    for c = 97, 122 do
+        table.insert(charset, string.char(c))
+    end
+end
+
+function RandomString(length)
+    if not length or length <= 0 then
+        return ""
+    end
+    math.randomseed(os.clock() ^ 5)
+    return RandomString(length - 1) .. charset[math.random(1, #charset)]
 end
 
 Create_command = function(name, func)

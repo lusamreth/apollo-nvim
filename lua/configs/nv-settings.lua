@@ -27,7 +27,7 @@ opt.o.timeoutlen = 0 -- By default timeoutlen is 1000 ms
 opt.o.clipboard = "unnamedplus" -- Copy paste between vim and everything else
 opt.o.smartcase = true
 --opt.o.guifont = "JetBrainsMono\\ Nerd\\ Font\\ Mono:h18"
--- opt.o.guifont = "FiraCode Retina Nerd Font Complete Mono"
+--opt.o.guifont = "FiraCode Retina Nerd Font Complete Mono"
 --opt.o.guifont = "JetBrainsMono Nerd Font"
 opt.o.guifont = "Hack Nerd Font Mono"
 --vim.o.guifont = "SauceCodePro Nerd Font:h17"
@@ -120,7 +120,9 @@ local ConfGroup = {
 
 local i3detect = Utils.table_merge(0, ConfGroup, makei3au(Defaulti3paths))
 -- test pass!
--- test:local bb = util.table_merge(0,{"ok","bonm"},{"duh","bana"},{"hd"},{{"h","s"},{"vvvl","ddd",{"sus"}}})
+-- test:
+-- local bb = Utils.table_merge(0, {"ok", "bonm"}, {"duh", "bana"}, {"hd"}, {{"h", "s"}, {"vvvl", "ddd", {"sus"}}})
+-- print("TBL", vim.inspect(bb))
 Create_augroup(i3detect, "Confdetection")
 
 --=> Popup menu conf <="
@@ -151,16 +153,14 @@ vim.cmd("set expandtab") -- Converts tabs to spaces
 vim.cmd("set noswapfile")
 -- set augroup configuration
 
--- vim.cmd("colorscheme gruvbox-material")
--- vim.cmd("set background=dark") --or light if you want light mode
-
+-- THEME CONFIGURATION
 local catppuccino = require("catppuccino")
 
 -- configure it
 catppuccino.setup(
     {
-        colorscheme = "neon_latte",
-        -- colorscheme = "dark_catppuccino",
+        --colorscheme = "neon_latte",
+        colorscheme = "soft_manilo",
         transparency = false,
         term_colors = false,
         styles = {
@@ -214,5 +214,20 @@ catppuccino.setup(
         }
     }
 )
-
+-- make_prompt()
+-- function border_rename()
+--     local newName = vim.trim(vim.fn.getline("."):sub(4, -1))
+--     vim.cmd [[q!]]
+--     local params = lsp.util.make_position_params()
+--     local currName = vim.fn.expand "<cword>"
+--     if not (newName and #newName > 0) or newName == currName then
+--         return
+--     end
+--     params.newName = newName
+--     print(newName)
+--     lsp.buf_request(0, "textDocument/rename", params)
+-- end
 vim.cmd("colorscheme catppuccino")
+-- transparent
+vim.cmd("highlight Normal guibg=none")
+vim.cmd("highlight Nontext guibg=none")

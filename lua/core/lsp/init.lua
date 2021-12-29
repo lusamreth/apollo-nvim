@@ -37,8 +37,8 @@ end
 -- Mappings.
 local opts = {noremap = true, silent = true}
 
+-- todo : integrate lspsaga into lsp
 local function build_mapper(leaders)
-    -- print("Building mapper")
     local default = {"g", "<space>", "d"}
     if leaders == nil then
         leaders = {
@@ -53,7 +53,7 @@ local function build_mapper(leaders)
     local l3 = leaders.leader3
 
     return function(client, bufnr)
-        --helpers
+        --helpers setting local keymap
         local function buf_set_keymap(...)
             vim.api.nvim_buf_set_keymap(bufnr, ...)
         end
@@ -62,11 +62,13 @@ local function build_mapper(leaders)
             vim.api.nvim_buf_set_option(bufnr, ...)
         end
 
-        -- buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
+        buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
         -- g prefixes
+        --Nnoremap("fs")
         buf_set_keymap("n", l1 .. "D", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts)
         buf_set_keymap("n", l1 .. "d", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
-        vim.api.nvim_set_keymap("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
+
+        buf_set_keymap("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
         buf_set_keymap("n", l1 .. "i", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
         buf_set_keymap("n", l1 .. "r", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
         -- special binder
@@ -79,7 +81,9 @@ local function build_mapper(leaders)
         buf_set_keymap("n", l2 .. "wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
         buf_set_keymap("n", l2 .. "D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
         -- rename functions or variables in the current buffer
-        buf_set_keymap("n", l2 .. "rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+
+        buf_set_keymap("n", l2 .. "rn", "<cmd>lua vim.lsp.rename()<cr>", opts)
+        buf_set_keymap("n", l2 .. "rn", "<cmd>lua require('lspsaga.rename').rename()<cr>", opts)
         -- good for bugfixing :
         buf_set_keymap("n", l2 .. "e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>", opts)
         -- list errors / hints in quickfix list!
@@ -102,9 +106,27 @@ local function build_mapper(leaders)
         -- leader 3
         buf_set_keymap("n", "[" .. l3, "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
         buf_set_keymap("n", "]" .. l3, "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
+
+        -- lua require('lspsaga.rename').rename()
     end
 end
 
+local function LspSagaExtension()
+    local lsp_capability = {
+        goto_prev = function()
+            require "lspsaga.diagnostic".lsp_jump_diagnostic_prev()
+        end,
+        goto_next = function()
+            require "lspsaga.diagnostic".lsp_jump_diagnostic_next()
+        end,
+        show_line_diagnostics = function()
+            require "lspsaga.diagnostic".show_line_diagnostics()
+        end,
+        hover = function()
+            require("lspsaga.hover").render_hover_doc()
+        end
+    }
+end
 --vim.api.nvim_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
 --auto formatting when server is loaded
 local function documentHighlight(client)

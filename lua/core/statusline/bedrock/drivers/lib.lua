@@ -15,27 +15,6 @@ function Uniq:init()
     return self
 end
 
-local charset = {}
-do -- [0-9a-zA-Z]
-    for c = 48, 57 do
-        table.insert(charset, string.char(c))
-    end
-    for c = 65, 90 do
-        table.insert(charset, string.char(c))
-    end
-    for c = 97, 122 do
-        table.insert(charset, string.char(c))
-    end
-end
-
-local function randomString(length)
-    if not length or length <= 0 then
-        return ""
-    end
-    math.randomseed(os.clock() ^ 5)
-    return randomString(length - 1) .. charset[math.random(1, #charset)]
-end
-
 function Uniq:insert_prefix(prefix, item)
     local p = self.prefixes[prefix]
     if p == nil then
@@ -58,7 +37,7 @@ function Uniq:get_id(prefix)
     end
 
     --self.prefixes[prefix]
-    local a = self:insert_prefix(prefix, prefix .. self.state[prefix] .. "_" .. randomString(6))
+    local a = self:insert_prefix(prefix, prefix .. self.state[prefix] .. "_" .. RandomString(6))
     return a
 end
 
@@ -107,4 +86,5 @@ H.uniq.get_key_set = function(tab)
     end
     return keyset
 end
+
 return H

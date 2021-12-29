@@ -123,17 +123,28 @@ local function select_element(nest, index)
     return res
 end
 
+function Scrap_keybinds(group, leader)
+    local res = {}
+    leader = leader or ""
+    for n, c in pairs(group) do
+        if type(c) == "table" and n ~= "config" then
+            local key, cmd = leader .. c[1], c[2]
+            res[key] = cmd
+        end
+    end
+    return res
+end
+
 -- make_command will define how each command is produced and bind to the function
 -- it will also responsible on how the function got retrieved and call !
 function Create_command_key_pair(key_command_pair, make_command, leader)
     local function bind_to_key(group)
-        for n, c in pairs(group) do
-            if type(c) == "table" and n ~= "config" then
-                local key, cmd = c[1], c[2]
-                Nnoremap(leader .. key, cmd)
-            end
+        local kb = Scrap_keybinds(group, leader)
+        for key, cmd in pairs(kb) do
+            Nnoremap(key, cmd)
         end
     end
+
     for _, group in pairs(key_command_pair) do
         local option = group["config"]
 

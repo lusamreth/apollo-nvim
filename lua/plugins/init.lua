@@ -85,9 +85,16 @@ local packages = {
     "tami5/sqlite.lua",
     "weilbith/nvim-code-action-menu",
     "folke/lsp-colors.nvim",
-    "Pocco81/Catppuccino.nvim"
-
-    -- coq not so accurate and lack of keybinding
+    "Pocco81/Catppuccino.nvim",
+    "sunjon/extmark-toy.nvim",
+    "kevinhwang91/rnvimr",
+    "tami5/lspsaga.nvim",
+    "xiyaowong/nvim-transparent",
+    "mizlan/iswap.nvim",
+    "MunifTanjim/nui.nvim"
+    -- for swapping arg
+    -- coq not so accurate and lack of keybinding primarily the
+    -- super_tab function
     -- {
     --     "ms-jpq/coq_nvim",
     --     {branch = "coq"}
