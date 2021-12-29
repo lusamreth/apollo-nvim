@@ -42,7 +42,16 @@ require("telescope").setup(
                 }
             },
             -- borderchars = { '─', '│', '─', '│', '*', '*', '*', '*' },
-            borderchars = {"=", "x", "=", "x", "*", "*", "*", "*"},
+            borderchars = {
+                BORDERVERTICAL,
+                BORDERHORIZONTAL,
+                BORDERVERTICAL,
+                BORDERHORIZONTAL,
+                BORDERTOPLEFT,
+                BORDERTOPRIGHT,
+                BORDERBOTRIGHT,
+                BORDERBOTLEFT
+            },
             color_devicons = true,
             extensions = {
                 media_files = {

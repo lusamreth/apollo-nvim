@@ -108,6 +108,8 @@ local bufferline_offsets = {
 --         guibg = colors.black
 --     }
 -- }
+
+---@diagnostic disable-next-line: unused-local
 local comment_fg = "#ffffff"
 -- colors for active , inactive uffer tabs
 require("bufferline").setup(
@@ -115,7 +117,8 @@ require("bufferline").setup(
         options = {
             -- need to put this at top
             diagnostics = "nvim_lsp",
-            buffer_close_icon = "",
+            buffer_close_icon = "",
+            -- buffer_close_icon = "",
             offset = bufferline_offsets,
             modified_icon = "●",
             close_icon = "",

@@ -67,9 +67,24 @@ function ManualFormat(cmd, args)
 end
 
 local filetype_config = {
+    python = {
+        ext = "py",
+        fmtconfig = {
+            exe = "python3 -m yapf",
+            args = {"--style", "google"},
+            stdin = true
+        }
+    },
+    json = {
+        manual = true,
+        fmtconfig = {
+            exe = "jq",
+            args = {"."},
+            stdin = false
+        }
+    },
     xml = {
         manual = true,
-        requireInput = true,
         fmtconfig = {
             exe = "xmllint",
             args = {
@@ -150,6 +165,18 @@ function MakeFmtFunc(config)
 
     return function()
         local currentbuf = vim.api.nvim_buf_get_name(0)
+        -- will litherally pass the string of current buffer content
+        -- to process formatting
+        if config["RequireRawInput"] then
+            local bufnr = vim.api.nvim_get_current_buf()
+            currentbuf = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+            local total_line = ""
+            for _, line in pairs(currentbuf) do
+                total_line = total_line .. line
+            end
+            currentbuf = total_line
+        end
+
         arg[last] = currentbuf
         ManualFormat(exec, arg)
     end
@@ -166,6 +193,7 @@ for name, config in pairs(filetype_config) do
 
     -- store extension as ref
     if config["manual"] then
+        print("EXT ++>", ext)
         FormatAutoCmd[ext] = MakeFmtFunc(config)
     end
     -- stash it into nvim.formatter

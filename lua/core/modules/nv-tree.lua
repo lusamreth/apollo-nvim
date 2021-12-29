@@ -60,9 +60,11 @@ local hlconfig = function()
     if firstrun > 0 then
         return
     else
+        -- if colorscheme is use will be override
         hiTreeFolder("Icon", "#51afef")
-        --hiTreeFolder("Name", "#51afef")
         hiTreeFolder("Name", "#ec5f67")
+        hiTreeFolder("ImageFile", "#p25f67")
+        hiTreeFolder("OpenedFolderName", "#111111")
         hiTreeFolder("Marker", "#p25f67")
     end
     firstrun = 1

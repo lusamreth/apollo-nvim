@@ -142,26 +142,30 @@ local format = {
 cmp.setup(
     {
         sources = {
-            {name = "luasnip"},
-            {name = "buffer"},
             {name = "nvim_lsp"},
-            {name = "nvim_lua"}
+            {name = "nvim_lua"},
+            {name = "luasnip"},
+            {name = "buffer"}
         },
         confirmation = {
             default_behavior = types.cmp.ConfirmBehavior.Insert
         },
         -- preselect = cmp.PreselectMode.None,
         preselect = types.cmp.PreselectMode.Item,
+        expiremental = {
+            native_menu = false,
+            ghost_text = true
+        },
         documentation = {
             border = {
                 BORDERTOPLEFT,
-                BORDERHORIZONTAL,
-                BORDERTOPRIGHT,
                 BORDERVERTICAL,
-                BORDERBOTRIGHT,
+                BORDERTOPRIGHT,
                 BORDERHORIZONTAL,
+                BORDERBOTRIGHT,
+                BORDERVERTICAL,
                 BORDERBOTLEFT,
-                BORDERVERTICAL
+                BORDERHORIZONTAL
             },
             winhighlight = "NormalFloat:CmpDocumentation,FloatBorder:CmpDocumentationBorder",
             maxwidth = math.floor((DOC_HEIGHT * 8) * (vim.o.columns / (DOC_HEIGHT * 2 * 16 / 9))),
