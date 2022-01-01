@@ -16,71 +16,20 @@ local nvim_lsp = require("lspconfig")
     -- config.default_config.cmd[1] = "./rust-analyzer"
 --
 --]]
-local root_pattern = require("lspconfig").util.root_pattern
-local ra_path = LSP_REPO .. "rust/"
-local lsp = access_core("lsp.init")
-
 -- local capabilities = vim.lsp.protocol.make_client_capabilities()
 -- capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 -- Enable rust_analyzer
 
-print("RA PATH", ra_path .. "rust-analyzer")
+-- local lsp_installer_servers = require "nvim-lsp-installer.servers"
 
-local lsp_installer_servers = require "nvim-lsp-installer.servers"
-
-local ok, rust_analyzer = lsp_installer_servers.get_server("rust_analyzer")
-if ok then
-    if not rust_analyzer:is_installed() then
-        rust_analyzer:install()
-    end
-end
-
--- local function goto_definition(split_cmd)
---     local util = vim.lsp.util
---     local log = require("vim.lsp.log")
---     local api = vim.api
---     local handler = function(_, method, result)
---         if result == nil or vim.tbl_isempty(result) then
---             local _ = log.info() and log.info(method, "No location found")
---             return nil
---         end
---         if split_cmd then
---             vim.cmd(split_cmd)
---         end
-
---         if vim.tbl_islist(result) then
---             util.jump_to_location(result[1])
---             if #result > 1 then
---                 util.set_qflist(util.locations_to_items(result))
---                 api.nvim_command("copen")
---                 api.nvim_command("wincmd p")
---             end
---         else
---             util.jump_to_location(result)
---         end
+-- local ok, rust_analyzer = lsp_installer_servers.get_server("rust_analyzer")
+-- if ok then
+--     if not rust_analyzer:is_installed() then
+--         rust_analyzer:install()
 --     end
---     return handler
 -- end
--- vim.lsp.handlers["textDocument/definition"] = goto_definition("split")
 
 -- todo reconfig language server
-
-nvim_lsp.rust.setup(
-    {
-        cmd = {ra_path .. "rust-analyzer"},
-        -- cmd = {"rust-analyzer"},
-        -- capabilities = capabilities,
-        filetypes = {"rust"},
-        root_dir = root_pattern("Cargo.toml", "rust-project.json"),
-        on_attach = lsp.on_common_attach(),
-        flags = {debounce_text_changes = 150},
-        settings = {
-            ["rust-analyzer"] = {
-                ["checkOnSave.enable"] = false
-            }
-        }
-    }
-)
 
 DONE = false
 
@@ -132,29 +81,19 @@ local opts = {
 local rust_tools = require("rust-tools")
 rust_tools.setup(opts)
 
--- local inlay_opts = {
---     -- whether to show parameter hints with the inlay hints or not
---     -- default: true
---     show_parameter_hints = true,
---     -- prefix for parameter hints
---     parameter_hints_prefix = "<<",
---     -- prefix for all the other hints (type, chaining)
---     -- default: "=>"
---     other_hints_prefix = "=>"
--- }
+local inlay_opts = {
+    -- whether to show parameter hints with the inlay hints or not
+    -- default: true
+    show_parameter_hints = true,
+    -- prefix for parameter hints
+    parameter_hints_prefix = "<<",
+    -- prefix for all the other hints (type, chaining)
+    -- default: "=>"
+    other_hints_prefix = "=>"
+}
 
--- -- set inlay hints
--- -- default on!
--- local toggler = 1
--- require("rust-tools.inlay_hints").set_inlay_hints(inlay_opts)
--- function ToggleInlay()
---     rust_tools.inlay_hints.toggle_inlay_hints(opts)
---     if toggler == 1 then
---         print("inlay ON!")
---     else
---         print("inlay OFF!")
---     end
--- end
+-- set inlay hints
+-- default on!
 
 -- collect is the fn for last slice of string
 -- ex: ItemUp, Up need to be converted to arg
@@ -271,5 +210,16 @@ Rust_util_binder("<Space>r")
 
 -- local config = require "lspinstall/util".extract_config("rust_analyzer")
 -- config.default_config.cmd[1] = "./rust-analyzer"
+--
 
-nvim_lsp.rust_analyzer.setup({})
+local root_pattern = require("lspconfig").util.root_pattern
+RustProvider = {
+    filetypes = {"rust"},
+    root_dir = root_pattern("Cargo.toml", "rust-project.json"),
+    flags = {debounce_text_changes = 150},
+    settings = {
+        ["rust-analyzer"] = {
+            ["checkOnSave.enable"] = false
+        }
+    }
+}

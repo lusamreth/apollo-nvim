@@ -154,7 +154,7 @@ vim.cmd("set noswapfile")
 -- set augroup configuration
 
 -- THEME CONFIGURATION
-local catppuccino = require("catppuccino")
+local catppuccino = require("catppuccin")
 
 -- configure it
 catppuccino.setup(
@@ -215,19 +215,19 @@ catppuccino.setup(
     }
 )
 -- make_prompt()
--- function border_rename()
---     local newName = vim.trim(vim.fn.getline("."):sub(4, -1))
---     vim.cmd [[q!]]
---     local params = lsp.util.make_position_params()
---     local currName = vim.fn.expand "<cword>"
---     if not (newName and #newName > 0) or newName == currName then
---         return
---     end
---     params.newName = newName
---     print(newName)
---     lsp.buf_request(0, "textDocument/rename", params)
--- end
-vim.cmd("colorscheme catppuccino")
+function border_rename()
+    local newName = vim.trim(vim.fn.getline("."):sub(4, -1))
+    vim.cmd [[q!]]
+    local params = lsp.util.make_position_params()
+    local currName = vim.fn.expand "<cword>"
+    if not (newName and #newName > 0) or newName == currName then
+        return
+    end
+    params.newName = newName
+    print(newName)
+    lsp.buf_request(0, "textDocument/rename", params)
+end
+vim.cmd("colorscheme catppuccin")
 -- transparent
 vim.cmd("highlight Normal guibg=none")
 vim.cmd("highlight Nontext guibg=none")

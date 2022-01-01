@@ -3,8 +3,7 @@
             "=================     ===============     ===============   ========  ========",
             "\\ . . . . . . .\\\\   //. . . . . . .\\\\   //. . . . . . .\\\\  \\\\. . .  //",
             "||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\\/ . . .||",
-            "|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . .  ||",
-            "||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . . ||",
+            "|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . .  ||", "||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . . ||",
             "|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\\ . . . . ||",
             "||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\\_ . .|. .||",
             "|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\\ `-_/| . ||",
@@ -83,6 +82,7 @@ end
 function _G.access_system(mod)
     return import("system." .. mod)
 end
+
 require "nvim-treesitter.configs".setup {
     highlight = {
         enable = true,
@@ -115,7 +115,7 @@ require "nvim-treesitter.configs".setup {
 -- relating to lsp
 --require("nv-compe")
 -- require("nv-cmp")
-require("lspinstall").setup {}
+--require("lspinstall").setup {}
 --vim.cmd("au BufRead,BufNewFile *.rs silent! <cmd>lua print('rust?')")
 --utility = bash,lua,vim
 require("colorizer").setup()
@@ -138,11 +138,10 @@ access_module("nv-tree")
 access_module("nv-formatter")
 -- access_module("nv-coq3p")
 access_core("lsp.init")
+access_core("lsp.languages.init")
 require("configs.nv-settings")
 require("configs.keybinding")
 
-vim.cmd("luafile " .. HOMEROOT .. "/nvim-proto-2/lua/core/lsp/languages/utility-lang.lua")
-vim.cmd("luafile " .. HOMEROOT .. "/nvim-proto-2/lua/core/lsp/languages/rust-lang.lua")
 access_system("inspectors.table")
 access_system("inspectors.interface-builder")
 -- statusline mutate the original import

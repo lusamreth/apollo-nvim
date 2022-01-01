@@ -5,19 +5,14 @@
 -- local sumneko_root_path = LSP_REPO .. "lua"
 -- local sumneko_binary = sumneko_root_path .. "/sumneko-lua-language-server"
 
-local lsp = access_core("lsp.init")
 local lspconfig = require("lspconfig")
 
 LUACONF = {
-    -- cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"},
-    on_attach = lsp.on_common_attach(),
     settings = {
         Lua = {
             runtime = {
                 -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                version = "LuaJIT",
-                -- Setup your lua path
-                path = vim.split(package.path, ";")
+                version = "LuaJIT"
             },
             diagnostics = {
                 -- Get the language server to recognize the `vim` global
@@ -25,66 +20,56 @@ LUACONF = {
             },
             workspace = {
                 -- Make the server aware of Neovim runtime files
-                library = {
-                    [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-                    [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-                    ["/usr/share/nvim/runtime/lua"] = true,
-                    ["/usr/share/nvim/runtime/lua/vim"] = true,
-                    ["/usr/share/nvim/runtime/lua/vim/lsp"] = true
-                },
-                maxPreload = 50000
+                library = vim.api.nvim_get_runtime_file("", true)
+            },
+            -- Do not send telemetry data containing a randomized but unique identifier
+            telemetry = {
+                enable = false
             }
+        }
+    },
+    single_file_support = true
+}
+
+local servers = {
+    "bashls",
+    "pyright",
+    "vuels",
+    "sumneko_lua",
+    "yamlls"
+}
+
+-- for _, name in pairs(servers) do
+--     local server_is_found, server = lsp_installer.get_server(name)
+--     if server_is_found then
+--         if not server:is_installed() then
+--             print("Installing " .. name)
+--             server:install()
+--         end
+--     end
+-- end
+--local util = require("lspconfig").utils
+-- copied from nvcode project
+-- lspconfig.sumneko_lua.setup(LUACONF)
+
+Providers = {}
+
+Providers.bashls = {
+    filetypes = {"sh", "zsh"}
+}
+
+Providers.pyright = {
+    filetypes = {"python"},
+    python = {
+        analysis = {
+            autoSearchPaths = true,
+            useLibraryCodeForTypes = true
         }
     }
 }
---local util = require("lspconfig").utils
--- copied from nvcode project
-lspconfig.lua.setup(LUACONF)
 
---fix this shift
-lspconfig.efm.setup(
-    {
-        init_options = {documentFormatting = true},
-        filetypes = {"lua"},
-        on_attach = lsp.on_common_attach(),
-        settings = {
-            --rootMarkers = {".git/"},
-            languages = {
-                lua = {
-                    {
-                        formatCommand = "lua-format -i --no-keep-simple-function-one-line --no-break-after-operator --column-limit=150 --break-after-table-lb",
-                        formatStdin = true
-                    }
-                }
-            }
-        }
-    }
-)
-
-local bashls_server = LSP_REPO .. "bash/node_modules/bash-language-server/bin/main.js"
-lspconfig.bash.setup(
-    {
-        filetypes = {"sh", "zsh"},
-        cmd = {bashls_server, "start"},
-        on_attach = lsp.on_common_attach(false)
-    }
-)
-
-local pyright = LSP_REPO .. "python/node_modules/pyright/langserver.index.js"
-lspconfig.python.setup(
-    {
-        filetypes = {"python"},
-        cmd = {pyright, "--stdio"},
-        on_attach = lsp.on_common_attach(false),
-        python = {
-            analysis = {
-                autoSearchPaths = true,
-                diagnosticMode = "workspace",
-                useLibraryCodeForTypes = true
-            }
-        }
-    }
-)
-
+Providers.sumneko_lua = LUACONF
 --vim.cmd("BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 100)")
 vim.api.nvim_set_keymap("n", "zf", "<cmd>lua vim.lsp.buf.formatting_sync(nil, 100)<CR>", {noremap = true})
+
+return Providers

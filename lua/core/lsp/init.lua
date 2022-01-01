@@ -14,20 +14,20 @@ local function diagnostic_definition(signs)
         }
     end
     vim.fn.sign_define(
-        "LspDiagnosticsSignError",
-        {texthl = "LspDiagnosticsSignError", text = signs.error_sign, numhl = "LspDiagnosticsSignError"}
+        "DiagnosticSignError",
+        {texthl = "DiagnosticSignError", text = signs.error_sign, numhl = "DiagnosticSignError"}
     )
     vim.fn.sign_define(
-        "LspDiagnosticsSignWarning",
-        {texthl = "LspDiagnosticsSignWarning", text = signs.warn, numhl = "LspDiagnosticsSignWarning"}
+        "DiagnosticSignWarn",
+        {texthl = "DiagnosticSignWarn", text = signs.warn, numhl = "DiagnosticSignWarn"}
     )
     vim.fn.sign_define(
-        "LspDiagnosticsSignHint",
-        {texthl = "LspDiagnosticsSignHint", text = signs.hint, numhl = "LspDiagnosticsSignHint"}
+        "DiagnosticSignHint",
+        {texthl = "DiagnosticSignHint", text = signs.hint, numhl = "DiagnosticSignHint"}
     )
     vim.fn.sign_define(
-        "LspDiagnosticsSignInformation",
-        {texthl = "LspDiagnosticsSignInformation", text = signs.info, numhl = "LspDiagnosticsSignInformation"}
+        "DiagnosticSignInfo",
+        {texthl = "DiagnosticSignInfo", text = signs.info, numhl = "DiagnosticSignInfo"}
     )
     --print(vim.fn.bufname("%"))
 end
@@ -85,17 +85,17 @@ local function build_mapper(leaders)
         buf_set_keymap("n", l2 .. "rn", "<cmd>lua vim.lsp.rename()<cr>", opts)
         buf_set_keymap("n", l2 .. "rn", "<cmd>lua require('lspsaga.rename').rename()<cr>", opts)
         -- good for bugfixing :
-        buf_set_keymap("n", l2 .. "e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>", opts)
+        buf_set_keymap("n", l2 .. "e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
         -- list errors / hints in quickfix list!
         buf_set_keymap(
             "n",
             l2 .. "q",
-            '<cmd>lua vim.lsp.diagnostic.set_loclist({ severity_limit = "Warning","Error"  })<CR>',
+            '<cmd>lua vim.diagnostic.set_loclist({ severity_limit = "Warning","Error"  })<CR>',
             opts
         )
         -- go to the next diagnostic / error code block
-        buf_set_keymap("n", l2 .. "dn", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
-        buf_set_keymap("n", l2 .. "dp", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
+        buf_set_keymap("n", l2 .. "dn", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
+        buf_set_keymap("n", l2 .. "dp", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
         -- check if server could format the document
         if client.resolved_capabilities.document_highlight then
             buf_set_keymap("n", l2 .. "f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
@@ -104,8 +104,8 @@ local function build_mapper(leaders)
         end
 
         -- leader 3
-        buf_set_keymap("n", "[" .. l3, "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
-        buf_set_keymap("n", "]" .. l3, "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
+        buf_set_keymap("n", "[" .. l3, "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
+        buf_set_keymap("n", "]" .. l3, "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
 
         -- lua require('lspsaga.rename').rename()
     end
@@ -119,8 +119,8 @@ local function LspSagaExtension()
         goto_next = function()
             require "lspsaga.diagnostic".lsp_jump_diagnostic_next()
         end,
-        show_line_diagnostics = function()
-            require "lspsaga.diagnostic".show_line_diagnostics()
+        open_float = function()
+            require "lspsaga.diagnostic".open_float()
         end,
         hover = function()
             require("lspsaga.hover").render_hover_doc()
@@ -160,7 +160,7 @@ local doc_capabilities = {
     commitCharactersSupport = true,
     -- diagnostics
     publishDiagnostics = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics,
+        vim.diagnostic.on_publish_diagnostics,
         {
             virtual_text = true,
             underline = true,

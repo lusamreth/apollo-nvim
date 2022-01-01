@@ -42,10 +42,12 @@ local packages = {
     "folke/trouble.nvim",
     "cohama/lexima.vim",
     "p00f/nvim-ts-rainbow",
-    {
-        "kabouzeid/nvim-lspinstall",
-        disable = false
-    },
+    "williamboman/nvim-lsp-installer",
+    "folke/lua-dev.nvim",
+    -- {
+    --     "kabouzeid/nvim-lspinstall",
+    --     disable = false
+    -- },
     "nvim-telescope/telescope.nvim",
     "nvim-lua/popup.nvim",
     "nvim-lua/plenary.nvim",
@@ -85,8 +87,11 @@ local packages = {
     "tami5/sqlite.lua",
     "weilbith/nvim-code-action-menu",
     "folke/lsp-colors.nvim",
-    "Pocco81/Catppuccino.nvim",
     "sunjon/extmark-toy.nvim",
+    {
+        "catppuccin/nvim",
+        {as = "catppuccin"}
+    },
     "kevinhwang91/rnvimr",
     "tami5/lspsaga.nvim",
     "xiyaowong/nvim-transparent",
