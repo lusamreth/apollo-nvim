@@ -1,10 +1,10 @@
 -- no need to export since this is all global
 function AllTrim(s)
-    return s:match("^%s*(.-)%s*$")
+    return s:match('^%s*(.-)%s*$')
 end
 
 function firstToUpper(str)
-    return (str:gsub("^%l", string.upper))
+    return (str:gsub('^%l', string.upper))
 end
 function IsUpperCase(ch)
     local charcode = string.byte(ch)
@@ -13,19 +13,16 @@ end
 
 function Sum(numarr)
     local z = 0
-    vim.tbl_map(
-        function(pad)
-            z = z + pad
-        end,
-        numarr
-    )
+    vim.tbl_map(function(pad)
+        z = z + pad
+    end, numarr)
     return z
 end
 -- return table
 function UpperCasePos(s, iterstop)
     local u, count = 1, 1
     local res = {}
-    for c in s:gmatch "." do
+    for c in s:gmatch('.') do
         if IsUpperCase(c) then
             res[count] = u
             count = count + 1
@@ -39,22 +36,23 @@ function UpperCasePos(s, iterstop)
     return res
 end
 
-function Splitstr(str, delim)
+function Splitstr(str, delim, step)
     if str == nil or #str == 0 then
         return {}
     end
-
     local target = string.byte(delim)
     local i = 0
     local delim_local = {}
-
     for idx = 1, #str do
         if str:byte(idx) == target then
             delim_local[i] = idx
+
+            if step and step == i then
+                break
+            end
             i = i + 1
         end
     end
-
     local prev = 1
     for u = 0, #delim_local do
         local val = delim_local[u]
@@ -85,8 +83,8 @@ FindMax = function(nums)
 end
 
 function print_r(arr, indentLevel)
-    local str = ""
-    local indentStr = "#"
+    local str = ''
+    local indentStr = '#'
 
     if indentLevel == nil then
         print(print_r(arr, 0))
@@ -94,14 +92,14 @@ function print_r(arr, indentLevel)
     end
 
     for i = 0, indentLevel do
-        indentStr = indentStr .. "\t"
+        indentStr = indentStr .. '\t'
     end
 
     for index, value in pairs(arr) do
-        if type(value) == "table" then
-            str = str .. indentStr .. index .. ": \n" .. print_r(value, (indentLevel + 1))
+        if type(value) == 'table' then
+            str = str .. indentStr .. index .. ': \n' .. print_r(value, (indentLevel + 1))
         else
-            str = str .. indentStr .. index .. ": " .. value .. "\n"
+            str = str .. indentStr .. index .. ': ' .. value .. '\n'
         end
     end
     return str
@@ -120,28 +118,28 @@ Utils = {}
 -- ]]
 
 local diag_col = {
-    red = "#e95678",
-    redwine = "#d16d9e",
-    light_green = "#abcf84",
-    dark_green = "#98be65",
-    brown = "#c78665",
-    teal = "#1abc9c",
-    yellow = "#f0c674",
-    white = "#fff"
+    red = '#e95678',
+    redwine = '#d16d9e',
+    light_green = '#abcf84',
+    dark_green = '#98be65',
+    brown = '#c78665',
+    teal = '#1abc9c',
+    yellow = '#f0c674',
+    white = '#fff',
 }
 
 function FileType()
-    return vim.fn.expand("%e")
+    return vim.fn.expand('%e')
 end
 
 function Create_augroup(autocmds, name)
     local cmd = vim.cmd
-    cmd("augroup " .. name)
-    cmd("autocmd!")
+    cmd('augroup ' .. name)
+    cmd('autocmd!')
     for _, autocmd in ipairs(autocmds) do
-        cmd("autocmd " .. table.concat(autocmd, " "))
+        cmd('autocmd ' .. table.concat(autocmd, ' '))
     end
-    cmd("augroup END")
+    cmd('augroup END')
 end
 
 -- taken from github but tweaked merge logic
@@ -149,7 +147,7 @@ end
 -- also add depth level for unmerging
 
 local function table_clone_internal(t, copies)
-    if type(t) ~= "table" then
+    if type(t) ~= 'table' then
         return t
     end
     copies = copies or {}
@@ -178,11 +176,11 @@ end
 
 -- only work with array
 local function table_merge(level, ...)
-    local tables_to_merge = {...}
-    assert(#tables_to_merge > 1, "There should be at least two tables to merge them")
+    local tables_to_merge = { ... }
+    assert(#tables_to_merge > 1, 'There should be at least two tables to merge them')
     for k, t in ipairs(tables_to_merge) do
         print(t[1])
-        assert(type(t) == "table", string.format("Expected a table as function parameter %d", k))
+        assert(type(t) == 'table', string.format('Expected a table as function parameter %d', k))
     end
 
     --clone the initial element to merge tables
@@ -202,15 +200,15 @@ local function table_merge(level, ...)
             end
             --print("e",ecount,k+initial_len)
             -- if discover nested table then merge them recursively
-            if type(v) == "table" then
+            if type(v) == 'table' then
                 local count = 0
                 local function kchain(arg)
-                    assert(type(arg) == "table", "Require table!")
+                    assert(type(arg) == 'table', 'Require table!')
                     for _, element in pairs(arg) do
                         local c = index()
                         --debuging
                         --print("e",element,i+count,i)
-                        if type(element) == "table" and level ~= count then
+                        if type(element) == 'table' and level ~= count then
                             kchain(element)
                             count = count + 1
                         else
@@ -259,14 +257,14 @@ end
 
 function RandomString(length)
     if not length or length <= 0 then
-        return ""
+        return ''
     end
     math.randomseed(os.clock() ^ 5)
     return RandomString(length - 1) .. charset[math.random(1, #charset)]
 end
 
 Create_command = function(name, func)
-    vim.cmd("command! -nargs=* " .. name .. " lua " .. func)
+    vim.cmd('command! -nargs=* ' .. name .. ' lua ' .. func)
 end
 -- utils.galaxyline.default_diagnostic = default
 Utils.table_merge = table_merge

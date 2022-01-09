@@ -5,38 +5,36 @@
 -- local sumneko_root_path = LSP_REPO .. "lua"
 -- local sumneko_binary = sumneko_root_path .. "/sumneko-lua-language-server"
 
-local lspconfig = require("lspconfig")
-
 LUACONF = {
     settings = {
         Lua = {
             runtime = {
                 -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                version = "LuaJIT"
+                version = 'LuaJIT',
             },
             diagnostics = {
                 -- Get the language server to recognize the `vim` global
-                globals = {"vim"}
+                globals = { 'vim' },
             },
             workspace = {
                 -- Make the server aware of Neovim runtime files
-                library = vim.api.nvim_get_runtime_file("", true)
+                library = vim.api.nvim_get_runtime_file('', true),
             },
             -- Do not send telemetry data containing a randomized but unique identifier
             telemetry = {
-                enable = false
-            }
-        }
+                enable = false,
+            },
+        },
     },
-    single_file_support = true
+    single_file_support = true,
 }
-
+-- local server
 local servers = {
-    "bashls",
-    "pyright",
-    "vuels",
-    "sumneko_lua",
-    "yamlls"
+    'bashls',
+    'pyright',
+    'vuels',
+    'sumneko_lua',
+    'yamlls',
 }
 
 -- for _, name in pairs(servers) do
@@ -52,24 +50,27 @@ local servers = {
 -- copied from nvcode project
 -- lspconfig.sumneko_lua.setup(LUACONF)
 
-Providers = {}
+UtilityProviders = {}
 
-Providers.bashls = {
-    filetypes = {"sh", "zsh"}
+UtilityProviders.bashls = {
+    filetypes = { 'sh', 'zsh' },
 }
 
-Providers.pyright = {
-    filetypes = {"python"},
+UtilityProviders.pyright = {
+    filetypes = { 'python' },
     python = {
         analysis = {
             autoSearchPaths = true,
-            useLibraryCodeForTypes = true
-        }
-    }
+            useLibraryCodeForTypes = true,
+        },
+    },
 }
 
-Providers.sumneko_lua = LUACONF
---vim.cmd("BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 100)")
-vim.api.nvim_set_keymap("n", "zf", "<cmd>lua vim.lsp.buf.formatting_sync(nil, 100)<CR>", {noremap = true})
+UtilityProviders.sumneko_lua = LUACONF
+UtilityProviders.jsonls = {}
+UtilityProviders.lemminx = {}
 
-return Providers
+--vim.cmd("BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 100)")
+vim.api.nvim_set_keymap('n', 'zf', '<cmd>lua vim.lsp.buf.formatting_sync(nil, 100)<CR>', { noremap = true })
+
+return UtilityProviders

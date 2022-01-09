@@ -10,6 +10,7 @@
 
 local packages = {
     "wbthomason/packer.nvim",
+    "jose-elias-alvarez/null-ls.nvim",
     "neovim/nvim-lspconfig",
     --{"glepnir/galaxyline.nvim", {branch = "main"}},
     {
@@ -93,7 +94,9 @@ local packages = {
         {as = "catppuccin"}
     },
     "kevinhwang91/rnvimr",
-    "tami5/lspsaga.nvim",
+    {
+        "tami5/lspsaga.nvim",branch = 'nvim6.0'
+    },
     "xiyaowong/nvim-transparent",
     "mizlan/iswap.nvim",
     "MunifTanjim/nui.nvim"
