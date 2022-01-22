@@ -129,7 +129,7 @@ local diag_col = {
 }
 
 function FileType()
-    return vim.fn.expand('%e')
+    return vim.bo.filetype
 end
 
 function Create_augroup(autocmds, name)

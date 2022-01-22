@@ -39,8 +39,7 @@ local servers = {
 
 -- for _, name in pairs(servers) do
 --     local server_is_found, server = lsp_installer.get_server(name)
---     if server_is_found then
---         if not server:is_installed() then
+--     if server_is_found then if not server:is_installed() then
 --             print("Installing " .. name)
 --             server:install()
 --         end
@@ -69,6 +68,34 @@ UtilityProviders.pyright = {
 UtilityProviders.sumneko_lua = LUACONF
 UtilityProviders.jsonls = {}
 UtilityProviders.lemminx = {}
+UtilityProviders.tsserver = {}
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+UtilityProviders.emmet_ls = {}
+
+-- UtilityProviders.rome = {}
+
+local ls = require('luasnip')
+
+-- Every unspecified option will be set to the default.
+ls.config.set_config({
+    history = true,
+    -- Update more often, :h events for more info.
+    updateevents = 'TextChanged,TextChangedI',
+})
+
+ls.snippets = {
+    all = {},
+    html = {},
+}
+
+-- enable html snippets in javascript/javascript(REACT)
+ls.snippets.javascript = ls.snippets.html
+ls.snippets.javascriptreact = ls.snippets.html
+ls.snippets.typescriptreact = ls.snippets.html
+
+require('luasnip/loaders/from_vscode').load({ include = { 'html' } })
 
 --vim.cmd("BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 100)")
 vim.api.nvim_set_keymap('n', 'zf', '<cmd>lua vim.lsp.buf.formatting_sync(nil, 100)<CR>', { noremap = true })

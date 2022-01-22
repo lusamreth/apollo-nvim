@@ -1,6 +1,6 @@
-local Popup = require("nui.popup")
-local event = require("nui.utils.autocmd").event
-local utils = access_system("ui.utils")
+local Popup = require('nui.popup')
+local event = require('nui.utils.autocmd').event
+local utils = access_system('ui.utils')
 
 ResizerStack = {}
 ResizeCmds = {}
@@ -14,7 +14,7 @@ local function make_resizer(popup_instance, generate_instance, hook)
         local function close()
             wid_cache = popup_instance.winid
             local s, _ = pcall(vim.api.nvim_win_close, wid_cache, true)
-            assert(s, "cannot identify window id!")
+            assert(s, 'cannot identify window id!')
         end
 
         local success, _ = pcall(close)
@@ -28,12 +28,12 @@ local function make_resizer(popup_instance, generate_instance, hook)
         popup_instance:on(event.VimResized, Resizer)
     end
 
-    local resizer_id = "resize_" .. RandomString(5)
+    local resizer_id = 'resize_' .. RandomString(5)
     ResizerStack[resizer_id] = Resizer
 
     local call = string.format(":lua ResizerStack['%s']()", resizer_id)
-    local resize_event = "VimResized * "
-    table.insert(ResizeCmds, {resize_event, call})
+    local resize_event = 'VimResized * '
+    table.insert(ResizeCmds, { resize_event, call })
 end
 
 ProtoPopup = {}
@@ -41,8 +41,8 @@ ProtoPopup = {}
 local function open_popup(class)
     class.popup:mount()
     local buf = class.popup.bufnr
-    local highlighter = MakeHighlighBorder(class.text_obj, class.border_config["color"])
-    local text = class.text_obj["lines"]
+    local highlighter = MakeHighlighBorder(class.text_obj, class.border_config['color'])
+    local text = class.text_obj['lines']
 
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, text)
     highlighter(buf)
@@ -68,11 +68,11 @@ local function init_raw_popup(text_obj, config, class)
         enter = false,
         focusable = true,
         size = fit_size,
-        relative = "editor",
+        relative = 'editor',
         position = {
-            col = "0",
-            row = "0"
-        }
+            col = '0',
+            row = '0',
+        },
     }
 
     config = config or {}
@@ -86,7 +86,7 @@ local function init_raw_popup(text_obj, config, class)
     -- vim.api.nvim_buf_set_lines(newbuf, 0, -1, false, text_obj["lines"])
     self.text_obj = text_obj
     self.popup = popup
-    self.border_config = text_obj["border_config"]
+    self.border_config = text_obj['border_config']
 
     -- self.buffer = newbuf
 
@@ -108,7 +108,7 @@ function SetOption(options, selection)
         --     error("Cannot set option! Could be either win or buf!", 2)
         -- end
         local setter = function(kindopt, val)
-            return vim.api["nvim_" .. kind .. "_set_option"](selected, kindopt, val)
+            return vim.api['nvim_' .. kind .. '_set_option'](selected, kindopt, val)
         end
         set(option, setter)
     end
@@ -117,56 +117,52 @@ end
 function CreatePopup(obj, config)
     local pop = init_raw_popup(obj, config)
 
-    make_resizer(
-        pop.popup,
-        function()
-            local p = init_raw_popup(obj, config)
-            return p.popup
-        end,
-        create_resize_hook(pop)
-    )
+    make_resizer(pop.popup, function()
+        local p = init_raw_popup(obj, config)
+        return p.popup
+    end, create_resize_hook(pop))
 
     State = true
     -- open_popup(Pop)
-    M = {
-        open = function(time)
-            if time then
-                local close_timer = vim.loop.new_timer()
-                close_timer:start(
-                    time,
-                    0,
-                    vim.schedule_wrap(
-                        function()
-                            M.close()
-                        end
-                    )
-                )
-            end
-            open_popup(pop)
-        end,
-        close = function()
-            close_popup(pop)
-        end,
-        toggle = function()
-            if State then
-                open_popup(pop)
-            else
-                close_popup(pop)
-            end
-            State = not State
+    M = {}
+    M.open = function(time)
+        if time then
+            local close_timer = vim.loop.new_timer()
+            close_timer:start(
+                time,
+                1000,
+                vim.schedule_wrap(function()
+                    close_popup(pop)
+                    M.isOpen = false
+                end)
+            )
         end
-    }
-
+        open_popup(pop)
+        M.isOpen = true
+    end
+    M.close = function()
+        close_popup(pop)
+        M.isOpen = false
+    end
+    M.toggle = function()
+        if State then
+            open_popup(pop)
+        else
+            close_popup(pop)
+        end
+        State = not State
+    end
     -- Initialize the produced Command!!!
+
     Create_augroup(ResizeCmds, RandomString(5))
     return M
 end
 
-local tobj = access_system("ui.text_obj")
+local tobj = access_system('ui.text_obj')
 return {
     text = tobj,
     utils = utils,
     win = {
-        CreatePopup = CreatePopup
-    }
+        CreatePopup = CreatePopup,
+    },
 }

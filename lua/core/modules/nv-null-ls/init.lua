@@ -1,16 +1,22 @@
 local get_format = access_module('nv-null-ls.formatters')
+local misc = access_module('nv-null-ls.misc')
 
 -- print(vim.inspect(get_format()))
 -- make sure to reduce func complexity
 -- also install hacking plugin too !
-local sources = {
-    unpack(get_format()),
-}
+-- local sources = {
+--     unpack(get_format()),
+--     unpack(misc.diagnostics()),
+--     unpack(misc.code_actions()),
+-- }
+local sources = Utils.table_merge(0, get_format(), misc.diagnostics())
+-- print('SOURCEs', vim.inspect(sources))
+local G = {}
 
-G = {}
 G.override_settings = {}
 G.NULL_LOADED = false
 G.CACHE_CLIENT = nil
+G.DEBUG = true
 
 local function init_null_ls(attach_fn)
     local status_ok, null_ls = pcall(require, 'null-ls')
@@ -25,10 +31,19 @@ local function init_null_ls(attach_fn)
         -- you can reuse a shared lspconfig on_attach callback here
         on_attach = function(client)
             if client.resolved_capabilities.document_formatting then
-                vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()')
+                -- auto format
+                -- print('AUTO _FORMAT !')
+                vim.cmd([[
+                    augroup LspFormatting
+                        autocmd! * <buffer>
+                        autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
+                    augroup END
+                ]])
             end
             if attach_fn then
-                print('ATTACHING')
+                if G.DEBUG then
+                    print('ATTACHING')
+                end
                 attach_fn(client)
             end
         end,
@@ -86,7 +101,6 @@ local function create_override_attachment(lsp_client, priority, exceptions)
     exceptions = exceptions or {
         client = 'null',
         formatting = true,
-        diagnostics = true,
     }
     -- priority = priority or 'lsp'
     return function(null_client)
@@ -101,16 +115,20 @@ local function create_override_attachment(lsp_client, priority, exceptions)
             null = lsp_client,
             lsp = null_client,
         }
-        print('OVERLASPED', vim.inspect(overlapsed))
+        if G.DEBUG then
+            print('OVERLASPED', vim.inspect(overlapsed), lsp_keycaps)
+        end
+
         create_override_fn(clients)(exceptions, overlapsed, 'partial')
         disable_cap(clients[priority], overlapsed)
     end
 end
 
 G.ftcache = {}
+G.lsp_hook_called = 0
 
 ---@diagnostic disable-next-line: redefined-local
-local function extract_null_ft(sources)
+function G.extract_null_ft(sources)
     if not vim.tbl_isempty(G.ftcache) then
         return G.ftcache
     end
@@ -131,16 +149,8 @@ end
 -- this will only mount null-ls when lsp is online !!
 function G.resolve_null_conflict(lsp_client)
     local overide_attachment = create_override_attachment(lsp_client)
-    -- require('null-ls').setup({
-    --     sources = sources,
-    --     on_attach = function(client)
-    --         G.cache_client = client
-    --         if client.resolved_capabilities.document_formatting then
-    --             vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()')
-    --         end
-    --         overide_attachment(client)
-    --     end,
-    -- })
+
+    G.lsp_hook_called = G.lsp_hook_called + 1
 
     init_null_ls(overide_attachment)
     if G.CACHE_CLIENT then
@@ -149,5 +159,6 @@ function G.resolve_null_conflict(lsp_client)
 end
 
 G.create_override_attachment = create_override_attachment
+G.init_null_ls = init_null_ls
 
 return G

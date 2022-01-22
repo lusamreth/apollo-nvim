@@ -243,11 +243,36 @@ local function mount_tools()
     show_func_sig()
 end
 
+local opt = require('system.scripts.meta-data')
+function CallEmmet()
+    print('CALLING EMMET')
+    -- Emmet settings
+    opt.g.user_emmet_leader_key = ','
+    opt.g.user_emmet_mode = 'i'
+    opt.g.user_emmet_settings = {
+        javascript = {
+            extends = 'jsx',
+        },
+    }
+
+    opt.g.user_emmet_install_global = 1
+    -- g:user_emmet_settings = {
+    --   \  'php' : {
+    --   \    'extends' : 'html',
+    --   \    'filters' : 'c',
+    --   \  },
+    --   \  'xml' : {
+    --   \    'extends' : 'html',
+    --   \  },
+    --   \  'haml' : {
+    --   \    'extends' : 'html',
+    --   \  },
+    --   \}
+end
+
 -- t:table -> { client,bufnr,conf }
 local function attach_builder(t)
     local conf = t.config
-    -- attachment
-
     if t.mapper_builder == nil then -- non_null value
         --default options
         lsp_config.mapper = build_mapper(conf.leaders)

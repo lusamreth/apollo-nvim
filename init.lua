@@ -3,7 +3,8 @@
             "=================     ===============     ===============   ========  ========",
             "\\ . . . . . . .\\\\   //. . . . . . .\\\\   //. . . . . . .\\\\  \\\\. . .  //",
             "||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\\/ . . .||",
-            "|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . .  ||", "||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . . ||",
+            "|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . .  ||",
+            "||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . . ||",
             "|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\\ . . . . ||",
             "||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\\_ . .|. .||",
             "|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\\ `-_/| . ||",
@@ -15,7 +16,8 @@
             "||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \\/  |   ||",
             "||   .=='    _-'          '-__\\._-'         '-_./__-'         `' |. /|  |   ||",
             "||.=='    _-'                                                     `' |  /==. ||",
-            "=='    _-'                         N V I M S                          \\/   `==", "\\   _-'                                                                `-_   /",
+            "=='    _-'                         N V I M S                          \\/   `==", 
+            "\\   _-'                                                                `-_   /",
             " `''                                                                      ``'"
 ]]
 require('impatient')
@@ -118,7 +120,6 @@ require('nvim-treesitter.configs').setup({
 --vim.cmd("au BufRead,BufNewFile *.rs silent! <cmd>lua print('rust?')")
 --utility = bash,lua,vim
 require('colorizer').setup()
---require("diagnostic_line")
 function Reload()
     print('Reloaded!')
     vim.cmd('source %')
@@ -136,7 +137,7 @@ access_module('nv-tree')
 
 access_core('lsp.init')
 access_core('lsp.languages.init')
-
+vim.cmd('source /home/lusamreth/.config/nvim/emmet.vim')
 require('configs.nv-settings')
 require('configs.keybinding')
 
@@ -157,8 +158,6 @@ require('nvim_comment').setup({
     -- Visual/Operator mapping left hand side
     operator_mapping = 'gc',
 })
-
-require('nvim-web-devicons').setup()
 
 vim.cmd('syntax on')
 -- vim.fn.Constructor
