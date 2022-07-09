@@ -23,7 +23,7 @@ opt.o.autoread = true
 opt.o.backup = false -- This is recommended by coc
 opt.o.writebackup = false -- This is recommended by coc
 opt.o.updatetime = 300 -- Faster completion
-opt.o.timeoutlen = 0 -- By default timeoutlen is 1000 ms
+opt.o.timeoutlen = 1000 -- By default timeoutlen is 1000 ms
 opt.o.clipboard = 'unnamedplus' -- Copy paste between vim and everything else
 opt.o.smartcase = true
 --opt.o.guifont = "JetBrainsMono\\ Nerd\\ Font\\ Mono:h18"
@@ -225,18 +225,6 @@ catppuccino.setup({
     },
 })
 -- make_prompt()
-function border_rename()
-    local newName = vim.trim(vim.fn.getline('.'):sub(4, -1))
-    vim.cmd([[q!]])
-    local params = lsp.util.make_position_params()
-    local currName = vim.fn.expand('<cword>')
-    if not (newName and #newName > 0) or newName == currName then
-        return
-    end
-    params.newName = newName
-    print(newName)
-    lsp.buf_request(0, 'textDocument/rename', params)
-end
 
 require('onedark').setup({
     -- style = 'darker',

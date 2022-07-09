@@ -14,6 +14,7 @@ function mock_handle()
 end
 
 local code_actions = {}
+
 return {
     diagnostics = h.BuiltinFactory(diagnostics, 'diagnostics', mock_handle),
     code_actions = h.BuiltinFactory(code_actions, 'code_actions', mock_handle),

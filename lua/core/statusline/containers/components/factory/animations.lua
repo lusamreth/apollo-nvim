@@ -1,91 +1,90 @@
 -- can change background or foreground
 local function chcol(hl, ranges, kind)
-    assert(kind == "bg" or kind == "fg", "CAN ONLY CHANGE background or foreground")
+    assert(kind == 'bg' or kind == 'fg', 'CAN ONLY CHANGE background or foreground')
     local i = 1
     local timer = vim.loop.new_timer()
     timer:start(
         0, -- wait
         120, -- repeat
-        vim.schedule_wrap(
-            function()
-                if i > #ranges then
-                    i = 1
-                end
-                hl[kind] = ranges[i]
-                i = i + 1
+        vim.schedule_wrap(function()
+            if i > #ranges then
+                i = 1
             end
-        )
+            hl[kind] = ranges[i]
+            i = i + 1
+        end)
     )
 end
 local holo_color = {
-    "#9eadb6",
-    "#bd899e",
+    '#9eadb6',
+    '#bd899e',
     --
-    "#004444",
-    "#b9a4d0",
-    "#691aff",
+    '#004444',
+    '#b9a4d0',
+    '#691aff',
     --
-    "#340d7f",
-    "#dbbfc9",
-    "#008080",
-    "#3366cc"
+    '#340d7f',
+    '#dbbfc9',
+    '#008080',
+    '#3366cc',
     -- "#cfcfcf"
 }
 
 local gold_shades = {
-    "#f5d000",
-    "#e0bf00",
-    "#ccad00",
-    "#b89c00",
-    "#f0cc00",
-    "#dbba00",
-    "#c7a900",
-    "#b39800",
-    "#e6c300",
-    "#d1b200",
-    "#bda000",
-    "#a88f00"
+    '#f5d000',
+    '#e0bf00',
+    '#ccad00',
+    '#b89c00',
+    '#f0cc00',
+    '#dbba00',
+    '#c7a900',
+    '#b39800',
+    '#e6c300',
+    '#d1b200',
+    '#bda000',
+    '#a88f00',
 }
 
 local function get_opposite(kind)
     local opposite
-    if kind == "bg" then
-        opposite = "fg"
+    if kind == 'bg' then
+        opposite = 'fg'
     else
-        opposite = "bg"
+        opposite = 'bg'
     end
     return opposite
 end
+
 M = {}
 function M.init(ui_lib, color)
     -- function(bgranges,fgranges)
     M.create_hl_range = function(ranges, kind, opposite_kind)
-        kind = kind or "bg"
-        ranges = ranges or {"light_purple", "red", "green", "darkblue"}
+        kind = kind or 'bg'
+        ranges = ranges or { 'light_purple', 'red', 'green', 'darkblue' }
 
         if kind and opposite_kind == nil then
-            error("if kind is" .. kind .. "need to supply the contrast color too!")
+            error('if kind is' .. kind .. 'need to supply the contrast color too!')
         end
 
         local hl = {
-            [get_opposite(kind)] = opposite_kind or "white"
+            [get_opposite(kind)] = opposite_kind or 'white',
         }
 
         if color then
             hl = {
-                fg = color[hl["fg"]],
-                bg = color[hl["bg"]]
+                fg = color[hl['fg']],
+                bg = color[hl['bg']],
             }
         end
 
         local fn = function(_, _)
             chcol(hl, ranges, kind)
-            chcol(hl, ranges, "fg")
+            chcol(hl, ranges, 'fg')
 
             return function()
                 return {
-                    fg = hl["fg"],
-                    bg = hl["bg"]
+                    fg = hl['fg'],
+                    bg = hl['bg'],
                 }
             end
         end
@@ -94,21 +93,21 @@ function M.init(ui_lib, color)
     end
 
     M.create_hl_range = function(ranges, kind, opposite_kind)
-        kind = kind or "bg"
-        ranges = ranges or {"light_purple", "red", "green", "darkblue"}
+        kind = kind or 'bg'
+        ranges = ranges or { 'light_purple', 'red', 'green', 'darkblue' }
 
         if kind and opposite_kind == nil then
-            error("if kind is" .. kind .. "need to supply the contrast color too!")
+            error('if kind is' .. kind .. 'need to supply the contrast color too!')
         end
 
         local hl = {
-            [get_opposite(kind)] = opposite_kind or "white"
+            [get_opposite(kind)] = opposite_kind or 'white',
         }
 
         if color then
             hl = {
-                fg = color[hl["fg"]],
-                bg = color[hl["bg"]]
+                fg = color[hl['fg']],
+                bg = color[hl['bg']],
             }
         end
 
@@ -116,8 +115,8 @@ function M.init(ui_lib, color)
             chcol(hl, ranges, kind)
             return function()
                 return {
-                    fg = hl["fg"],
-                    bg = hl["bg"]
+                    fg = hl['fg'],
+                    bg = hl['bg'],
                 }
             end
         end

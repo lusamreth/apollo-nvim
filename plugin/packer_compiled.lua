@@ -91,7 +91,7 @@ _G.packer_plugins = {
   },
   ["crates.nvim"] = {
     after_files = { "/home/lusamreth/.local/share/nvim/site/pack/packer/opt/crates.nvim/after/plugin/cmp_crates.lua" },
-    config = { "\27LJ\2\2©\1\0\0\4\0\n\0\0206\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\0016\0\3\0'\1\4\0B\0\2\0016\0\0\0'\1\5\0B\0\2\0029\0\2\0009\0\6\0005\1\b\0004\2\3\0005\3\a\0>\3\1\2=\2\t\1B\0\2\1K\0\1\0\fsources\1\0\0\1\0\1\tname\vcrates\vbuffer\bcmp\22setting up crates\nprint\nsetup\vcrates\frequire\0" },
+    config = { "\27LJ\2\n©\1\0\0\5\0\n\0\0206\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\0016\0\3\0'\2\4\0B\0\2\0016\0\0\0'\2\5\0B\0\2\0029\0\2\0009\0\6\0005\2\b\0004\3\3\0005\4\a\0>\4\1\3=\3\t\2B\0\2\1K\0\1\0\fsources\1\0\0\1\0\1\tname\vcrates\vbuffer\bcmp\22setting up crates\nprint\nsetup\vcrates\frequire\0" },
     loaded = false,
     needs_bufread = false,
     only_cond = false,
@@ -102,6 +102,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/dashboard-nvim",
     url = "https://github.com/glepnir/dashboard-nvim"
+  },
+  ["emmet-vim"] = {
+    loaded = true,
+    path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/emmet-vim",
+    url = "https://github.com/mattn/emmet-vim"
   },
   ["extmark-toy.nvim"] = {
     loaded = true,
@@ -117,6 +122,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/formatter.nvim",
     url = "https://github.com/mhartington/formatter.nvim"
+  },
+  ["friendly-snippets"] = {
+    loaded = true,
+    path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/friendly-snippets",
+    url = "https://github.com/rafamadriz/friendly-snippets"
   },
   ["gitsigns.nvim"] = {
     loaded = true,
@@ -173,6 +183,11 @@ _G.packer_plugins = {
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/lspsaga.nvim",
     url = "https://github.com/tami5/lspsaga.nvim"
   },
+  ["lua-dev.nvim"] = {
+    loaded = true,
+    path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/lua-dev.nvim",
+    url = "https://github.com/folke/lua-dev.nvim"
+  },
   ["lualine.nvim"] = {
     loaded = true,
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/lualine.nvim",
@@ -222,11 +237,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/nvim-comment",
     url = "https://github.com/terrortylor/nvim-comment"
-  },
-  ["nvim-compe"] = {
-    loaded = true,
-    path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/nvim-compe",
-    url = "https://github.com/hrsh7th/nvim-compe"
   },
   ["nvim-hlslens"] = {
     loaded = true,
@@ -283,6 +293,21 @@ _G.packer_plugins = {
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/nvim-web-devicons",
     url = "https://github.com/kyazdani42/nvim-web-devicons"
   },
+  ["onedark.nvim"] = {
+    loaded = true,
+    path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/onedark.nvim",
+    url = "https://github.com/navarasu/onedark.nvim"
+  },
+  ["org-bullets.nvim"] = {
+    loaded = true,
+    path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/org-bullets.nvim",
+    url = "https://github.com/akinsho/org-bullets.nvim"
+  },
+  orgmode = {
+    loaded = true,
+    path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/orgmode",
+    url = "https://github.com/nvim-orgmode/orgmode"
+  },
   ["package-info.nvim"] = {
     loaded = true,
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/package-info.nvim",
@@ -298,6 +323,11 @@ _G.packer_plugins = {
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/plenary.nvim",
     url = "https://github.com/nvim-lua/plenary.nvim"
   },
+  ["poet-v"] = {
+    loaded = true,
+    path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/poet-v",
+    url = "https://github.com/petobens/poet-v"
+  },
   ["popup.nvim"] = {
     loaded = true,
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/popup.nvim",
@@ -312,6 +342,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/project.nvim",
     url = "https://github.com/ahmedkhalf/project.nvim"
+  },
+  ["py_lsp.nvim"] = {
+    loaded = true,
+    path = "/home/lusamreth/.local/share/nvim/site/pack/packer/start/py_lsp.nvim",
+    url = "https://github.com/HallerPatrick/py_lsp.nvim"
   },
   rnvimr = {
     loaded = true,
@@ -373,10 +408,11 @@ time([[Defining lazy-load event autocommands]], true)
 vim.cmd [[au BufRead Cargo.toml ++once lua require("packer.load")({'crates.nvim'}, { event = "BufRead Cargo.toml" }, _G.packer_plugins)]]
 time([[Defining lazy-load event autocommands]], false)
 vim.cmd("augroup END")
-if should_profile then save_profiles(1) end
+if should_profile then save_profiles() end
 
 end)
 
 if not no_errors then
+  error_msg = error_msg:gsub('"', '\\"')
   vim.api.nvim_command('echohl ErrorMsg | echom "Error in packer_compiled: '..error_msg..'" | echom "Please check your config for correctness" | echohl None')
 end

@@ -71,9 +71,11 @@ local function build_mapper(leaders)
         end
 
         -- enable format on save
-        -- if client.resolved_capabilities.document_formatting then
-        --     vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()')
-        -- end
+        -- vim.pretty_print(client.server_capabilities)
+        if client.server_capabilities.documentFormattingProvider then
+            vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.format()')
+            -- vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.format({async = true})')
+        end
 
         buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
         -- g prefixes
@@ -105,9 +107,9 @@ local function build_mapper(leaders)
         buf_set_keymap('n', l2 .. 'dp', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 
         -- check if server could format the document
-        if client.resolved_capabilities.document_highlight then
+        if client.server_capabilities.document_highlight then
             buf_set_keymap('n', l2 .. 'f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-        elseif client.resolved_capabilities.document_range_formatting then
+        elseif client.server_capabilities.document_range_formatting then
             buf_set_keymap('n', l2 .. 'f', '<cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
         end
 
@@ -125,7 +127,7 @@ end
 --auto formatting when server is loaded
 local function documentHighlight(client)
     -- Set autocommands conditional on server_capabilities
-    if client.resolved_capabilities.document_highlight then
+    if client.server_capabilities.document_highlight then
         vim.api.nvim_exec(
             [[
           hi LspReferenceRead cterm=bold ctermbg=red guibg=#fff
@@ -244,32 +246,8 @@ local function mount_tools()
 end
 
 local opt = require('system.scripts.meta-data')
-function CallEmmet()
-    print('CALLING EMMET')
-    -- Emmet settings
-    opt.g.user_emmet_leader_key = ','
-    opt.g.user_emmet_mode = 'i'
-    opt.g.user_emmet_settings = {
-        javascript = {
-            extends = 'jsx',
-        },
-    }
 
-    opt.g.user_emmet_install_global = 1
-    -- g:user_emmet_settings = {
-    --   \  'php' : {
-    --   \    'extends' : 'html',
-    --   \    'filters' : 'c',
-    --   \  },
-    --   \  'xml' : {
-    --   \    'extends' : 'html',
-    --   \  },
-    --   \  'haml' : {
-    --   \    'extends' : 'html',
-    --   \  },
-    --   \}
-end
-
+-- require('lspconfig').html.setup({})
 -- t:table -> { client,bufnr,conf }
 local function attach_builder(t)
     local conf = t.config
@@ -284,7 +262,10 @@ local function attach_builder(t)
     local on_attach = function(client, bufnr)
         -- useful additions such as diagnostics panel, auto-
         -- complete, formatter, ...
-
+        if t.on_mount then
+            print('calling on mount!')
+            t.on_mount(client, bufnr)
+        end
         mount_tools()
         -- important func!
         -- capabilities setting
@@ -293,14 +274,14 @@ local function attach_builder(t)
         diagnostic_definition(t.diagnostic_signs)
         -- setting keymaps and shortcuts
         lsp_config.mapper(client, bufnr)
-
+        print('resolving')
         null.resolve_null_conflict(client)
     end
 
     return on_attach
 end
 
-local function on_common_attach(verb)
+local function on_common_attach(verb, on_mount)
     if verb then
         print('debugging on!')
         print(debug.getinfo(1))
@@ -308,6 +289,7 @@ local function on_common_attach(verb)
 
     -- disable coc avoid conflicting with lsp
     local v_t = {
+        on_mount = on_mount,
         config = {
             leaders = nil,
             -- use default signs!

@@ -1,13 +1,13 @@
 function TestInterface()
     function BuildMockInterface()
         MockInterface = {
-            {"fn_mock_1", {"string", "->", "number"}},
+            { 'fn_mock_1', { 'string', '->', 'number' } },
             -- "null_fn",
             {
-                "fn_return_only",
-                {"->", "number"}
+                'fn_return_only',
+                { '->', 'number' },
             },
-            {"fn_input_only", {"string"}}
+            { 'fn_input_only', { 'string' } },
         }
         local Mock = interface.build_interface(MockInterface)
         return Mock
@@ -25,17 +25,17 @@ function TestInterface()
             end,
             fn_input_only = function(i)
                 return i
-            end
+            end,
         }
         return Impl
     end
 
     function Assemble(IMPL)
-        print("assembling...")
+        print('assembling...')
         local Mock = BuildMockInterface()
         local success, res = pcall(Mock.build, IMPL, true)
-        res = res or "success"
-        assert(success == true, "failed test! should spit out correct\nr")
+        res = res or 'success'
+        assert(success == true, 'failed test! should spit out correct\nr')
         return res
     end
 
@@ -44,7 +44,7 @@ function TestInterface()
         -- mock will take target function and then return
         -- builder function
         local MockFnBuilder = function(targetFn)
-            assert(type(targetFn) == "function", "this dependency requires function")
+            assert(type(targetFn) == 'function', 'this dependency requires function')
             return function()
                 return function(...)
                     return targetFn(...)
@@ -52,68 +52,53 @@ function TestInterface()
             end
         end
 
-        local o =
-            MockFnBuilder(
-            function()
-                return 1000
-            end
-        )
-        print("typeo", type(o))
+        local o = MockFnBuilder(function()
+            return 1000
+        end)
+        print('typeo', type(o))
         MockBlueprint = {
-            build_fn_mock_1 = MockFnBuilder(
-                function(i)
-                    print("Mock input", i)
-                    return 100000
-                end
-            ),
-            build_fn_return_only = MockFnBuilder(
-                function()
-                    return 100000
-                end
-            ),
-            build_fn_input_only = MockFnBuilder(
-                function(i)
-                    print("Mock input", i)
-                    print("No return")
-                end
-            )
+            build_fn_mock_1 = MockFnBuilder(function(i)
+                print('Mock input', i)
+                return 100000
+            end),
+            build_fn_return_only = MockFnBuilder(function()
+                return 100000
+            end),
+            build_fn_input_only = MockFnBuilder(function(i)
+                print('Mock input', i)
+                print('No return')
+            end),
         }
 
         BUILD_IMPL(MockBlueprint)
         -- inject all builder code
-        local res =
-            MockBlueprint.inject(
-            {
-                build_fn_mock_1 = {"string", 10000},
-                build_fn_return_only = {nil, 20000},
-                build_fn_input_only = {"string"}
-            }
-        )
+        local res = MockBlueprint.inject({
+            build_fn_mock_1 = { 'string', 10000 },
+            build_fn_return_only = { nil, 20000 },
+            build_fn_input_only = { 'string' },
+        })
 
-        print("building shit")
+        print('building shit')
         for n, oi in pairs(res) do
-            print("Injected output [" .. n .. "] ==>", assert(type(oi) == "function"))
+            print('Injected output [' .. n .. '] ==>', assert(type(oi) == 'function'))
         end
 
         return res
     end
 
     local impl1 = BuildMockImpl()
-    print("Testing Normal implementation...")
-    Assemble(impl1).fn_mock_1("bruh")
+    print('Testing Normal implementation...')
+    Assemble(impl1).fn_mock_1('bruh')
 
-    print("Testing implementation derived from blueprint_builder! ...")
+    print('Testing implementation derived from blueprint_builder! ...')
     local impl2 = BuildMockImplBlueprint()
-    Assemble(impl2).fn_mock_1("bruh")
+    Assemble(impl2).fn_mock_1('bruh')
 end
 
 function TestType2()
-    local p =
-        interface.build_interface(
-        {
-            {"lots_param", {{"string", "string", "string", "string"}, "->", "table"}}
-        }
-    )
+    local p = interface.build_interface({
+        { 'lots_param', { { 'string', 'string', 'string', 'string' }, '->', 'table' } },
+    })
     local impl = {}
 
     impl.lots_param = function(a, b, c, d)
@@ -122,5 +107,5 @@ function TestType2()
     end
 
     local o = p.build(impl, true)
-    o.lots_param("a", "b", "c", "d")
+    o.lots_param('a', 'b', 'c', 'd')
 end

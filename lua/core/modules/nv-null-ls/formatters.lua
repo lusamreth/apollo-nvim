@@ -3,17 +3,18 @@ local h = access_module('nv-null-ls.helpers')
 -- compare filetypes
 -- integrate custom formatter !
 -- backup loading !!!
+
 local formatters = {
     -- 'prettier',
     'rustfmt',
     {
         name = 'black',
         config = {
-            extra_args = { '--fast' },
+            extra_args = { '--fast', '--line-length', '69' },
         },
     },
     'prettierd',
-    'eslint_d',
+    -- 'eslint_d',
     'fish_indent',
     {
         name = 'json',
@@ -41,6 +42,7 @@ local formatters = {
             },
             stdin = true,
         },
+
         -- capture is a callback function that take two args ; (data,halt)
         -- data : additional data that flow from stdout before arriving to
         -- the display handler(bufwriter)
@@ -68,7 +70,6 @@ local formatters = {
             extra_args = { '--indent-width', '4' },
         },
     },
-
 }
 
 local spawner = access_module('nv-null-ls.spawner')
@@ -76,6 +77,7 @@ local spawner = access_module('nv-null-ls.spawner')
 local function fmt_manual()
     local ma = {}
     local conv = spawner.CreateAutoConverter()
+
     ma.handle = function(fmt)
         conv.ConvertToAuto(fmt)
     end

@@ -8,9 +8,9 @@ local function get_nvim_lsp_diagnostic(diag_type)
     local count = 0
 
     count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity[diag_type] })
-    if diag_type == 'HINT' then
-        print(diag_type, count)
-    end
+    -- if diag_type == 'HINT' then
+    --     print(diag_type, count)
+    -- end
     return count
 end
 

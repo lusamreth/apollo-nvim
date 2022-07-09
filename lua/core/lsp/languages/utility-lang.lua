@@ -4,7 +4,8 @@
 -- lua lsp !!
 -- local sumneko_root_path = LSP_REPO .. "lua"
 -- local sumneko_binary = sumneko_root_path .. "/sumneko-lua-language-server"
-
+local pylang = access_core('lsp.languages.python-lang')
+-- local root_pattern = require('lspconfig').util.root_pattern
 LUACONF = {
     settings = {
         Lua = {
@@ -31,10 +32,14 @@ LUACONF = {
 -- local server
 local servers = {
     'bashls',
-    'pyright',
+    --'pyright',
     'vuels',
-    'sumneko_lua',
+    'tsserver',
+    'cssls',
+    -- 'sumneko_lua',
     'yamlls',
+    'dockerls',
+    'lemminx',
 }
 
 -- for _, name in pairs(servers) do
@@ -54,25 +59,37 @@ UtilityProviders = {}
 UtilityProviders.bashls = {
     filetypes = { 'sh', 'zsh' },
 }
-
 UtilityProviders.pyright = {
-    filetypes = { 'python' },
-    python = {
-        analysis = {
-            autoSearchPaths = true,
-            useLibraryCodeForTypes = true,
-        },
-    },
+    before_init = function(_, config)
+        config.settings.python.pythonPath = pylang.get_python_path(config.root_dir)
+    end,
 }
+-- UtilityProviders.pyright = {
+--     filetypes = { 'python' },
+--     python = {
+--         analysis = {
+--             autoSearchPaths = true,
+--             useLibraryCodeForTypes = true,
+--         },
+--     },
+--     root_dir = root_pattern('.venv'),
+-- }
+for i, server in pairs(servers) do
+    UtilityProviders[server] = {}
+end
 
 UtilityProviders.sumneko_lua = LUACONF
-UtilityProviders.jsonls = {}
-UtilityProviders.lemminx = {}
-UtilityProviders.tsserver = {}
+
+-- UtilityProviders.jsonls = {}
+-- UtilityProviders.lemminx = {}
+-- UtilityProviders.tsserver = {}
+-- UtilityProviders.dockerls = {}
+-- UtilityProviders.emmet_ls = {}
+
+-- UtilityProviders.rust_analyzer = {}
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
-UtilityProviders.emmet_ls = {}
 
 -- UtilityProviders.rome = {}
 
@@ -95,9 +112,11 @@ ls.snippets.javascript = ls.snippets.html
 ls.snippets.javascriptreact = ls.snippets.html
 ls.snippets.typescriptreact = ls.snippets.html
 
-require('luasnip/loaders/from_vscode').load({ include = { 'html' } })
-
+-- require('luasnip/loaders/from_vscode').load({ include = { 'html' } })
 --vim.cmd("BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 100)")
-vim.api.nvim_set_keymap('n', 'zf', '<cmd>lua vim.lsp.buf.formatting_sync(nil, 100)<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', 'zf', '<cmd>lua vim.lsp.buf.format()<CR>', { noremap = true })
+
+-- must name Dockerfile
+-- require('lspconfig').dockerls.setup({})
 
 return UtilityProviders

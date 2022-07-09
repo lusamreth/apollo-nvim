@@ -1,5 +1,4 @@
 --[[
-
             "=================     ===============     ===============   ========  ========",
             "\\ . . . . . . .\\\\   //. . . . . . .\\\\   //. . . . . . .\\\\  \\\\. . .  //",
             "||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\\/ . . .||",
@@ -20,14 +19,18 @@
             "\\   _-'                                                                `-_   /",
             " `''                                                                      ``'"
 ]]
-require('impatient')
+
 require('plugins')
+-- require('impatient')
 
-vim.g.python3_host_prog = '/usr/bin/python3.9'
+vim.g.python3_host_prog = '/usr/bin/python3.10'
 vim.g.python_host_prog = '/usr/bin/python2.7'
+-- vim.g.poetv_executables = { 'poetry', 'pipenv' }
 
+table.unpack = table.unpack or unpack
 -- this custom loader must be loaded first before the system
 -- starts sourcing core files and plugins
+
 require('utility')
 _G.HOMEROOT = '/home/lusamreth'
 _G.LUAROOT = HOMEROOT .. '/nvim-proto-2/lua'
@@ -115,7 +118,7 @@ require('nvim-treesitter.configs').setup({
 --vim.fn.sign_place(16,"","LspDiagnosticsSignError","%", {priority="30"})
 -- relating to lsp
 --require("nv-compe")
--- require("nv-cmp")
+-- access_module('nv-cmp')
 --require("lspinstall").setup {}
 --vim.cmd("au BufRead,BufNewFile *.rs silent! <cmd>lua print('rust?')")
 --utility = bash,lua,vim
@@ -124,12 +127,14 @@ function Reload()
     print('Reloaded!')
     vim.cmd('source %')
 end
+
 vim.api.nvim_set_keymap('n', '<M-r>', '<cmd>lua Reload()<CR>', { noremap = true, silent = true })
 
 -- start importing modules(plugin configs)
 access_module('nv-hlsearch')
 access_module('nv-layout')
 access_module('nv-projects')
+
 access_module('nv-whichkey')
 access_module('nv-term')
 access_module('nv-bufferline')
@@ -137,7 +142,7 @@ access_module('nv-tree')
 
 access_core('lsp.init')
 access_core('lsp.languages.init')
-vim.cmd('source /home/lusamreth/.config/nvim/emmet.vim')
+-- vim.cmd('source /home/lusamreth/.config/nvim/emmet.vim')
 require('configs.nv-settings')
 require('configs.keybinding')
 
@@ -146,6 +151,7 @@ access_system('inspectors.interface-builder')
 -- statusline mutate the original import
 vim.cmd('luafile ~/nvim-proto-2/lua/core/statusline/init.lua')
 reset_import()
+
 require('nvim_comment').setup({
     -- Linters prefer comment and line to have a space in between markers
     marker_padding = true,
@@ -159,5 +165,23 @@ require('nvim_comment').setup({
     operator_mapping = 'gc',
 })
 
+access_module('nv-orgmode')
+vim.g.user_emmet_leader_key = '<C-z>'
+
+local function init_emmet()
+    -- Emmet settings
+    vim.g.user_emmet_leader_key = '<C-space>'
+    -- vim.g.user_emmet_leader_key = ','
+    vim.g.user_emmet_mode = 'i'
+    vim.g.user_emmet_settings = {
+        javascript = {
+            extends = 'jsx',
+        },
+    }
+
+    -- opt.g.user_emmet_install_global = 1
+end
+
+require('focus').setup({ hybridnumber = true, excluded_filetypes = { 'toggleterm' }, treewidth = 20 })
+init_emmet()
 vim.cmd('syntax on')
--- vim.fn.Constructor

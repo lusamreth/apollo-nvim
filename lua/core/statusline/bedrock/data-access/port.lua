@@ -1,48 +1,38 @@
 local DATA_PROVIDER = {}
-DATA_PROVIDER["vcs"] =
-    interface.build_interface(
-    {
-        {"get_workspace", {"->", "string"}},
-        {"get_branch", {"->", "string"}},
-        {"get_commit", {"->", "string"}}
-    }
-)
+DATA_PROVIDER['vcs'] = interface.build_interface({
+    { 'get_workspace', { '->', 'string' } },
+    { 'get_branch', { '->', 'string' } },
+    { 'get_commit', { '->', 'string' } },
+})
 
-DATA_PROVIDER["file"] =
-    interface.build_interface(
-    {
-        {"get_filename", {"->", "string"}},
-        {"get_filesize", {"->", "string"}}
-        --{"get_fileos", t = {""}}
-    }
-)
+DATA_PROVIDER['file'] = interface.build_interface({
+    { 'get_filename', { '->', 'string' } },
+    { 'get_filesize', { '->', 'string' } },
+    --{"get_fileos", t = {""}}
+})
 
-DATA_PROVIDER["nvim"] =
-    interface.build_interface(
+DATA_PROVIDER['nvim'] = interface.build_interface({
     {
+        'get_line_position',
         {
-            "get_line_position",
-            {
-                "->",
-                "string"
-            }
+            '->',
+            'string',
         },
+    },
+    {
+        'get_page_position',
         {
-            "get_page_position",
-            {
-                "->",
-                "string"
-            }
+            '->',
+            'string',
         },
-        {"get_line_diagnostics", {"->", "string"}},
-        {
-            "getmode",
-            {"->", "string"}
-        }
-    }
-)
+    },
+    { 'get_line_diagnostics', { '->', 'int' } },
+    {
+        'getmode',
+        { '->', 'string' },
+    },
+})
 
 -- fix this shit please
 -- does not work
--- can't can't unimplemented
 return DATA_PROVIDER

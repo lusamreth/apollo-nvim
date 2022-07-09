@@ -152,9 +152,9 @@ function CreatePopup(obj, config)
         end
         State = not State
     end
-    -- Initialize the produced Command!!!
 
-    Create_augroup(ResizeCmds, RandomString(5))
+    -- Initialize the produced Command!!!
+    Create_augroup(ResizeCmds, RandomString(8))
     return M
 end
 

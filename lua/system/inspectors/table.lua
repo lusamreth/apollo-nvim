@@ -1,15 +1,12 @@
 local function readonly_newindex(_, _, _)
-    error("You cannot make any changes to this table!", 1)
+    error('You cannot make any changes to this table!', 1)
 end
 
 function table.freeze(tbl)
-    return setmetatable(
-        tbl,
-        {
-            __index = tbl,
-            __newindex = readonly_newindex
-        }
-    )
+    return setmetatable(tbl, {
+        __index = tbl,
+        __newindex = readonly_newindex,
+    })
 end
 
 local original_pairs = pairs
@@ -42,69 +39,68 @@ end
 
 -- copied from xlua support printing table
 function table.printf(obj, ...)
-    if type(obj) == "table" then
+    if type(obj) == 'table' then
         local mt = getmetatable(obj)
         if mt and mt.__tostring__ then
             io.write(mt.__tostring__(obj))
         else
             local tos = tostring(obj)
             local obj_w_usage = false
-            if tos and not string.find(tos, "table: ") then
-                if obj.usage and type(obj.usage) == "string" then
+            if tos and not string.find(tos, 'table: ') then
+                if obj.usage and type(obj.usage) == 'string' then
                     io.write(obj.usage)
-                    io.write("\n\nFIELDS:\n")
+                    io.write('\n\nFIELDS:\n')
                     obj_w_usage = true
                 else
-                    io.write(tos .. ":\n")
+                    io.write(tos .. ':\n')
                 end
             end
-            io.write("{")
-            local tab = ""
+            io.write('{')
+            local tab = ''
             local idx = 1
             for k, v in pairs(obj) do
                 if idx > 1 then
-                    io.write(",\n")
+                    io.write(',\n')
                 end
-                if type(v) == "userdata" then
-                    io.write(tab .. "[" .. k .. "]" .. " = <userdata>")
+                if type(v) == 'userdata' then
+                    io.write(tab .. '[' .. k .. ']' .. ' = <userdata>')
                 else
-                    local tostr = tostring(v):gsub("\n", "\\n")
+                    local tostr = tostring(v):gsub('\n', '\\n')
                     if #tostr > 40 then
                         local tostrshort = tostr:sub(1, 40)
-                        io.write(tab .. "[" .. tostring(k) .. "]" .. " = " .. tostrshort .. " ... ")
+                        io.write(tab .. '[' .. tostring(k) .. ']' .. ' = ' .. tostrshort .. ' ... ')
                     else
-                        io.write(tab .. "[" .. tostring(k) .. "]" .. " = " .. tostr)
+                        io.write(tab .. '[' .. tostring(k) .. ']' .. ' = ' .. tostr)
                     end
                 end
-                tab = " "
+                tab = ' '
                 idx = idx + 1
             end
-            io.write("}")
+            io.write('}')
             if obj_w_usage then
-                io.write("")
+                io.write('')
             end
         end
     else
         io.write(tostring(obj))
     end
-    if select("#", ...) > 0 then
-        io.write("    ")
+    if select('#', ...) > 0 then
+        io.write('    ')
         print(...)
     else
-        io.write("\n")
+        io.write('\n')
     end
 end
 
 function table.unwrap_print(tab, pad)
-    pad = pad or "|"
+    pad = pad or '|'
     for name, val in pairs(tab) do
-        print("\n")
-        print(pad, name, "==>", val)
-        if type(val) == "table" then
-            table.unwrap_print(val, pad .. "->")
+        print('\n')
+        print(pad, name, '==>', val)
+        if type(val) == 'table' then
+            table.unwrap_print(val, pad .. '->')
         end
     end
-    return
 end
 
 _G.printf = printf

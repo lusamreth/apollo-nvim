@@ -8,16 +8,18 @@
 -- )
 --
 
+-- vim.cmd([[packadd packer.nvim]])
 local packages = {
     'wbthomason/packer.nvim',
     'navarasu/onedark.nvim',
     'jose-elias-alvarez/null-ls.nvim',
     'neovim/nvim-lspconfig',
     'mattn/emmet-vim',
+    'mlaursen/vim-react-snippets',
     --{"glepnir/galaxyline.nvim", {branch = "main"}},
     {
         'nvim-treesitter/nvim-treesitter',
-        branch = '0.5-compat',
+        -- branch = '0.5-compat',
     },
     'elzr/vim-json',
     'rafamadriz/friendly-snippets',
@@ -37,7 +39,11 @@ local packages = {
     -- search dependency
     'kevinhwang91/nvim-hlslens',
     'simrat39/symbols-outline.nvim',
-    'folke/which-key.nvim',
+    {
+        'folke/which-key.nvim',
+        -- commit = 'f03a259',
+    },
+    -- f03a259
     'terrortylor/nvim-comment',
     'ray-x/lsp_signature.nvim',
     'glepnir/dashboard-nvim',
@@ -61,7 +67,6 @@ local packages = {
         end,
     },
     'williamboman/nvim-lsp-installer',
-    -- buffer manager plugin
     'akinsho/nvim-bufferline.lua',
     {
         'lukas-reineke/indent-blankline.nvim',
@@ -96,9 +101,19 @@ local packages = {
         'tami5/lspsaga.nvim',
         branch = 'nvim6.0',
     },
+
     'xiyaowong/nvim-transparent',
     'mizlan/iswap.nvim',
+
+    {
+        'beauwilliams/focus.nvim',
+        -- config = function() end,
+    },
     'MunifTanjim/nui.nvim',
+    'nvim-orgmode/orgmode',
+    'akinsho/org-bullets.nvim',
+    'petobens/poet-v',
+    'HallerPatrick/py_lsp.nvim',
     -- for swapping arg
     -- coq not so accurate and lack of keybinding primarily the
     -- super_tab function
@@ -127,5 +142,10 @@ local function autocompile()
     vim.cmd([[autocmd BufWritePost plugins.lua source <afile> | PackerCompile]])
 end
 
-autocompile()
 print('Total packages' .. #packages)
+
+-- return require('packer').startup(function()
+--     for _, pack in pairs(packages) do
+--         use(pack)
+--     end
+-- end)

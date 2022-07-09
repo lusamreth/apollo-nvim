@@ -1,8 +1,7 @@
-local nnoremap = require('utility').keybinds.nnoremap
---auto import
-require('utility.keybinds')
-require('utility.test')
+local a = require('plenary.async_lib.tests')
 
+-- require('utility.keybinds')
+-- require('utility.test')
 print('import debug')
 
 local OneTimemetaTable
@@ -22,9 +21,6 @@ do
     }
 end
 
-describe('tsa', function()
-    print(100)
-end, 'hmmmm')
 -- Unit testing starts
 TestMetaBd = {
     -- class
@@ -34,7 +30,7 @@ TestMetaBd = {
         local first_access = t[1]
         -- could only access one time
         local second_access = t[1]
-        AssertEquals(first_access ~= nil, second_access == nil, true)
+        assert(first_access ~= nil and second_access == nil)
     end,
     TestLoop = function()
         local t = setmetatable(Gbinder, OneTimemetaTable)
@@ -47,26 +43,12 @@ TestMetaBd = {
         for i = 1, 100 do
             local first_access = t[i]
             local second_access = t[i]
-            AssertEquals(first_access ~= nil, second_access == nil, false)
+            assert(first_access ~= nil and second_access == nil, false)
         end
         print('Passed No Complain!')
     end,
 }
-
--- print(TestMetaBd.method_name())
-function hardnesttest()
-    describe('te', function()
-        print('Duh')
-        describe('lv1', function()
-            describe('lv2', function()
-                describe('lv3', function()
-                    describe('lv4', function() end) -- get call first
-                end)
-            end)
-        end)
-    end)
-end
-
+-- a.describe('')
 --[testing mttable]
 --describe("Meta table testing",
 --    function()
@@ -148,23 +130,22 @@ function Profile_plugin()
     end
 end
 
-require('utility.test')
 local utils = require('utility')
 
 function TestTb()
-    Describe('tableclonetest', function()
+    a.describe('tableclonetest', function()
         local arr = { 1, 2, 3, 5, 6, 7 }
         local cloned = utils.table_clone(arr)
-        AssertEquals(arr, cloned)
+        assert(arr == cloned)
     end)
 
-    Describe('tablemergetest', function()
+    a.describe('tablemergetest', function()
         local res = { 1, 2, 3, 5, 6, 7 }
         local arr1 = { 1, 2, 3 }
         local arr2 = { 4, 5, 6, 7 }
-        AssertEquals(res, utils.table_merge(arr1, arr2))
+        assert(res == utils.table_merge(arr1, arr2))
     end)
 end
 
 -- vim.api.nvim_set_keymap("n","nx","<cmd>echo 'help'<CR>",{noremap = true})
-nnoremap('nx', 'lua Profile_plugin()')
+-- nnoremap('nx', 'lua Profile_plugin()')
