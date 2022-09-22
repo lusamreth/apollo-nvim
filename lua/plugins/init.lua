@@ -48,7 +48,8 @@ local packages = {
     'ray-x/lsp_signature.nvim',
     'glepnir/dashboard-nvim',
     'windwp/nvim-ts-autotag',
-    'akinsho/nvim-toggleterm.lua',
+    -- 'akinsho/nvim-toggleterm.lua',
+    'akinsho/toggleterm.nvim',
     'folke/trouble.nvim',
     'cohama/lexima.vim',
     'p00f/nvim-ts-rainbow',
@@ -86,7 +87,8 @@ local packages = {
     'ahmedkhalf/project.nvim',
     'hoob3rt/lualine.nvim',
     'lewis6991/gitsigns.nvim',
-    'famiu/feline.nvim',
+    -- 'famiu/feline.nvim',
+    'feline-nvim/feline.nvim',
     'nvim-telescope/telescope-frecency.nvim',
     'tami5/sqlite.lua',
     'weilbith/nvim-code-action-menu',
@@ -109,11 +111,16 @@ local packages = {
         'beauwilliams/focus.nvim',
         -- config = function() end,
     },
+
     'MunifTanjim/nui.nvim',
+    -- repl integration method
+    'hkupty/iron.nvim',
     'nvim-orgmode/orgmode',
     'akinsho/org-bullets.nvim',
     'petobens/poet-v',
     'HallerPatrick/py_lsp.nvim',
+    'junnplus/nvim-lsp-setup',
+
     -- for swapping arg
     -- coq not so accurate and lack of keybinding primarily the
     -- super_tab function

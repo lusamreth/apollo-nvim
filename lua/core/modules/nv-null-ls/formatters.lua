@@ -13,7 +13,9 @@ local formatters = {
             extra_args = { '--fast', '--line-length', '69' },
         },
     },
-    'prettierd',
+    -- 'prettierd',
+    'rome',
+    -- 'dprint',
     -- 'eslint_d',
     'fish_indent',
     {

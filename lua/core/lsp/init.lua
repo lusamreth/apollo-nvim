@@ -71,11 +71,6 @@ local function build_mapper(leaders)
         end
 
         -- enable format on save
-        -- vim.pretty_print(client.server_capabilities)
-        if client.server_capabilities.documentFormattingProvider then
-            vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.format()')
-            -- vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.format({async = true})')
-        end
 
         buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
         -- g prefixes
@@ -235,6 +230,7 @@ local function mount_tools()
         'nv-cmp',
         'nv-lightbulb',
         'nv-trouble',
+        'nv-iron',
     }
 
     for _, mod in pairs(modules) do
@@ -247,6 +243,32 @@ end
 
 local opt = require('system.scripts.meta-data')
 
+local lsp_formatting = function(bufnr)
+    vim.lsp.buf.format({
+        filter = function(client)
+            -- apply whatever logic you want (in this example, we'll only use null-ls)
+            return client.name == 'null-ls'
+        end,
+        bufnr = bufnr,
+    })
+end
+
+-- if you want to set up formatting on save, you can use this as a callback
+local augroup = vim.api.nvim_create_augroup('LspFormatting', {})
+
+-- add to your shared on_attach callback
+local reset_format = function(client, bufnr)
+    if client.supports_method('textDocument/formatting') then
+        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+        vim.api.nvim_create_autocmd('BufWritePre', {
+            group = augroup,
+            buffer = bufnr,
+            callback = function()
+                lsp_formatting(bufnr)
+            end,
+        })
+    end
+end
 -- require('lspconfig').html.setup({})
 -- t:table -> { client,bufnr,conf }
 local function attach_builder(t)
@@ -273,9 +295,15 @@ local function attach_builder(t)
         -- provide diag signs
         diagnostic_definition(t.diagnostic_signs)
         -- setting keymaps and shortcuts
+        -- client.server_capabilities.documentFormattingProvider = false
+        -- client.server_capabilities.documentRangeFormattingProvider = false
+
+        -- reset_format(client, bufnr)
+
+        null.resolve_null_conflict(client)
+        -- vim.pretty_print('cappppa', client.server_capabilities.documentFormattingProvider)
         lsp_config.mapper(client, bufnr)
         print('resolving')
-        null.resolve_null_conflict(client)
     end
 
     return on_attach

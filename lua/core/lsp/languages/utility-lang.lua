@@ -34,12 +34,20 @@ local servers = {
     'bashls',
     --'pyright',
     'vuels',
+    'html',
     'tsserver',
+    'arduino_language_server',
+    -- 'rome',
+
     'cssls',
     -- 'sumneko_lua',
     'yamlls',
+
     'dockerls',
+
     'lemminx',
+    -- 'emmet_ls',
+    -- 'tailwindcss',
 }
 
 -- for _, name in pairs(servers) do
@@ -82,7 +90,11 @@ UtilityProviders.sumneko_lua = LUACONF
 
 -- UtilityProviders.jsonls = {}
 -- UtilityProviders.lemminx = {}
--- UtilityProviders.tsserver = {}
+-- UtilityProviders.tsserver = {
+--     capabilities = {
+
+--     }
+-- }
 -- UtilityProviders.dockerls = {}
 -- UtilityProviders.emmet_ls = {}
 
@@ -111,7 +123,87 @@ ls.snippets = {
 ls.snippets.javascript = ls.snippets.html
 ls.snippets.javascriptreact = ls.snippets.html
 ls.snippets.typescriptreact = ls.snippets.html
-
+UtilityProviders.intelephense = {
+    -- Add wordpress to the list of stubs
+    stubs = {
+        'apache',
+        'bcmath',
+        'bz2',
+        'calendar',
+        'com_dotnet',
+        'Core',
+        'ctype',
+        'curl',
+        'date',
+        'dba',
+        'dom',
+        'enchant',
+        'exif',
+        'FFI',
+        'fileinfo',
+        'filter',
+        'fpm',
+        'ftp',
+        'gd',
+        'gettext',
+        'gmp',
+        'hash',
+        'iconv',
+        'imap',
+        'intl',
+        'json',
+        'ldap',
+        'libxml',
+        'mbstring',
+        'meta',
+        'mysqli',
+        'oci8',
+        'odbc',
+        'openssl',
+        'pcntl',
+        'pcre',
+        'PDO',
+        'pdo_ibm',
+        'pdo_mysql',
+        'pdo_pgsql',
+        'pdo_sqlite',
+        'pgsql',
+        'Phar',
+        'posix',
+        'pspell',
+        'readline',
+        'Reflection',
+        'session',
+        'shmop',
+        'SimpleXML',
+        'snmp',
+        'soap',
+        'sockets',
+        'sodium',
+        'SPL',
+        'sqlite3',
+        'standard',
+        'superglobals',
+        'sysvmsg',
+        'sysvsem',
+        'sysvshm',
+        'tidy',
+        'tokenizer',
+        'xml',
+        'xmlreader',
+        'xmlrpc',
+        'xmlwriter',
+        'xsl',
+        'Zend OPcache',
+        'zip',
+        'zlib',
+        'wordpress',
+        'phpunit',
+    },
+    diagnostics = {
+        enable = true,
+    },
+}
 -- require('luasnip/loaders/from_vscode').load({ include = { 'html' } })
 --vim.cmd("BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 100)")
 vim.api.nvim_set_keymap('n', 'zf', '<cmd>lua vim.lsp.buf.format()<CR>', { noremap = true })

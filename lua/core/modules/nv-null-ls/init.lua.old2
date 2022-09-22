@@ -1,0 +1,62 @@
+local get_format = access_module('nv-null-ls.formatters')
+local misc = access_module('nv-null-ls.misc')
+
+local sources = Utils.table_merge(0, get_format(), misc.diagnostics())
+-- print('SOURCEs', vim.inspect(sources))
+local G = {}
+
+G.override_settings = {}
+G.NULL_LOADED = false
+G.CACHE_CLIENT = nil
+G.DEBUG = true
+local lsp_formatting = function(bufnr)
+    vim.lsp.buf.format({
+        filter = function(client)
+            -- apply whatever logic you want (in this example, we'll only use null-ls)
+            return client.name == 'null-ls'
+        end,
+        bufnr = bufnr,
+    })
+end
+
+local function init_null_ls()
+    local status_ok, null_ls = pcall(require, 'null-ls')
+    if not status_ok then
+        print('Missing null-ls dependency')
+        return
+    end
+
+    null_ls.setup({
+        debug = true,
+        sources = sources,
+        on_attach = function(client, bufnr)
+            -- if client.server_capabilities.documentFormattingProvider then
+            --     print('formatting from null-lsp')
+            --     vim.cmd([[
+            --         augroup LspFormatting
+            --             autocmd! * <buffer>
+            --             autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()
+            --         augroup END
+            --     ]])
+            -- end
+        end,
+        -- you can reuse a shared lspconfig on_attach callback here
+        -- on_attach = function(client)
+        --     print('mounting cache client', G.CACHE_CLIENT)
+        --     G.CACHE_CLIENT = client
+
+        --     if attach_fn then
+        --         print('ALLLLL', client.name)
+        --         if G.DEBUG then
+        --             print('ATTACHING')
+        --         end
+
+        --         attach_fn(client)
+        --         G.NULL_LOADED = true
+        --         G.CACHE_CLIENT = client
+        --     end
+        -- end,
+    })
+end
+init_null_ls()
+return G

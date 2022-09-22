@@ -148,10 +148,11 @@ Rust_util_binder('<Space>r')
 
 local root_pattern = require('lspconfig').util.root_pattern
 data = vim.fn.stdpath('data')
+
 return {
     filetypes = { 'rust' },
     -- cmd = { data .. '/lsp_servers/rust/rust-analyzer' },
-    root_dir = root_pattern('Cargo.toml', 'rust-project.json'),
+    -- root_dir = root_pattern('Cargo.toml', 'rust-project.json'),
     flags = { debounce_text_changes = 150 },
     on_attach = lsp.on_common_attach(false),
     -- settings = {

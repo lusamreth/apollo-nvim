@@ -79,15 +79,19 @@ local interceptors = {
         return AllTrim(fn) .. ' '
     end,
     page_position = function(data)
-        local icon = ''
+        local icon = ' '
+
         local t = AllTrim(data)
+        local maxima = t == 'Top' or t == 'Bot'
         if t == 'Top' then
             icon = ''
         elseif t == 'Bot' then
             icon = ''
         end
-        local unit = '%%'
-        return string.format(' %s%s %s', unit, data, icon)
+
+        dd = string.sub(t, 1, maxima and 3 or 2)
+        local unit = 'fr'
+        return string.format(' %s%s %s', dd, unit, icon)
     end,
     line_position = function(data)
         return string.format(' %s%s', '線 ', AllTrim(data))
@@ -200,6 +204,7 @@ Mode = ui.vimode_indicator({
 
 -- allow mode to change color
 RL = { Mode, PagePos, LinePos }
+-- RL = { Filename, Vcs, Filesize }
 LL = { Filename, Vcs, Filesize }
 
 -- components that are linked

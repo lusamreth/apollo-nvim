@@ -227,6 +227,9 @@ local tree_config = {
             error = '',
         },
     },
+    filters = {
+        show_hidden = true,
+    },
     keybinds = nil, -- utilize default
     hooks = {
         -- store a bunch of closure

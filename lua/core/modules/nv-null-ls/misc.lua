@@ -4,9 +4,10 @@ local diagnostics = {
     'eslint_d',
     'luacheck',
     'yamllint',
+    'tidy',
 }
 
-function mock_handle()
+local function mock_handle()
     local m = {}
     m.handle = function(_) end
     m.build = function(_) end

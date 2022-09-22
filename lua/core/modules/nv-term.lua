@@ -26,7 +26,6 @@ require("toggleterm").setup(
         hide_numbers = true, -- hide the number column in toggleterm buffers
         shade_filetypes = {"none", "fzf"},
         shade_terminals = true,
-        shading_factor = "<number>", -- the degree by which to darken to terminal colour, default: 1 for dark backgrounds, 3 for light
         start_in_insert = true,
         persist_size = false, -- keep size persistent even window change size
         --direction = 'vertical' | 'horizontal' | 'window' | 'float',
@@ -80,28 +79,30 @@ local function buildShTerm()
                 vim.cmd("startinsert!")
                 vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
             end,
-            on_close = function(_)
-                vim.cmd("echo Closing terminal")
+            on_close = function(term)
+                term.clear_env()
             end
         }
     )
     return shellcheck
 end
 
+local shellcheck = buildShTerm()
 function SHCHECK()
-    local shellcheck = buildShTerm()
     if shellcheck ~= nil then
         shellcheck:toggle()
     else
         print("empty file!")
+        shellcheck:toggle()
     end
 end
 
 require("utility")
 
--- local save_hook = {
--- 	{ "BufEnter,BufRead", "*sh*", "lua print('init bash savehook')" },
--- 	{ "BufWritePost", "lua SHCHECK" },
--- }
+local save_hook = {
+	{ "BufEnter,BufRead", "*sh*", "lua print('init bash savehook')" },
+	{ "BufWritePost", "*sh*","lua SHCHECK()" },
+}
 -- Create_augroup(save_hook, "bashtermhook")
+
 --Nnoremap("<C-t>","lua vim.cmd('ToggleTerm')",{})
