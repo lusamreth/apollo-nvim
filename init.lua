@@ -1,8 +1,8 @@
---[[form
+--[[
             "=================     ===============     ===============   ========  ========",
             "\\ . . . . . . .\\\\   //. . . . . . .\\\\   //. . . . . . .\\\\  \\\\. . .  //",
             "||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\\/ . . .||",
-            "|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . .  ||",
+           "|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . .  ||",
             "||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . . ||",
             "|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\\ . . . . ||",
             "||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\\_ . .|. .||",
@@ -15,25 +15,30 @@
             "||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \\/  |   ||",
             "||   .=='    _-'          '-__\\._-'         '-_./__-'         `' |. /|  |   ||",
             "||.=='    _-'                                                     `' |  /==. ||",
-            "=='    _-'                         N V I M S                          \\/   `==", 
+            "=='    _-'                         N V I M S                          \\/   `==",
             "\\   _-'                                                                `-_   /",
             " `''                                                                      ``'"
 ]]
 
 require('module-loaders')
 require('plugins')
-require('impatient')
+vim.loader.enable()
 
-vim.g.python3_host_prog = '/usr/bin/python3.10'
+vim.g.python3_host_prog = '/usr/bin/python3'
 vim.g.python_host_prog = '/usr/bin/python2.7'
--- vim.g.poetv_executables = { 'poetry', 'pipenv' }
+vim.g.poetv_executables = { 'poetry', 'pipenv' }
 
 table.unpack = table.unpack or unpack
 -- this custom loader must be loaded first before the system
 -- starts sourcing core files and plugins
 
-require('utility')
+vim.keymap.set('n', '<leader>b', '<cmd>%bd|e#<cr>', { desc = 'Close all buffers but the current one' })
+-- https://stackoverflow.com/a/42071865/516188
+vim.cmd('filetype plugin on')
+vim.cmd('filetype on')
 
+require('utility')
+require('clangd_extensions').setup()
 require('nvim-treesitter.configs').setup({
     highlight = {
         enable = true,
@@ -80,17 +85,22 @@ vim.api.nvim_set_keymap('n', '<M-r>', '<cmd>lua Reload()<CR>', { noremap = true,
 -- start importing modules(plugin configs)
 access_module('nv-hlsearch')
 access_module('nv-layout')
--- access_module('nv-projects')
-
+-- access_module('nv-chatgpt')
+-- access_module('nv-gesture')
 access_module('nv-whichkey')
 access_module('nv-term')
--- require("toggleterm").setup()
 
 access_module('nv-bufferline')
-access_module('nv-tree')
+access_module('nv-tree.init')
+access_module('nv-cmp')
+access_module('nv-tmux-navigator')
 
 access_core('lsp.init')
 access_core('lsp.languages.init')
+
+-- curl_post('https://api.pawan.krd/v1/chat/completions')
+-- make_call('https://api.pawan.krd/v1/chat/completions')
+
 -- vim.cmd('source /home/lusamreth/.config/nvim/emmet.vim')
 require('configs.nv-settings')
 require('configs.keybinding')
@@ -99,7 +109,7 @@ access_system('inspectors.table')
 access_system('inspectors.interface-builder')
 
 -- statusline mutate the original import
-vim.cmd('luafile ~/nvim-proto-2/lua/core/statusline/init.lua')
+vim.cmd('luafile ~/.config/nvim/lua/core/statusline/init.lua')
 
 -- because of how statusline utilise import networks, we have to reset the import
 -- definition
@@ -119,6 +129,70 @@ require('nvim_comment').setup({
 })
 
 access_module('nv-orgmode')
+
+local Api = {
+    OPENAI_API_KEY = 'pk-INJhHJmyfChkKKFxpustWlkUyYPfJDPoFztopNvzLCgvSbCw',
+}
+local curl = require('plenary.curl')
+local job = require('plenary.job')
+
+function Api.make_call(url, params, cb)
+    TMP_MSG_FILENAME = os.tmpname()
+    local f = io.open(TMP_MSG_FILENAME, 'w+')
+    if f == nil then
+        vim.notify('Cannot open temporary message file: ' .. TMP_MSG_FILENAME, vim.log.levels.ERROR)
+        return
+    end
+
+    -- vim.pretty_print(vim.fn.json_encode(params))
+
+    local jsonified = vim.fn.json_encode({
+        model = 'gpt-3.5-turbo',
+        max_tokens = 3000,
+        messages = params.messages,
+    })
+
+    f:write(jsonified)
+    f:close()
+
+    -- Api.handle_response(response, 0, cb)
+    Api.job = job:new({
+        command = 'curl',
+        args = {
+            url,
+            '-H',
+            'Content-Type: application/json',
+            '-H',
+            'Authorization: Bearer ' .. Api.OPENAI_API_KEY,
+            '-d',
+            '@' .. TMP_MSG_FILENAME,
+        },
+        on_exit = vim.schedule_wrap(function(response, exit_code)
+            print('RESPONSEE', response, exit_code)
+            vim.pretty_print(response)
+            -- Api.handle_response(response, exit_code, cb)
+        end),
+    }):start()
+end
+
+local gpt_payload = {
+    model = 'gpt-3.5-turbo',
+    max_tokens = 3000,
+    messages = {
+        {
+            role = 'system',
+            content = 'a very helpful assistant',
+        },
+        {
+            role = 'user',
+            content = 'hello',
+        },
+    },
+}
+
+-- vim.keymap.set({ 'n' }, 'z', function()
+--     Api.make_call('https://api.pawan.krd/v1/chat/completions', gpt_payload)
+-- end)
 vim.g.user_emmet_leader_key = '<C-z>'
 
 local function init_emmet()
@@ -136,6 +210,11 @@ local function init_emmet()
 end
 
 require('focus').setup({ hybridnumber = true, excluded_filetypes = { 'toggleterm' }, treewidth = 20 })
+
 init_emmet()
+access_module('nv-iron')
+access_module('nv-aerial')
+require('codeium').setup({})
+-- access_module('nv-pilot.init')
 
 vim.cmd('syntax on')

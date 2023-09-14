@@ -150,7 +150,7 @@ end
 
 require('utility.test')
 local utils = require('utility')
-
+print('core utils ', utils)
 function TestTb()
     Describe('tableclonetest', function()
         local arr = { 1, 2, 3, 5, 6, 7 }

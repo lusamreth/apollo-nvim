@@ -2,10 +2,10 @@
 -- could also be used for scripting
 
 -- lua lsp !!
--- local sumneko_root_path = LSP_REPO .. "lua"
--- local sumneko_binary = sumneko_root_path .. "/sumneko-lua-language-server"
 local pylang = access_core('lsp.languages.python-lang')
--- local root_pattern = require('lspconfig').util.root_pattern
+require('neodev').setup({
+    -- add any options here, or leave empty to use the default settings
+})
 LUACONF = {
     settings = {
         Lua = {
@@ -35,75 +35,52 @@ local servers = {
     --'pyright',
     'vuels',
     'html',
+    -- 'cmake-language-server',
     'tsserver',
-    'arduino_language_server',
+    -- 'arduino_language_server',
     -- 'rome',
-
+    'clangd',
     'cssls',
     -- 'sumneko_lua',
     'yamlls',
 
     'dockerls',
-
     'lemminx',
     -- 'emmet_ls',
     -- 'tailwindcss',
 }
-
--- for _, name in pairs(servers) do
---     local server_is_found, server = lsp_installer.get_server(name)
---     if server_is_found then if not server:is_installed() then
---             print("Installing " .. name)
---             server:install()
---         end
---     end
--- end
---local util = require("lspconfig").utils
--- copied from nvcode project
--- lspconfig.sumneko_lua.setup(LUACONF)
 
 UtilityProviders = {}
 
 UtilityProviders.bashls = {
     filetypes = { 'sh', 'zsh' },
 }
+
+UtilityProviders.arduino_language_server = {
+    cmd = {
+        'arduino-language-server',
+        '-cli',
+        '/usr/bin/arduino-cli',
+        '-cli-config',
+        '/home/lusamreth/.arduino15/arduino-cli.yaml',
+        '-clangd',
+        '/usr/bin/clangd',
+    },
+}
 UtilityProviders.pyright = {
     before_init = function(_, config)
         config.settings.python.pythonPath = pylang.get_python_path(config.root_dir)
     end,
 }
--- UtilityProviders.pyright = {
---     filetypes = { 'python' },
---     python = {
---         analysis = {
---             autoSearchPaths = true,
---             useLibraryCodeForTypes = true,
---         },
---     },
---     root_dir = root_pattern('.venv'),
--- }
+
 for i, server in pairs(servers) do
     UtilityProviders[server] = {}
 end
 
-UtilityProviders.sumneko_lua = LUACONF
-
--- UtilityProviders.jsonls = {}
--- UtilityProviders.lemminx = {}
--- UtilityProviders.tsserver = {
---     capabilities = {
-
---     }
--- }
--- UtilityProviders.dockerls = {}
--- UtilityProviders.emmet_ls = {}
-
--- UtilityProviders.rust_analyzer = {}
+UtilityProviders.lua_ls = LUACONF
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
-
--- UtilityProviders.rome = {}
 
 local ls = require('luasnip')
 

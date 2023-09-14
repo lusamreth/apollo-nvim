@@ -65,7 +65,7 @@ function loader:load_packages(packages)
             use(package)
             count = count + 1
         end
-        print('Total packages loaded:' .. count .. 'packages')
+        vim.notify('Total packages loaded:' .. count .. 'packages')
     end
 
     if self.packer == nil then

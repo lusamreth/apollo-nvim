@@ -2,28 +2,28 @@ local iron = require('iron.core')
 
 iron.setup({
     config = {
-        -- If iron should expose `<plug>(...)` mappings for the plugins
-        should_map_plug = false,
         -- Whether a repl should be discarded or not
         scratch_repl = true,
         -- Your repl definitions come here
         repl_definition = {
             sh = {
+                -- Can be a table or a function that
+                -- returns a table (see below)
                 command = { 'fish' },
             },
         },
-        repl_open_cmd = require('iron.view').curry.bottom(40),
-        -- how the REPL window will be opened, the default is opening
-        -- a float window of height 40 at the bottom.
+        -- How the repl window will be displayed
+        -- See below for more information
+        repl_open_cmd = require('iron.view').split.vertical.botright(50),
     },
-    -- Iron doesn't set keymaps by default anymore. Set them here
-    -- or use `should_map_plug = true` and map from you vim files
+    -- Iron doesn't set keymaps by default anymore.
+    -- You can set them here or manually add keymaps to the functions in iron.core
     keymaps = {
-        send_motion = '<space>sc',
-        visual_send = '<space>sc',
-        send_file = '<space>sf',
-        send_line = '<space>sl',
-        send_mark = '<space>sm',
+        send_motion = '<space>ps',
+        visual_send = '<space>ps',
+        send_file = '<space>pf',
+        send_line = '<space>pl',
+        send_mark = '<space>pm',
         mark_motion = '<space>mc',
         mark_visual = '<space>mc',
         remove_mark = '<space>md',
@@ -37,4 +37,11 @@ iron.setup({
     highlight = {
         italic = true,
     },
+    ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
 })
+
+-- iron also has a list of commands, see :h iron-commands for all available commands
+vim.keymap.set('n', '<space>rs', '<cmd>IronRepl<cr>')
+vim.keymap.set('n', '<space>rr', '<cmd>IronRestart<cr>')
+vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>')
+vim.keymap.set('n', '<space>rh', '<cmd>IronHide<cr>')

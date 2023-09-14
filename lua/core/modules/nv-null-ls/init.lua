@@ -8,12 +8,11 @@ local G = {}
 G.override_settings = {}
 G.NULL_LOADED = false
 G.CACHE_CLIENT = nil
-G.DEBUG = true
+G.DEBUG = false
 
 local lsp_formatting = function(bufnr)
     vim.lsp.buf.format({
         filter = function(client)
-            -- apply whatever logic you want (in this example, we'll only use null-ls)
             return client.name == 'null-ls'
         end,
         bufnr = bufnr,
@@ -22,20 +21,6 @@ end
 
 -- if you want to set up formatting on save, you can use this as a callback
 local augroup = vim.api.nvim_create_augroup('LspFormatting', {})
-
--- add to your shared on_attach callback
-local on_attach = function(client, bufnr)
-    if client.supports_method('textDocument/formatting') then
-        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-        vim.api.nvim_create_autocmd('BufWritePre', {
-            group = augroup,
-            buffer = bufnr,
-            callback = function()
-                lsp_formatting(bufnr)
-            end,
-        })
-    end
-end
 
 local function init_null_ls(attach_fn)
     local status_ok, null_ls = pcall(require, 'null-ls')
@@ -49,19 +34,20 @@ local function init_null_ls(attach_fn)
         sources = sources,
         -- on_attach = on_attach,
         -- you can reuse a shared lspconfig on_attach callback here
-        on_attach = function(client)
-            print('mounting cache client', G.CACHE_CLIENT)
+        on_attach = function(client, bufnr)
             G.CACHE_CLIENT = client
 
-            if client.server_capabilities.documentFormattingProvider then
-                print('formatting from null-lsp')
-                vim.cmd([[
-
-                    augroup LspFormatting
-                        autocmd! * <buffer>
-                        autocmd BufWritePre <buffer> lua vim.lsp.buf.format({async=false})
-                    augroup END
-                ]])
+            if client.supports_method('textDocument/formatting') then
+                vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+                vim.api.nvim_create_autocmd('BufWritePre', {
+                    group = augroup,
+                    buffer = bufnr,
+                    callback = function()
+                        -- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
+                        -- vim.lsp.buf.formatting_sync()
+                        vim.lsp.buf.format({ bufnr = bufnr })
+                    end,
+                })
             end
             if attach_fn then
                 if G.DEBUG then
@@ -77,17 +63,12 @@ local function init_null_ls(attach_fn)
 end
 
 local function disable_cap(client, overrides)
-    vim.pretty_print(overrides)
     if overrides then
-        -- vim.pretty_print('before', client.server_capabilities)
         for _, override in pairs(overrides) do
             client.server_capabilities[override] = false
             client.server_capabilities['documentRangeFormattingProvider'] = false
         end
-        -- documentFormattingProvider
-        -- vim.pretty_print('after', client.server_capabilities, client)
     end
-    -- print('CLIENT', vim.inspect(client.server_capabilities))
 end
 
 -- naming : full or partial(let the server guess its full capability's name)
@@ -113,7 +94,6 @@ local function create_override_fn(available_clients)
 
     -- create an exception preventing full override
     return function(exceptions, overlapsed, naming)
-        vim.pretty_print('EE', exceptions)
         local keep = {}
         for k, v in pairs(exceptions) do
             local name = naming_f(k, naming)
@@ -133,7 +113,7 @@ local function create_override_fn(available_clients)
                 return key ~= exceptions['client']
             end, client_key)
 
-            vim.pretty_print(string.format('DISABLING %s client to keep %s features intact', exceptions['client'], vim.inspect(intact_feature)))
+            vim.print(string.format('DISABLING %s client to keep %s features intact', exceptions['client'], vim.inspect(intact_feature)))
             disable_cap(available_clients[exceptions['client']], keep)
         end
     end
@@ -142,10 +122,9 @@ end
 local function create_override_attachment(lsp_client, priority, exceptions)
     priority = priority or 'lsp'
     override = {}
-
     -- lsp_client.server_capabilities.document_formatting = false
-
     -- prioritize lsp but want to preserved formatting and diag for null_ls
+    --
     exceptions = exceptions or {
         client = 'null',
         formatting = true,
@@ -153,19 +132,14 @@ local function create_override_attachment(lsp_client, priority, exceptions)
 
     return function(null_client)
         G.CACHE_CLIENT = null_client
-        print('OVERRIDE FUNCTION HAS BEEN CALLED')
+
         local lsp_keycaps = vim.tbl_keys(lsp_client.server_capabilities)
         local null_keycaps = vim.tbl_keys(null_client.server_capabilities)
-        -- vim.pretty_print("nulla",null_client.server_capabilities)
-        -- vim.pretty_print("LSP",lsp_client.server_capabilities)
 
         local overlapsed = vim.tbl_filter(function(lsp_cap)
             return vim.tbl_contains(null_keycaps, lsp_cap)
         end, lsp_keycaps)
 
-        -- this client is for override fn to select
-        -- if client choose null ,then null-ls is excepted and won't disable
-        -- any overlapsed capabilities
         local oppo_clients = { null = lsp_client, lsp = null_client }
 
         if G.DEBUG then
@@ -201,17 +175,50 @@ end
 -- default : prioritize LSP formatting then null_ls
 -- custom : could override lsp settings by giving overrides parameters
 -- this will only mount null-ls when lsp is online !!
---
+
 -- this function fetch the client from lsp server before initing null_ls
 function G.resolve_null_conflict(lsp_client)
     local overide_attachment = create_override_attachment(lsp_client, 'lsp')
-    -- print('RESOLVING CONFLICTED!!')
+
+    if G.lsp_hook_called == 0 then
+        init_null_ls(overide_attachment)
+    end
     G.lsp_hook_called = G.lsp_hook_called + 1
-    init_null_ls(overide_attachment)
-    print('hahahaha', lsp_client.server_capabilities.documentFormattingProvider, G.NULL_LOADED)
 end
 
 G.create_override_attachment = create_override_attachment
 G.init_null_ls = init_null_ls
 
+require('mason-null-ls').setup({
+    ensure_installed = {
+        -- Opt to list sources here, when available in mason.
+    },
+    automatic_installation = false,
+    automatic_setup = true, -- Recommended, but optional
+})
+
+local status_ok, null_ls = pcall(require, 'null-ls')
+
+-- null_ls.setup({
+--     debug = true,
+--     sources = sources,
+--     on_attach = function(client, bufnr)
+--         G.CACHE_CLIENT = client
+
+--         if client.supports_method('textDocument/formatting') then
+--             vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+--             vim.api.nvim_create_autocmd('BufWritePre', {
+--                 group = augroup,
+--                 buffer = bufnr,
+--                 callback = function()
+--                     -- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
+--                     -- vim.lsp.buf.formatting_sync()
+--                     lsp_formatting(bufnr)
+--                 end,
+--             })
+--         end
+--     end,
+-- })
+
+-- require('mason-null-ls').setup_handlers() -- If `automatic_setup` is true.
 return G

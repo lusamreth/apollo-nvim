@@ -1,5 +1,3 @@
--- todo make custom binder with whichkey plugin
-print('import whichkey')
 require('which-key').setup({
 
     internal = { 'a', 'b', 'c', '\6', '<80><fc>\bJ', '<80><fc>\f<80>k2', '‥', '<80><fc><88>‥', '<80><fc>\16>', '<80><fc><80><', '<', '<80><fc>\4-' },

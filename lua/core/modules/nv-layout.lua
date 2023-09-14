@@ -50,16 +50,45 @@ local lines = lines_from(file)
 
 require("utility.var")
 --vim.g.dashboard_custom_header = lines
-vim.g.dashboard_custom_header = PUFFYBOI
 
-vim.g.dashboard_custom_section = {
-    a = {description = {"  Find File          "}, command = "Telescope find_files"},
-    b = {description = {"  Recently Used Files"}, command = "Telescope oldfiles"},
-    c = {description = {"  Load Last Session  "}, command = "SessionLoad"},
-    d = {description = {"  Find Word          "}, command = "Telescope live_grep"},
-    e = {description = {"  Settings           "}, command = ":e ~/.config/nvim/lua/nv-settings.lua"}
-    -- e = {description = {'  Marks              '}, command = 'Telescope marks'}
+
+local home = os.getenv('HOME')
+local db = require('dashboard')
+--
+db.preview_file_height = 11
+db.preview_file_width = 70
+
+db.custom_header = PUFFYBOI
+-- db.preview_command = 'chafa'
+
+db.custom_center = {
+  {icon = '  ',
+  desc = 'Recently latest session                  ',
+  shortcut = 'SPC s l',
+  action ='SessionLoad'},
+  {icon = '  ',
+  desc = 'Recently opened files                   ',
+  action =  'DashboardFindHistory',
+  shortcut = 'SPC f h'},
+  {icon = '  ',
+  desc = 'Find  File                              ',
+  action = 'Telescope find_files find_command=rg,--hidden,--files',
+  shortcut = 'SPC f f'},
+  {icon = '  ',
+  desc ='File Browser                            ',
+  action =  'Telescope file_browser',
+  shortcut = 'SPC f b'},
+  {icon = '  ',
+  desc = 'Find  word                              ',
+  action = 'Telescope live_grep',
+  shortcut = 'SPC f w'},
+  {icon = '  ',
+  desc = 'Open Personal dotfiles                  ',
+  action = 'Telescope dotfiles path=' .. home ..'/.dotfiles',
+  shortcut = 'SPC f d'},
 }
+
+
 
 -- The setup config table shows all available config options with their default values:
 require("presence"):setup(

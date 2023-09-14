@@ -1,7 +1,7 @@
 local Popup = require('nui.popup')
 local event = require('nui.utils.autocmd').event
 local utils = access_system('ui.utils')
-
+print('accessing ui system', Popup, event, utils)
 ResizerStack = {}
 ResizeCmds = {}
 

@@ -9,7 +9,7 @@ nerror = t.nerror
 --     error(msg, level)
 -- end
 
-SCRIPT_ROOT = HOMEROOT .. '/nvim-proto-2/lua/system/inspectors/'
+SCRIPT_ROOT = HOMEROOT .. '/.config/nvim/lua/system/inspectors/'
 ENABLE = true
 
 local check_type = t.check_type

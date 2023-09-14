@@ -40,7 +40,11 @@ Xnoremap('J', "lua import('system.scripts.move').MoveBlock(1)")
 Xnoremap('K', "lua import('system.scripts.move').MoveBlock(-1)")
 
 Nnoremap('<space>fs', ':ISwapWith')
-vim.api.nvim_set_keymap('n', 'gk', '<cmd>Telescope projects<cr>', {})
+
+-- vim.api.nvim_set_keymap('n', 'gk', '<cmd>Telescope projects<cr>', {})
+vim.keymap.set('n', '<C-_>', function()
+    require('flash').jump()
+end)
 
 function _G.set_terminal_keymaps()
     local opts = { noremap = true }

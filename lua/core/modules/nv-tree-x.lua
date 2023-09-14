@@ -1,6 +1,8 @@
 local opt = vim
 local g = opt.g
 
+import('utility.binding')
+
 opt.o.termguicolors = true
 -- g.nvim_tree_add_trailing = 0 -- append a trailing slash to folder names
 -- g.nvim_tree_allow_resize = 1
@@ -75,6 +77,7 @@ local extend_bufferline = function()
         require('bufferline.state').set_offset(30 + 1, '')
     end
 end
+
 -- Mappings for nvimtree
 function CustomTreeToggle()
     local success, _ = pcall(hlconfig, nil)
@@ -102,6 +105,7 @@ local function tree_hook(h)
     end)
 
     vim.cmd('au WinClosed * lua Caller()')
+
     return function()
         runhook('open')
         vim.cmd('NvimTreeToggle')
@@ -124,8 +128,10 @@ local function loadtree(mod)
 end
 
 local nvim_tree_config = loadtree('config')
+
 local function default_tree_binds()
     local tree_cb = nvim_tree_config.nvim_tree_callback
+
     vim.g.nvim_tree_bindings = {
         { key = { '<CR>', 'o', '<2-LeftMouse>' }, cb = tree_cb('edit') },
         { key = { '<2-RightMouse>', '<C-]>' }, cb = tree_cb('cd') },
@@ -247,7 +253,6 @@ local tree_config = {
     },
 }
 
-import('utility.binding')
 local function process_nv_tree(cfg)
     local treecfg = {}
     local tree_k = function(m)
@@ -267,10 +272,11 @@ local function process_nv_tree(cfg)
     end
 
     if cfg['keybinds'] == nil then
-        default_tree_binds()
+        -- default_tree_binds()
     end
 
     Nnoremap('<C-n>', Toggler, {})
+
     table.insert(treecfg, cfg['behavoirs'])
     treecfg['view'] = cfg['view']
     g[tree_k('icons')] = cfg['icons']
@@ -281,4 +287,5 @@ local function process_nv_tree(cfg)
 
     loadtree().setup(treecfg)
 end
+
 process_nv_tree(tree_config)

@@ -1,45 +1,42 @@
-PORT =
-    interface.build_interface(
+PORT = interface.build_interface({
+    { 'create_padding', { 'number', '->', 'string' } },
+    -- text, dir,link_shape
+    { 'bullet_shape', { { 'string', 'string' }, '->', 'table' } },
     {
-        {"create_padding", {"number", "->", "string"}},
-        -- text, dir,link_shape
-        {"bullet_shape", {{"string", "string"}, "->", "table"}},
-        {
-            "make_corner",
-            {"table", "->", "string"}
-        }
-    }
-)
+        'make_corner',
+        { 'table', '->', 'string' },
+    },
+})
 
 -- Require this
 CORNER = {
     ROUND = {
-        right = "",
-        left = ""
+        right = '',
+        left = '',
     },
     ARROW = {
-        right = "",
-        left = ""
+        right = '',
+        left = '',
     },
     FLAME = {
-        right = " ",
-        left = " "
+        right = ' ',
+        left = ' ',
         -- left = ""
         -- left = ""
         -- left = ""
     },
     TRIG = {
-        right = "",
-        left = ""
+        right = '',
+        left = '',
     },
     -- HEXARROW = {
     --     right = "",
     --     left = ""
     -- }
     HEXARROW = {
-        right = "",
-        left = ""
-    }
+        right = '',
+        left = '',
+    },
 }
 
 --     ['n'] = { ' NORMAL', 'Normal' },
@@ -72,7 +69,7 @@ CORNER = {
 --     ['!'] = { ' SHELL', 'Normal' },
 --     ['t'] = { ' TERMINAL', 'Command' },
 local check_dir = function(d)
-    assert(d == "left" or d == "right", "Only support direction left or right!")
+    assert(d == 'left' or d == 'right', 'Only support direction left or right!')
 end
 
 REND = {}
@@ -81,37 +78,37 @@ REND.bullet_shape = function(dir, corner_type)
     check_dir(dir)
 
     local res = {
-        head = CORNER[corner_type][dir]
+        head = CORNER[corner_type][dir],
     }
 
-    local a = {1, 2}
+    local a = { 1, 2 }
     local pos = {
         head = 1,
-        tail = 2
+        tail = 2,
     }
     -- first case for left
     -- res["head"] = text
     -- res["tail"] = CORNER[corner_type][dir]
-    if dir == "right" then
+    if dir == 'right' then
         Reverse(a)
     end
     --print("AAAA", a[1], a[2], text, dir)
-    pos["head"] = a[1]
-    pos["tail"] = a[2]
-    res["pos"] = pos
+    pos['head'] = a[1]
+    pos['tail'] = a[2]
+    res['pos'] = pos
     return res
 end
 -- rtype : ("type","dir"):("round","left")
 -- type is all uppercase (ROUND,SHAPE,...)
 REND.make_corner = function(rtype)
-    assert(type(rtype) == "table")
+    assert(type(rtype) == 'table')
     check_dir(rtype[2])
     return CORNER[rtype[1]][rtype[2]]
 end
 
 -- spaces : number
 REND.create_padding = function(spaces)
-    return string.rep(" ", spaces)
+    return string.rep(' ', spaces)
 end
 
 -- function TestRender()

@@ -19,5 +19,13 @@ require('orgmode').setup({
 })
 
 require('org-bullets').setup({
-    symbols = { '◉', '○', '✸', '✿' },
+    symbols = {
+        headline = { '◉', '○', '✸', '✿' },
+
+        checkboxes = {
+            half = { '', 'OrgTSCheckboxHalfChecked' },
+            done = { '✓', 'OrgDone' },
+            todo = { '˟', 'OrgTODO' },
+        },
+    },
 })

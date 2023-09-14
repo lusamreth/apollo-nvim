@@ -18,26 +18,19 @@ lookup_files = {
     rust_analyzer = 'rust-lang',
     utility = 'utility-lang',
 }
--- access_core('lsp.languages.python-lang')
 store('rust_analyzer', 'rust-lang')
 
 for k, provider in pairs(Providers) do
     provider.on_attach = lsp.on_common_attach(false, nil)
 end
 
-require('nvim-lsp-installer').setup({
-    automatic_installation = true, -- automatically detect which servers to install (based on which servers are set up via lspconfig)
-    ui = {
-        icons = {
-            server_installed = '✓',
-            server_pending = '➜',
-            server_uninstalled = '✗',
-        },
-    },
-})
+require('mason-lspconfig').setup()
 
-require('nvim-lsp-setup').setup({
+require('lsp-setup').setup({
     servers = Providers,
 })
 
+require('mason-null-ls').setup({
+    automatic_setup = true,
+})
 -- require('lspconfig').tailwindcss.setup({})

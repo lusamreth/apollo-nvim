@@ -7,7 +7,7 @@ local opt = require('system.scripts.meta-data')
 opt.o.hidden = true -- Required to keep multiple buffers open multiple buffers
 opt.o.title = true
 opt.o.titlestring = '%<%F%=%l/%L - nvim'
---vim.api.nvim_win_set_option(0,"number",true)
+--vim.api.nvim_win_set_option(0,"number",true)options
 opt.o.pumheight = 10 -- Makes popup menu smaller
 opt.o.fileencoding = 'utf-8' -- The encoding written to file
 opt.o.cmdheight = 2 -- More space for displaying messages
@@ -29,7 +29,7 @@ opt.o.smartcase = true
 --opt.o.guifont = "JetBrainsMono\\ Nerd\\ Font\\ Mono:h18"
 --opt.o.guifont = "FiraCode Retina Nerd Font Complete Mono"
 --opt.o.guifont = "JetBrainsMono Nerd Font"
-opt.o.guifont = 'Hack Nerd Font Mono'
+opt.o.guifont = 'Hack Nerd Font Mono:h24'
 --vim.o.guifont = "SauceCodePro Nerd Font:h17"
 --vim.o.guifont = "FiraCode Nerd Font:h17"
 --vim.o.guifont = "JetBrains\\ Mono\\ Regular\\ Nerd\\ Font\\ Complete"
@@ -164,74 +164,80 @@ vim.cmd('set ts=4') -- Insert 2 spaces for a tab
 vim.cmd('set sw=4') -- Change the number of space characters inserted for indentation
 vim.cmd('set expandtab') -- Converts tabs to spaces
 vim.cmd('set noswapfile')
+vim.cmd('autocmd BufNewFile,BufRead *.ini setfiletype dosini')
+vim.cmd('autocmd BufNewFile,BufRead *.conf setfiletype dosini')
 -- set augroup configuration
 
 -- THEME CONFIGURATION
-local catppuccino = require('catppuccin')
+-- local catppuccino = require('catppuccin')
+require('catppuccin').setup({
+    flavour = 'mocha', -- mocha, macchiato, frappe, latte
+})
 
 -- configure it
-catppuccino.setup({
-    -- colorscheme = 'soft_manilo',
-    transparency = false,
-    term_colors = true,
-    styles = {
-        comments = 'italic',
-        functions = 'italic',
-        keywords = 'italic',
-        strings = 'NONE',
-        variables = 'NONE',
-    },
-    integrations = {
-        treesitter = true,
-        native_lsp = {
-            enabled = true,
-            virtual_text = {
-                errors = 'italic',
-                hints = 'italic',
-                warnings = 'italic',
-                information = 'italic',
-            },
-            underlines = {
-                errors = 'underline',
-                hints = 'underline',
-                warnings = 'underline',
-                information = 'underline',
-            },
-        },
-        lsp_trouble = true,
-        lsp_saga = true,
-        gitgutter = false,
-        gitsigns = true,
-        telescope = true,
-        nvimtree = {
-            enabled = true,
-            show_root = true,
-        },
-        which_key = true,
-        indent_blankline = {
-            enabled = true,
-            colored_indent_levels = true,
-        },
-        dashboard = true,
-        neogit = false,
-        vim_sneak = false,
-        fern = false,
-        barbar = false,
-        bufferline = true,
-        markdown = false,
-        lightspeed = false,
-        ts_rainbow = true,
-        hop = false,
-    },
-})
+-- catppuccino.setup({
+--     flavour = 'frappe',
+--     transparency = false,
+--     term_colors = true,
+--     styles = {
+--         comments = 'italic',
+--         functions = 'italic',
+--         keywords = 'italic',
+--         strings = 'NONE',
+--         variables = 'NONE',
+--     },
+--     integrations = {
+--         treesitter = true,
+--         native_lsp = {
+--             enabled = true,
+--             virtual_text = {
+--                 errors = 'italic',
+--                 hints = 'italic',
+--                 warnings = 'italic',
+--                 information = 'italic',
+--             },
+--             underlines = {
+--                 errors = 'underline',
+--                 hints = 'underline',
+--                 warnings = 'underline',
+--                 information = 'underline',
+--             },
+--         },
+--         lsp_trouble = true,
+--         lsp_saga = true,
+--         gitgutter = false,
+--         gitsigns = true,
+--         telescope = true,
+--         nvimtree = {
+--             enabled = true,
+--             show_root = true,
+--         },
+--         which_key = true,
+--         indent_blankline = {
+--             enabled = true,
+--             colored_indent_levels = true,
+--         },
+--         dashboard = true,
+--         neogit = false,
+--         vim_sneak = false,
+--         fern = false,
+--         barbar = false,
+--         bufferline = true,
+--         markdown = false,
+--         lightspeed = false,
+--         ts_rainbow = true,
+--         hop = false,
+--     },
+-- })
+vim.api.nvim_command('colorscheme catppuccin')
 -- make_prompt()
 
-require('onedark').setup({
-    -- style = 'darker',
-    style = 'warmer',
-})
+-- require('onedark').setup({
+--     -- style = 'darker',
+--     style = 'warmer',
+-- })
 
-require('onedark').load()
+-- require('onedark').load()
 -- vim.cmd('colorscheme catppuccin')
 -- vim.cmd('colorscheme onedark')
 

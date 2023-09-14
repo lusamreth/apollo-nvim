@@ -1,10 +1,11 @@
 -- config doc height and width
 print('CMP IMPORTED')
+
 DOC_HEIGHT = 40
 DOC_WIDTH = DOC_HEIGHT * 2
-
 local present, cmp = pcall(require, 'cmp')
 if not present then
+    print('CANNOT DETECT CMP!!!')
     return
 end
 
@@ -88,6 +89,7 @@ local symbols_map = {
     -- Constructor = "",
     Constructor = '',
     Field = 'ﴲ ',
+    Codeium = '',
     Variable = '',
     Class = 'ﴯ',
     Interface = '',
@@ -141,6 +143,8 @@ cmp.setup({
         { name = 'nvim_lsp' },
         { name = 'nvim_lua' },
         { name = 'vsnip' },
+
+        { name = 'codeium' },
         -- { name = 'luasnip' },
         { name = 'orgmode' },
         { name = 'buffer' },

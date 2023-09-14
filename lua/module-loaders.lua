@@ -12,7 +12,7 @@ _G.__luacache_config = {
 HOMEROOT = '/home/lusamreth'
 
 _G.HOMEROOT = HOMEROOT
-_G.LUAROOT = HOMEROOT .. '/nvim-proto-2/lua'
+_G.LUAROOT = HOMEROOT .. '/.config/nvim/lua'
 
 local import = function(mod, root, use_require)
     -- use_require = true
@@ -56,7 +56,7 @@ _G.make_import = function(root)
 end
 
 function _G.access_core(mod, dir)
-    dir = dir or 'nvim-proto-2'
+    dir = dir or '/.config/nvim'
     return import(mod, '/home/lusamreth/' .. dir .. '/lua/core/')
 end
 

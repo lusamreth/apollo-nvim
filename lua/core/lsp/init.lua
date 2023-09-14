@@ -3,7 +3,7 @@ DATA_PATH = vim.fn.stdpath('data')
 LSP_REPO = DATA_PATH .. '/lspinstall/'
 
 local null = access_module('nv-null-ls.init')
-
+print('THIS IS NULL', null)
 local lspImport = make_import(LUAROOT .. '/core/lsp/')
 -- define the sign !
 local function diagnostic_definition(signs)
@@ -22,31 +22,14 @@ local function diagnostic_definition(signs)
     --print(vim.fn.bufname("%"))
 end
 
-local function LspSagaExtension(bufnr, prefix)
-    local map = function(...)
-        return vim.api.nvim_buf_set_keymap(...)
-    end
-
-    map(bufnr, 'n', prefix .. 'rn', '<cmd>Lspsaga rename<cr>', { silent = true, noremap = true })
-    map(bufnr, 'n', prefix .. 'x', '<cmd>Lspsaga code_action<cr>', { silent = true, noremap = true })
-    map(bufnr, 'x', prefix .. 'x', ':<c-u>Lspsaga range_code_action<cr>', { silent = true, noremap = true })
-    map(bufnr, 'n', prefix .. 'o', '<cmd>Lspsaga show_line_diagnostics<cr>', { silent = true, noremap = true })
-    map(bufnr, 'n', prefix .. 'dn', '<cmd>Lspsaga diagnostic_jump_next<cr>', { silent = true, noremap = true })
-    map(bufnr, 'n', prefix .. 'dp', '<cmd>Lspsaga diagnostic_jump_prev<cr>', { silent = true, noremap = true })
-
-    map(bufnr, 'n', 'K', '<cmd>Lspsaga hover_doc<cr>', { silent = true, noremap = true })
-
-    map(bufnr, 'n', '<C-u>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<cr>", {})
-    map(bufnr, 'n', '<C-d>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<cr>", {})
-end
-
 -- force native omnifunc to use lsp.omnifunc
 -- vim.api.nvim_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 -- Mappings.
 local opts = { noremap = true, silent = true }
 
+-- enable format on save
 -- todo : integrate lspsaga into lsp
-local function build_mapper(leaders)
+local function default_mapper(leaders)
     local default = { 'g', '<space>', 'd' }
     if leaders == nil then
         leaders = {
@@ -62,6 +45,8 @@ local function build_mapper(leaders)
 
     return function(client, bufnr)
         --helpers setting local keymap
+        -- override the default
+
         local function buf_set_keymap(...)
             vim.api.nvim_buf_set_keymap(bufnr, ...)
         end
@@ -69,8 +54,6 @@ local function build_mapper(leaders)
         local function buf_set_option(...)
             vim.api.nvim_buf_set_option(bufnr, ...)
         end
-
-        -- enable format on save
 
         buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
         -- g prefixes
@@ -95,8 +78,6 @@ local function build_mapper(leaders)
         buf_set_keymap('n', l2 .. 'e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
         -- list errors / hints in quickfix list!
         buf_set_keymap('n', l2 .. 'q', '<cmd>lua vim.diagnostic.set_loclist({ severity_limit = "Warning","Error"  })<CR>', opts)
-        -- rename functions or variables in the current buffer
-        buf_set_keymap('n', l2 .. 'rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
         -- go to the next diagnostic / error code block
         buf_set_keymap('n', l2 .. 'dn', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
         buf_set_keymap('n', l2 .. 'dp', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
@@ -112,8 +93,6 @@ local function build_mapper(leaders)
         buf_set_keymap('n', '[' .. l3, '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
         buf_set_keymap('n', ']' .. l3, '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
 
-        -- override the default
-        LspSagaExtension(bufnr, l2)
         -- lua require('lspsaga.rename').rename()
     end
 end
@@ -191,7 +170,7 @@ local function common_capabilities(client)
     end
 
     local function advertise_cmp()
-        client.capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+        client.capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
     end
 
     advertise_cmp()
@@ -219,6 +198,7 @@ local show_func_sig = function()
 end
 
 lspImport('diag-border')
+
 local function mount_tools()
     require('lsp-colors').setup({
         Error = '#db4b4b',
@@ -226,6 +206,7 @@ local function mount_tools()
         Information = '#0db9d7',
         Hint = '#10B981',
     })
+
     local modules = {
         'nv-cmp',
         'nv-lightbulb',
@@ -241,67 +222,29 @@ local function mount_tools()
     show_func_sig()
 end
 
-local opt = require('system.scripts.meta-data')
-
-local lsp_formatting = function(bufnr)
-    vim.lsp.buf.format({
-        filter = function(client)
-            -- apply whatever logic you want (in this example, we'll only use null-ls)
-            return client.name == 'null-ls'
-        end,
-        bufnr = bufnr,
-    })
-end
-
--- if you want to set up formatting on save, you can use this as a callback
-local augroup = vim.api.nvim_create_augroup('LspFormatting', {})
-
--- add to your shared on_attach callback
-local reset_format = function(client, bufnr)
-    if client.supports_method('textDocument/formatting') then
-        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-        vim.api.nvim_create_autocmd('BufWritePre', {
-            group = augroup,
-            buffer = bufnr,
-            callback = function()
-                lsp_formatting(bufnr)
-            end,
-        })
-    end
-end
 -- require('lspconfig').html.setup({})
 -- t:table -> { client,bufnr,conf }
 local function attach_builder(t)
     local conf = t.config
     if t.mapper_builder == nil then -- non_null value
         --default options
-        lsp_config.mapper = build_mapper(conf.leaders)
+        lsp_config.mapper = default_mapper(conf.leaders)
     else
         lsp_config.mapper = t.mapper_builder(conf.leaders)
     end
 
     -- the args is necessary
     local on_attach = function(client, bufnr)
-        -- useful additions such as diagnostics panel, auto-
-        -- complete, formatter, ...
         if t.on_mount then
-            print('calling on mount!')
             t.on_mount(client, bufnr)
         end
         mount_tools()
-        -- important func!
         -- capabilities setting
         common_capabilities(client)
-        -- provide diag signs
         diagnostic_definition(t.diagnostic_signs)
-        -- setting keymaps and shortcuts
-        -- client.server_capabilities.documentFormattingProvider = false
-        -- client.server_capabilities.documentRangeFormattingProvider = false
-
-        -- reset_format(client, bufnr)
 
         null.resolve_null_conflict(client)
-        -- vim.pretty_print('cappppa', client.server_capabilities.documentFormattingProvider)
+
         lsp_config.mapper(client, bufnr)
         print('resolving')
     end
@@ -319,10 +262,14 @@ local function on_common_attach(verb, on_mount)
     local v_t = {
         on_mount = on_mount,
         config = {
-            leaders = nil,
+            leaders = { 'd', 'g' },
             -- use default signs!
             diagnostic_signs = nil,
         },
+        mapper_builder = function(leaders)
+            mapper = access_module('lspsaga-mapper')
+            mapper.LspSagaExtension(leaders)
+        end,
         snippet = true,
     }
     return attach_builder(v_t) -- <-- func!

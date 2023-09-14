@@ -1,30 +1,52 @@
 -- This file can be loaded by calling `lua require('plugins')` from your init.vim
 
--- Only required if you have packer configured as `opt`
--- vim.cmd [[packadd packer.nvim]]
--- return require('packer').startup(function()
---         -- configs goes here
---     end
--- )
---
-
--- vim.cmd([[packadd packer.nvim]])
 local packages = {
     'wbthomason/packer.nvim',
+    'williamboman/mason.nvim',
+    'williamboman/mason-lspconfig.nvim',
     'navarasu/onedark.nvim',
+    'lusamreth/PawanChatGPT.nvim',
     'jose-elias-alvarez/null-ls.nvim',
+    -- 'lusamreth/PawanChatGPT.nvim',
+    'alexghergh/nvim-tmux-navigation',
     'neovim/nvim-lspconfig',
     'mattn/emmet-vim',
     'mlaursen/vim-react-snippets',
-    --{"glepnir/galaxyline.nvim", {branch = "main"}},
+    'stevearc/aerial.nvim',
+    'p00f/clangd_extensions.nvim',
+    'notomo/gesture.nvim',
+    'jay-babu/mason-null-ls.nvim',
+    'glepnir/lspsaga.nvim',
+    'folke/flash.nvim',
+    {
+        'jcdickinson/codeium.nvim',
+        -- commit = '963c460',
+        -- commit = 'b1ff0d6',
+        commit = '947acdc',
+    },
+    -- 'Exafunction/codeium.vim',
+    -- {
+    --     'glepnir/lspsaga.nvim',
+    --     opt = true,
+    --     branch = 'main',
+    --     -- event = 'LspAttach',
+    --     config = function()
+    --         print('LOADED LSP')
+    --         require('lspsaga').setup({})
+    --     end,
+    --     requires = {
+    --         { 'nvim-tree/nvim-web-devicons' },
+    --         --Please make sure you install markdown and markdown_inline parser
+    --         { 'nvim-treesitter/nvim-treesitter' },
+    --     },
+    -- },
     {
         'nvim-treesitter/nvim-treesitter',
-        -- branch = '0.5-compat',
     },
     'elzr/vim-json',
     'rafamadriz/friendly-snippets',
-    'lewis6991/impatient.nvim',
-    'tjdevries/nlua.nvim',
+    -- 'lewis6991/impatient.nvim',
+    'folke/neodev.nvim',
     'folke/lua-dev.nvim',
     --Icons
     'kyazdani42/nvim-web-devicons',
@@ -53,7 +75,7 @@ local packages = {
     'folke/trouble.nvim',
     'cohama/lexima.vim',
     'p00f/nvim-ts-rainbow',
-    'williamboman/nvim-lsp-installer',
+    -- 'williamboman/nvim-lsp-installer',
     'nvim-telescope/telescope.nvim',
     'nvim-lua/popup.nvim',
     'nvim-lua/plenary.nvim',
@@ -67,8 +89,7 @@ local packages = {
             require('cmp').setup.buffer({ sources = { { name = 'crates' } } })
         end,
     },
-    'williamboman/nvim-lsp-installer',
-    'akinsho/nvim-bufferline.lua',
+    'akinsho/bufferline.nvim',
     {
         'lukas-reineke/indent-blankline.nvim',
         { branch = 'main' },
@@ -99,11 +120,7 @@ local packages = {
         { as = 'catppuccin' },
     },
     'kevinhwang91/rnvimr',
-    {
-        'tami5/lspsaga.nvim',
-        branch = 'nvim6.0',
-    },
-
+    -- 'nvimdev/lspsaga.nvim',
     'xiyaowong/nvim-transparent',
     'mizlan/iswap.nvim',
 
@@ -113,14 +130,17 @@ local packages = {
     },
 
     'MunifTanjim/nui.nvim',
+
     -- repl integration method
     'hkupty/iron.nvim',
     'nvim-orgmode/orgmode',
     'akinsho/org-bullets.nvim',
-    'petobens/poet-v',
+    -- 'petobens/poet-v',
     'HallerPatrick/py_lsp.nvim',
-    'junnplus/nvim-lsp-setup',
+    -- 'junnplus/nvim-lsp-setup',
 
+    'junnplus/lsp-setup.nvim',
+    'rafcamlet/nvim-luapad',
     -- for swapping arg
     -- coq not so accurate and lack of keybinding primarily the
     -- super_tab function
@@ -142,7 +162,11 @@ local packages = {
 
 local f = require('plugins.loader')
 local loader = f:init_loader()
-loader:load_packages(packages)
+if loader == nil then
+    print('Cannot load plugins!!!\nThe loader is missing.')
+else
+    loader:load_packages(packages)
+end
 
 local function autocompile()
     print('Recompile packages!')
