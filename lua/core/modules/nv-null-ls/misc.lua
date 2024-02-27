@@ -1,4 +1,5 @@
 local h = access_module('nv-null-ls.helpers')
+
 local diagnostics = {
     'flake8',
     'eslint_d',

@@ -45,4 +45,5 @@ function M.MakeInterceptor(pattern)
         end
     end
 end
+
 return M

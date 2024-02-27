@@ -7,8 +7,8 @@ local leader = ','
 
 Nmap(leader .. 'ff', 'Telescope find_files')
 Nnoremap('\\', 'lua require("telescope.builtin").live_grep()')
-Nnoremap(leader .. 'b', 'lua require("telescope.builtin").buffers()')
-Nnoremap(leader .. 'h', 'lua require("telescope.builtin").help_tags()')
+Nnoremap(leader .. 'fb', 'lua require("telescope.builtin").buffers()')
+Nnoremap(leader .. 'fh', 'lua require("telescope.builtin").help_tags()')
 Nnoremap(leader .. 'fr', ':RnvimrToggle')
 Nnoremap('<C-q>', 'qall!')
 Nnoremap(leader .. 'l', 'nohl')
@@ -42,7 +42,7 @@ Xnoremap('K', "lua import('system.scripts.move').MoveBlock(-1)")
 Nnoremap('<space>fs', ':ISwapWith')
 
 -- vim.api.nvim_set_keymap('n', 'gk', '<cmd>Telescope projects<cr>', {})
-vim.keymap.set('n', '<C-_>', function()
+vim.keymap.set('n', '<C-o>', function()
     require('flash').jump()
 end)
 
@@ -70,3 +70,40 @@ for _, win_nav in pairs(win_navs) do
     Nmap(key, action, { binder = true })
     Nnoremap(key, action, { binder = true })
 end
+
+local harpoon = require('harpoon')
+
+-- REQUIRED
+harpoon:setup({
+
+    settings = {
+        save_on_toggle = false,
+        sync_on_ui_close = false,
+        key = function()
+            return vim.loop.cwd()
+        end,
+    },
+})
+-- REQUIRED
+
+Nnoremap('hf', function()
+    print('openning harpoon registry')
+    return harpoon.ui:toggle_quick_menu(harpoon:list())
+end)
+
+Nnoremap('hs', function()
+    print('adding file to harpoon registry')
+    return harpoon:list():append()
+end)
+
+Nnoremap('hm', function()
+    print('harpoon next')
+    return harpoon.ui.nav_next()
+end)
+
+Nnoremap('hn', function()
+    print('harpoon prev')
+    return harpoon.ui.nav_prev()
+end)
+
+vim.api.nvim_set_keymap('n', '<M-r>', '<cmd>lua Reload()<CR>', { noremap = true, silent = true })

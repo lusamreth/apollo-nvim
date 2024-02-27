@@ -2,7 +2,7 @@ local get_format = access_module('nv-null-ls.formatters')
 local misc = access_module('nv-null-ls.misc')
 
 local sources = Utils.table_merge(0, get_format(), misc.diagnostics())
--- print('SOURCEs', vim.inspect(sources))
+
 local G = {}
 
 G.override_settings = {}
@@ -189,15 +189,15 @@ end
 G.create_override_attachment = create_override_attachment
 G.init_null_ls = init_null_ls
 
-require('mason-null-ls').setup({
-    ensure_installed = {
-        -- Opt to list sources here, when available in mason.
-    },
-    automatic_installation = false,
-    automatic_setup = true, -- Recommended, but optional
-})
+-- require('mason-null-ls').setup({
+--     ensure_installed = {
+--         -- Opt to list sources here, when available in mason.
+--     },
+--     automatic_installation = false,
+--     automatic_setup = true, -- Recommended, but optional
+-- })
 
-local status_ok, null_ls = pcall(require, 'null-ls')
+-- local status_ok, null_ls = pcall(require, 'null-ls')
 
 -- null_ls.setup({
 --     debug = true,

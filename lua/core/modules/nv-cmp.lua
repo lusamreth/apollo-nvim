@@ -1,6 +1,3 @@
--- config doc height and width
-print('CMP IMPORTED')
-
 DOC_HEIGHT = 40
 DOC_WIDTH = DOC_HEIGHT * 2
 local present, cmp = pcall(require, 'cmp')
@@ -159,7 +156,6 @@ cmp.setup({
         ghost_text = true,
     },
     window = {
-
         documentation = {
             border = {
                 BORDERTOPLEFT,

@@ -15,15 +15,15 @@ opt.o.mouse = 'a' -- Enable your mouse
 opt.o.splitbelow = true -- Horizontal splits will automatically be below
 opt.o.splitright = true -- Vertical splits will automatically be to the right
 opt.o.termguicolors = true -- set term gui colors most terminals support this
-opt.o.t_Co = '256' -- Support 256 colors
+-- opt.o.t_Co = '256' -- Support 256 colors
 opt.o.conceallevel = 0 -- So that I can see `` in markdown files
 opt.o.showtabline = 2 -- Always show tabs
-opt.o.showmode = false -- We don't need to see things like -- INSERT -- anymore
+opt.o.showmode = true -- We don't need to see things like -- INSERT -- anymore
 opt.o.autoread = true
 opt.o.backup = false -- This is recommended by coc
 opt.o.writebackup = false -- This is recommended by coc
 opt.o.updatetime = 300 -- Faster completion
-opt.o.timeoutlen = 1000 -- By default timeoutlen is 1000 ms
+opt.o.timeoutlen = 200 -- By default timeoutlen is 1000 ms
 opt.o.clipboard = 'unnamedplus' -- Copy paste between vim and everything else
 opt.o.smartcase = true
 --opt.o.guifont = "JetBrainsMono\\ Nerd\\ Font\\ Mono:h18"
@@ -35,7 +35,7 @@ opt.o.guifont = 'Hack Nerd Font Mono:h24'
 --vim.o.guifont = "JetBrains\\ Mono\\ Regular\\ Nerd\\ Font\\ Complete"
 opt.wo.wrap = false -- Display long lines as just one line
 opt.wo.number = true -- set numbered lines
-opt.wo.relativenumber = false -- set relative number
+opt.wo.relativenumber = true -- set relative number
 opt.wo.cursorline = true -- Enable highlighting of the current line
 opt.wo.signcolumn = 'yes' -- Always show the signcolumn, otherwise it would shift the text each time
 opt.g.nvim_tree_disable_netrw = true
@@ -65,15 +65,6 @@ opt.g.user_emmet_settings = {
 
 opt.g.user_emmet_install_global = 1
 opt.g.user_emmet_leader_key = '<C-a>'
-
---au BufNewFile,BufRead *.py
---    \ set tabstop=4
---    \ set softtabstop=4
---    \ set shiftwidth=4
---    \ set textwidth=79
---    \ set expandtab
---    \ set autoindent
---    \ set fileformat=unix
 
 function Pep8Spec()
     local specs = {
@@ -119,15 +110,12 @@ local ConfGroup = {
     { 'BufEnter,BufNewFile', '*.py', 'lua Pep8Spec()' },
     { 'BufEnter,BufNewFile', '*.yml', 'setf yaml' },
     { 'BufEnter,BufNewFile', '*.yml', 'setlocal ts=2 sts=2 sw=2 expandtab' },
-    -- { 'FileType', 'html,css,javascript.jsx', 'lua print("HELL")' },
     {
         'BufEnter,BufNewFile',
         '*.xml',
         'com! FormatXML :%!python3 -c "import xml.dom.minidom, sys; print(xml.dom.minidom.parse(sys.stdin).toprettyxml())"',
     },
 }
-
--- vim.cmd('autocmd ')
 
 -- au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
 
@@ -166,6 +154,19 @@ vim.cmd('set expandtab') -- Converts tabs to spaces
 vim.cmd('set noswapfile')
 vim.cmd('autocmd BufNewFile,BufRead *.ini setfiletype dosini')
 vim.cmd('autocmd BufNewFile,BufRead *.conf setfiletype dosini')
+vim.cmd('autocmd BufNewFile,BufRead set number')
+
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
+    pattern = { '*' },
+    command = 'set number',
+})
+
+vim.cmd('highlight! HarpoonInactive guibg=NONE guifg=#63698c')
+vim.cmd('highlight! HarpoonActive guibg=NONE guifg=white')
+vim.cmd('highlight! HarpoonNumberActive guibg=NONE guifg=#7aa2f7')
+vim.cmd('highlight! HarpoonNumberInactive guibg=NONE guifg=#7aa2f7')
+vim.cmd('highlight! TabLineFill guibg=NONE guifg=white')
+--
 -- set augroup configuration
 
 -- THEME CONFIGURATION
@@ -174,73 +175,4 @@ require('catppuccin').setup({
     flavour = 'mocha', -- mocha, macchiato, frappe, latte
 })
 
--- configure it
--- catppuccino.setup({
---     flavour = 'frappe',
---     transparency = false,
---     term_colors = true,
---     styles = {
---         comments = 'italic',
---         functions = 'italic',
---         keywords = 'italic',
---         strings = 'NONE',
---         variables = 'NONE',
---     },
---     integrations = {
---         treesitter = true,
---         native_lsp = {
---             enabled = true,
---             virtual_text = {
---                 errors = 'italic',
---                 hints = 'italic',
---                 warnings = 'italic',
---                 information = 'italic',
---             },
---             underlines = {
---                 errors = 'underline',
---                 hints = 'underline',
---                 warnings = 'underline',
---                 information = 'underline',
---             },
---         },
---         lsp_trouble = true,
---         lsp_saga = true,
---         gitgutter = false,
---         gitsigns = true,
---         telescope = true,
---         nvimtree = {
---             enabled = true,
---             show_root = true,
---         },
---         which_key = true,
---         indent_blankline = {
---             enabled = true,
---             colored_indent_levels = true,
---         },
---         dashboard = true,
---         neogit = false,
---         vim_sneak = false,
---         fern = false,
---         barbar = false,
---         bufferline = true,
---         markdown = false,
---         lightspeed = false,
---         ts_rainbow = true,
---         hop = false,
---     },
--- })
 vim.api.nvim_command('colorscheme catppuccin')
--- make_prompt()
-
--- require('onedark').setup({
---     -- style = 'darker',
---     style = 'warmer',
--- })
-
--- require('onedark').load()
--- vim.cmd('colorscheme catppuccin')
--- vim.cmd('colorscheme onedark')
-
--- transparent
--- vim.cmd('highlight Normal guibg=none')
--- vim.cmd('highlight Nontext guibg=none')

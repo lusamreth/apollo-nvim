@@ -2,8 +2,9 @@
 DATA_PATH = vim.fn.stdpath('data')
 LSP_REPO = DATA_PATH .. '/lspinstall/'
 
-local null = access_module('nv-null-ls.init')
-print('THIS IS NULL', null)
+local mapper = access_module('lspsaga-mapper')
+local formatRunner = access_module('nv-null-ls.conform-runner')
+-- print('THIS IS NULL', null)
 local lspImport = make_import(LUAROOT .. '/core/lsp/')
 -- define the sign !
 local function diagnostic_definition(signs)
@@ -188,7 +189,7 @@ local show_func_sig = function()
         hint_enable = true, -- virtual hint enable
         hint_prefix = '󰿉 ',
         hint_scheme = 'String',
-        use_lspsaga = false, -- set to true if you want to use lspsaga popup
+        use_lspsaga = true, -- set to true if you want to use lspsaga popup
         handler_opts = {
             border = 'single', -- double, single, shadow, none
         },
@@ -196,8 +197,6 @@ local show_func_sig = function()
     }
     require('lsp_signature').on_attach(sig_cfg)
 end
-
-lspImport('diag-border')
 
 local function mount_tools()
     require('lsp-colors').setup({
@@ -208,7 +207,7 @@ local function mount_tools()
     })
 
     local modules = {
-        'nv-cmp',
+        -- 'nv-cmp',
         'nv-lightbulb',
         'nv-trouble',
         'nv-iron',
@@ -224,29 +223,31 @@ end
 
 -- require('lspconfig').html.setup({})
 -- t:table -> { client,bufnr,conf }
+mapper = access_module('lspsaga-mapper')
 local function attach_builder(t)
     local conf = t.config
-    if t.mapper_builder == nil then -- non_null value
-        --default options
-        lsp_config.mapper = default_mapper(conf.leaders)
-    else
-        lsp_config.mapper = t.mapper_builder(conf.leaders)
-    end
+    -- vim.print(t.mapper_builder)
+
+    mapper = access_module('lspsaga-mapper')
+    lsp_config.mapper = mapper.LspSagaExtension(conf.leaders)
+    -- if t.mapper_builder == nil then -- non_null value
+    --     --default options
+    --     lsp_config.mapper = default_mapper(conf.leaders)
+    -- else
+    --     lsp_config.mapper = t.mapper_builder(conf.leaders)
+    -- end
 
     -- the args is necessary
     local on_attach = function(client, bufnr)
         if t.on_mount then
             t.on_mount(client, bufnr)
         end
+
         mount_tools()
         -- capabilities setting
-        common_capabilities(client)
         diagnostic_definition(t.diagnostic_signs)
-
-        null.resolve_null_conflict(client)
-
         lsp_config.mapper(client, bufnr)
-        print('resolving')
+        common_capabilities(client)
     end
 
     return on_attach
@@ -262,12 +263,12 @@ local function on_common_attach(verb, on_mount)
     local v_t = {
         on_mount = on_mount,
         config = {
-            leaders = { 'd', 'g' },
+            -- leaders = { 'd', 'g' },
+            leaders = { 'g', '<space>', 'd' },
             -- use default signs!
             diagnostic_signs = nil,
         },
         mapper_builder = function(leaders)
-            mapper = access_module('lspsaga-mapper')
             mapper.LspSagaExtension(leaders)
         end,
         snippet = true,
@@ -279,5 +280,13 @@ local lsp_module = {}
 lsp_module.build_attacher = attach_builder
 lsp_module.on_common_attach = on_common_attach
 
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+    callback = function(ev)
+        local opts = { buffer = ev.buf, client = ev.client }
+        local leaders = { 'g', '<space>', 'd' }
+        mapper.LspSagaExtension(leaders)
+    end,
+})
 --vim.fn.sign_define('LightBulbSign', { text = "💡", texthl = "" , linehl= "", numhl= "" })
 return lsp_module

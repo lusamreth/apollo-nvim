@@ -41,6 +41,7 @@ local servers = {
     -- 'rome',
     'clangd',
     'cssls',
+    'jdtls',
     -- 'sumneko_lua',
     'yamlls',
 
@@ -67,14 +68,19 @@ UtilityProviders.arduino_language_server = {
         '/usr/bin/clangd',
     },
 }
+
 UtilityProviders.pyright = {
+    filetypes = { 'python' },
+    on_attach = require('cmp').on_attach,
     before_init = function(_, config)
         config.settings.python.pythonPath = pylang.get_python_path(config.root_dir)
     end,
 }
 
 for i, server in pairs(servers) do
-    UtilityProviders[server] = {}
+    UtilityProviders[server] = {
+        -- on_attach =
+    }
 end
 
 UtilityProviders.lua_ls = LUACONF
@@ -83,7 +89,6 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 local ls = require('luasnip')
-
 -- Every unspecified option will be set to the default.
 ls.config.set_config({
     history = true,
@@ -100,6 +105,7 @@ ls.snippets = {
 ls.snippets.javascript = ls.snippets.html
 ls.snippets.javascriptreact = ls.snippets.html
 ls.snippets.typescriptreact = ls.snippets.html
+
 UtilityProviders.intelephense = {
     -- Add wordpress to the list of stubs
     stubs = {
@@ -164,7 +170,7 @@ UtilityProviders.intelephense = {
         'sysvmsg',
         'sysvsem',
         'sysvshm',
-        'tidy',
+        'atidy',
         'tokenizer',
         'xml',
         'xmlreader',
