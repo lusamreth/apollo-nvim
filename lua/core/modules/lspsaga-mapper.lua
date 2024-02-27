@@ -7,7 +7,7 @@ function mapper.LspSagaExtension(prefix)
     local map = vim.keymap.set
     local nav_prefix = prefix[1]
     local definition_prefix = prefix[2]
-    local util_prefix = '<space>'
+    local util_prefix = prefix[3]
 
     local TIMEOUT = 500
     local n = 0
@@ -19,7 +19,7 @@ function mapper.LspSagaExtension(prefix)
             blocked_cursor = true
             local timer = vim.loop.new_timer()
             if timer ~= nil then
-                timer:start(500, 0, function()
+                timer:start(200, 0, function()
                     blocked_cursor = false
                 end)
             end
@@ -38,7 +38,7 @@ function mapper.LspSagaExtension(prefix)
         map('n', nav_prefix .. 'p', blocking_saga_cmd('diagnostic_jump_prev'))
 
         map('n', definition_prefix .. 't', blocking_saga_cmd('goto_type_definition'))
-        map('n', definition_prefix .. 'h', blocking_saga_cmd('lsp_finder'))
+        map('n', definition_prefix .. 'h', blocking_saga_cmd('finder'))
         map('n', definition_prefix .. 'p', blocking_saga_cmd('peek_definition'))
 
         local group = vim.api.nvim_create_augroup('Line Diagnostics', { clear = true })
@@ -51,8 +51,8 @@ function mapper.LspSagaExtension(prefix)
             group = group,
         })
 
-        map('n', 'K', '<cmd>Lspsaga hover_doc<CR>')
-        map('n', util_prefix .. 'rn', '<cmd>Lspsaga rename<CR>')
+        map('n', util_prefix .. 'k', '<cmd>Lspsaga hover_doc<CR>')
+        map('n', util_prefix .. 'rd', '<cmd>Lspsaga rename<CR>')
         map('n', util_prefix .. 'x', '<cmd>Lspsaga code_action<CR>')
         map('n', util_prefix .. 'o', '<cmd>Lspsaga outline<CR>')
 
