@@ -7,23 +7,36 @@ local packages = {
     'navarasu/onedark.nvim',
     'lusamreth/PawanChatGPT.nvim',
     'jose-elias-alvarez/null-ls.nvim',
+    -- project wide search and replace
+    'nvim-pack/nvim-',
+    'ckipp01/nvim-jenkinsfile-linter',
+    'mfussenegger/nvim-jdtls',
     -- 'lusamreth/PawanChatGPT.nvim',
     'alexghergh/nvim-tmux-navigation',
+    -- essentials for neovim config
     'neovim/nvim-lspconfig',
     'mattn/emmet-vim',
     'mlaursen/vim-react-snippets',
+    -- formatting tool
+    'stevearc/conform.nvim',
+    -- neovim code outline
     'stevearc/aerial.nvim',
     'p00f/clangd_extensions.nvim',
     'notomo/gesture.nvim',
     'jay-babu/mason-null-ls.nvim',
-    'glepnir/lspsaga.nvim',
+    'nvimdev/lspsaga.nvim',
+    -- Navigation tool
     'folke/flash.nvim',
-    {
-        'jcdickinson/codeium.nvim',
-        -- commit = '963c460',
-        -- commit = 'b1ff0d6',
-        commit = '947acdc',
-    },
+    -- git tool
+    'kdheepak/lazygit.nvim',
+    -- AI code tool
+    'Exafunction/codeium.nvim',
+    -- {
+    --     'jcdickinson/codeium.nvim',
+    --     -- commit = '963c460',
+    --     -- commit = 'b1ff0d6',
+    --     commit = '947acdc',
+    -- },
     -- 'Exafunction/codeium.vim',
     -- {
     --     'glepnir/lspsaga.nvim',
@@ -45,7 +58,7 @@ local packages = {
     },
     'elzr/vim-json',
     'rafamadriz/friendly-snippets',
-    -- 'lewis6991/impatient.nvim',
+    -- lua development stuff
     'folke/neodev.nvim',
     'folke/lua-dev.nvim',
     --Icons
@@ -68,7 +81,7 @@ local packages = {
     -- f03a259
     'terrortylor/nvim-comment',
     'ray-x/lsp_signature.nvim',
-    'glepnir/dashboard-nvim',
+    'nvimdev/dashboard-nvim',
     'windwp/nvim-ts-autotag',
     -- 'akinsho/nvim-toggleterm.lua',
     'akinsho/toggleterm.nvim',
@@ -104,7 +117,7 @@ local packages = {
     'kosayoda/nvim-lightbulb',
     'simrat39/rust-tools.nvim',
     'mhartington/formatter.nvim',
-    'andweeb/presence.nvim',
+    -- 'andweeb/presence.nvim',
     'ahmedkhalf/project.nvim',
     'hoob3rt/lualine.nvim',
     'lewis6991/gitsigns.nvim',
@@ -120,13 +133,11 @@ local packages = {
         { as = 'catppuccin' },
     },
     'kevinhwang91/rnvimr',
-    -- 'nvimdev/lspsaga.nvim',
     'xiyaowong/nvim-transparent',
     'mizlan/iswap.nvim',
 
     {
         'beauwilliams/focus.nvim',
-        -- config = function() end,
     },
 
     'MunifTanjim/nui.nvim',
@@ -140,6 +151,10 @@ local packages = {
     -- 'junnplus/nvim-lsp-setup',
 
     'junnplus/lsp-setup.nvim',
+    {
+        'ThePrimeagen/harpoon',
+        branch = 'harpoon2',
+    },
     'rafcamlet/nvim-luapad',
     -- for swapping arg
     -- coq not so accurate and lack of keybinding primarily the
