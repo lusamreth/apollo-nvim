@@ -76,7 +76,7 @@ function Profile_plugin()
 
     local local_bind = function(key, _fd)
         Caller = Gbinder.bind(_fd)
-        return nnoremap(key, 'lua Caller()')
+        return Nnoremap(key, 'lua Caller()')
     end
 
     local pause_profile_binder = function()

@@ -22,12 +22,13 @@
 
 require('module-loaders')
 require('plugins')
+require('utility.binding')
+
 vim.loader.enable()
 
 vim.g.python3_host_prog = '/usr/bin/python3'
 vim.g.python_host_prog = '/usr/bin/python2.7'
 vim.g.poetv_executables = { 'poetry', 'pipenv' }
-
 table.unpack = table.unpack or unpack
 -- this custom loader must be loaded first before the system
 -- starts sourcing core files and plugins
@@ -40,37 +41,83 @@ vim.cmd('filetype on')
 require('utility')
 require('clangd_extensions').setup()
 require('nvim-treesitter.configs').setup({
+    -- A list of parser names, or "all" (the five listed parsers should always be installed)
+    ensure_installed = { 'c', 'lua', 'vim', 'vimdoc', 'query', 'typescript', 'tsx', 'javascript' },
+    modules = {},
+    textobjects = {
+        enable = true,
+        keymaps = {
+            ['af'] = '@function.outer',
+            ['if'] = '@function.inner',
+            ['aC'] = '@class.outer',
+            ['iC'] = '@class.inner',
+            ['ac'] = '@conditional.outer',
+            ['ic'] = '@conditional.inner',
+            ['ae'] = '@block.outer',
+            ['ie'] = '@block.inner',
+            ['al'] = '@loop.outer',
+            ['il'] = '@loop.inner',
+            ['is'] = '@statement.inner',
+            ['as'] = '@statement.outer',
+            ['ad'] = '@comment.outer',
+            ['am'] = '@call.outer',
+            ['im'] = '@call.inner',
+        },
+    },
+    refactor = {
+        highlight_definitions = {
+            enable = true,
+        },
+        highlight_current_scope = {
+            enable = true,
+        },
+        smart_rename = {
+            enable = true,
+            keymaps = {
+                smart_rename = 'grr',
+            },
+        },
+        navigation = {
+            enable = true,
+            keymaps = {
+                goto_definition = 'gnd',
+                list_definitions = 'gnD',
+            },
+        },
+    },
+    -- Install parsers synchronously (only applied to `ensure_installed`)
+    sync_install = false,
+
+    -- Automatically install missing parsers when entering buffer
+    -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+    auto_install = true,
+
+    -- List of parsers to ignore installing (or "all")
+    ignore_install = { 'javascript' },
+
+    ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+    -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
     highlight = {
         enable = true,
+        -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+        -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+        -- the name of the parser)
+        -- list of language that will be disabled
+        -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+        -- disable = function(lang, buf)
+        --     local max_filesize = 100 * 1024 -- 100 KB
+        --     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        --     if ok and stats and stats.size > max_filesize then
+        --         return true
+        --     end
+        -- end,
+
         -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
         -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
         -- Using this option may slow down your editor, and you may see some duplicate highlights.
         -- Instead of true it can also be a list of languages
-        additional_vim_regex_highlighting = { 'php' },
-    },
-    query_linter = {
-        enable = true,
-        use_virtual_text = true,
-        lint_events = { 'BufWrite', 'CursorHold' },
-    },
-    rainbow = {
-        enable = true,
-        extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-        max_file_lines = nil, -- Do not enable for files with more than n lines, int
-        -- colors = {}, -- table of hex strings
-        -- termcolors = {} -- table of colour name strings
-    },
-    indent = {
-        enable = false, -- Really breaks stuff if true
-    },
-    incremental_selection = {
-        enable = true,
-        keymaps = {
-            init_selection = 'gnn',
-            node_incremental = 'grn',
-            scope_incremental = 'grc',
-            node_decremental = 'grm',
-        },
+        additional_vim_regex_highlighting = false,
     },
 })
 
@@ -80,12 +127,10 @@ function Reload()
     vim.cmd('source %')
 end
 
-vim.api.nvim_set_keymap('n', '<M-r>', '<cmd>lua Reload()<CR>', { noremap = true, silent = true })
-
 -- start importing modules(plugin configs)
 access_module('nv-hlsearch')
 access_module('nv-layout')
--- access_module('nv-chatgpt')
+-- access_module('nv-chatgpt'm
 -- access_module('nv-gesture')
 access_module('nv-whichkey')
 access_module('nv-term')
@@ -211,9 +256,13 @@ end
 
 require('focus').setup({ hybridnumber = true, excluded_filetypes = { 'toggleterm' }, treewidth = 20 })
 
+require('spectre').setup()
+
 init_emmet()
 access_module('nv-iron')
 access_module('nv-aerial')
+
+require('jenkinsfile_linter').validate()
 require('codeium').setup({})
 -- access_module('nv-pilot.init')
 
