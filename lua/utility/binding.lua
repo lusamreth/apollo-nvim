@@ -8,17 +8,17 @@ local function map(mode, key, action, config)
     if type(config) ~= 'table' then
         error('require table config!', 2)
     end
-
-    local wrapped = '<cmd>' .. action .. '<cr>'
-    if config['binder'] == true then
-        wrapped = action
-        config['binder'] = nil
+    local wrapped = action
+    if type(action) == 'string' then
+        wrapped = '<cmd>' .. action .. '<cr>'
+        if config['binder'] == true then
+            wrapped = action
+            config['binder'] = nil
+        end
     end
 
-    if #conf > 0 then
-        print('conf')
-    end
-    return vim.api.nvim_set_keymap(mode, key, wrapped, config)
+    return vim.keymap.set(mode, key, wrapped, config)
+    -- return vim.api.nvim_set_keymap(mode, key, wrapped, config)
 end
 
 vim.api.nvim_set_keymap('n', '<C-i>', '<C-w>j', { silent = true })
