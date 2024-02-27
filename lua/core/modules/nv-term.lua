@@ -125,7 +125,7 @@ local save_hook = {
     { 'BufEnter,BufRead', '*sh*', "lua print('init bash savehook')" },
     -- { 'BufWritePost', '*sh*', 'lua SHCHECK()' },
 }
-vim.api.nvim_set_keymap('n', '<Space>g', '<cmd>lua _lazygit_toggle()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'lg', '<cmd>lua _lazygit_toggle()<CR>', { noremap = true, silent = true })
 -- vim.keymap.set('t', 'jk', '<cmd>lua _lazygit_toggle()<CR>', { noremap = true, silent = true })
 Create_augroup(save_hook, 'bashtermhook')
 --Nnoremap("<C-t>","lua vim.cmd('ToggleTerm')",{})
