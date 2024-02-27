@@ -264,7 +264,7 @@ local function on_common_attach(verb, on_mount)
         on_mount = on_mount,
         config = {
             -- leaders = { 'd', 'g' },
-            leaders = { 'g', '<space>', 'd' },
+            leaders = { 'g', 'd', '<space>' },
             -- use default signs!
             diagnostic_signs = nil,
         },
